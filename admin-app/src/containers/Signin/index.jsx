@@ -22,7 +22,7 @@ function Signin(props) {
             onChange={() => {}}
           />
           <Button variant="primary" type="submit">
-            Submit
+            Submitt
           </Button>
         </Form>
       </Col>
