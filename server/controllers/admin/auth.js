@@ -39,7 +39,7 @@ exports.signin = (req, res) => {
     if (error) return res.status(400).json({ error });
     if (!user) return res.status(400).json({ messages: "Admin not exist" });
     if (!user.authenticate(req.body.password)) {
-      res.status(400).json({ messages: "Wrong password" });
+      return res.status(400).json({ messages: "Wrong password" });
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
