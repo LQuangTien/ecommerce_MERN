@@ -3,8 +3,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
 const env = require("dotenv");
-const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin/auth");
+const authRoutes = require("./routes/auth");
+const categoryRoutes = require("./routes/category");
 env.config();
 
 mongoose
@@ -19,9 +20,9 @@ mongoose
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use("/api", authRoutes);
 app.use("/api", adminRoutes);
+app.use("/api", categoryRoutes);
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port:", process.env.PORT);
 });

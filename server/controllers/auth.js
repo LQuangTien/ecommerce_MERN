@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec((error, user) => {
     if (user) {
@@ -42,9 +41,13 @@ exports.signin = (req, res) => {
       return res.status(400).json({ messages: "Wrong password" });
     }
 
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
     const { _id, firstName, lastName, email, role, fullName } = user;
     return res.status(200).json({
       token,
@@ -52,9 +55,3 @@ exports.signin = (req, res) => {
     });
   });
 };
-// exports.requireSignin = (req, res, next) => {
-//   const token = req.headers.authorization.split(" ")[1];
-//   const user = jwt.verify(token, process.env.JWT_SECRET);
-//   req.user = user;
-//   next();
-// };
