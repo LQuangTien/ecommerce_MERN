@@ -17,9 +17,8 @@ router.post(
   "/product/create",
   requireSignin,
   isAdmin,
-  upload.array("productImage"),
+  upload.array("productPicture"),
   create
 );
-// router.get("/category/", get);
 
 module.exports = router;

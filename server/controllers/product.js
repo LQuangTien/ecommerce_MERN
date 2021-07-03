@@ -2,15 +2,7 @@ const Product = require("../models/product");
 const shortid = require("shortid");
 const slugify = require("slugify");
 exports.create = (req, res) => {
-  const {
-    name,
-    price,
-    description,
-    productPicture,
-    category,
-    quantity,
-    createdby,
-  } = req.body;
+  const { name, price, description, category, quantity } = req.body;
   let pictures = [];
   if (req.files.length > 0) {
     pictures = req.files.map((file) => {
