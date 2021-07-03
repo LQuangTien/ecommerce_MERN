@@ -49,7 +49,7 @@ exports.signin = (req, res) => {
       }
     );
     const { _id, firstName, lastName, email, role, fullName } = user;
-    return res.status(200).json({
+    return res.status(201).json({
       token,
       user: { _id, firstName, lastName, email, role, fullName },
     });
