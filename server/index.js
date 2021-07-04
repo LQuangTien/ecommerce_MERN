@@ -9,6 +9,7 @@ const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
 const path = require("path");
+const cors = require("cors");
 env.config();
 
 mongoose
@@ -20,6 +21,7 @@ mongoose
   .then(() => {
     console.log("DB connected");
   });
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
