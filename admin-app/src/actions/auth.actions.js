@@ -5,7 +5,6 @@ export const login = (user) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGIN_REQUEST });
     const res = await axios.post("signin", { ...user });
-    console.log(res);
     if (res.status === 200) {
       const { token, user } = res.data;
       localStorage.setItem("token", token);
@@ -38,5 +37,12 @@ export const isUserLoggedIn = () => {
         payload: { error: "Fail to login" },
       });
     }
+  };
+};
+
+export const signOut = () => {
+  return async (dispatch) => {
+    localStorage.clear();
+    dispatch({ type: authConstants.LOGOUT_REQUEST });
   };
 };

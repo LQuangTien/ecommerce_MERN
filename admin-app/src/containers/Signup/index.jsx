@@ -1,20 +1,43 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { signup } from "../../actions";
 import Input from "../../components/UI/Input";
 function Signup(props) {
+  const [firstName, setFristName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const auth = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const user = { firstName, lastName, email, password };
+    dispatch(signup(user));
+  };
+  if (auth.authenticate) {
+    return <Redirect to="/" />;
+  }
+  if (user.loading) {
+    return <h1>LOADING ...</h1>;
+  }
   return (
     <Row className="m-5">
+      {user.message ? user.message : ""}
       <Col md={{ span: 6, offset: 3 }}>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={6}>
               <Input
                 label="Frist name"
                 placeholder="Frist name"
                 type="text"
-                value=""
-                onChange={() => {}}
+                value={firstName}
+                onChange={(e) => setFristName(e.target.value)}
               />
             </Col>
             <Col md={6}>
@@ -22,8 +45,8 @@ function Signup(props) {
                 label="Last name"
                 placeholder="Last name"
                 type="text"
-                value=""
-                onChange={() => {}}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
               />
             </Col>
           </Row>
@@ -31,15 +54,15 @@ function Signup(props) {
             label="Email"
             placeholder="Email"
             type="email"
-            value=""
-            onChange={() => {}}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <Input
             label="Password"
             placeholder="Password"
             type="password"
-            value=""
-            onChange={() => {}}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button variant="primary" type="submit">
             Submit

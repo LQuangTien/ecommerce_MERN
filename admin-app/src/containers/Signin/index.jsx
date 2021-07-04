@@ -12,11 +12,7 @@ function Signin(props) {
   const auth = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!auth.authenticate) {
-      dispatch(isUserLoggedIn());
-    }
-  }, []);
+
   const userLogin = (e) => {
     e.preventDefault();
     const user = { email, password };
