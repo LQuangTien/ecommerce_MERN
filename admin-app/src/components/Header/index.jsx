@@ -2,12 +2,12 @@ import React from "react";
 import { Nav, Navbar, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
-import { signOut } from "../../actions/auth.actions";
+import { signout } from "../../actions/auth.actions";
 function Header() {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleSignout = () => {
-    dispatch(signOut());
+    dispatch(signout());
   };
   const wasLoggedIn = () => {
     return (

@@ -5,6 +5,9 @@ const initState = {
   user: { firstname: "", lastname: "", email: "", picture: "" },
   authenticate: false,
   authenticating: false,
+  loading: false,
+  error: null,
+  message: "",
 };
 const authReducer = (state = initState, action) => {
   console.log(action);
@@ -26,7 +29,20 @@ const authReducer = (state = initState, action) => {
       break;
     case authConstants.LOGOUT_REQUEST:
       state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case authConstants.LOGOUT_SUCCESS:
+      state = {
         ...initState,
+      };
+      break;
+    case authConstants.LOGOUT_FAILURE:
+      state = {
+        ...state,
+        error: action.payload.error,
+        loading: false,
       };
       break;
     default:
