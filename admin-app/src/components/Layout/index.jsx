@@ -14,6 +14,9 @@ function Layout(props) {
               <NavLink to="/">Home</NavLink>
             </li>
             <li>
+              <NavLink to="/category">Category</NavLink>
+            </li>
+            <li>
               <NavLink to="/products">Products</NavLink>
             </li>
             <li>

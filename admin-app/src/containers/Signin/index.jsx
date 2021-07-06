@@ -10,17 +10,18 @@ function Signin(props) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const auth = useSelector((state) => state.auth);
-
   const dispatch = useDispatch();
+
+  if (auth.authenticate) {
+    return <Redirect to="/" />;
+  }
 
   const userLogin = (e) => {
     e.preventDefault();
     const user = { email, password };
     dispatch(login(user));
   };
-  if (auth.authenticate) {
-    return <Redirect to="/" />;
-  }
+
   return (
     <Row className="m-5">
       <Col md={{ span: 6, offset: 3 }}>

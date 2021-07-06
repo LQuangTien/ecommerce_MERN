@@ -38,7 +38,7 @@ exports.create = (req, res) => {
   const newCategory = new Category(categoryObj);
   newCategory.save((error, data) => {
     if (error) return res.status(400).json({ error });
-    return res.status(400).json({ category: data });
+    return res.status(201).json({ category: data });
   });
 };
 
