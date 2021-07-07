@@ -27,9 +27,9 @@ exports.initialData = async (req, res) => {
   try {
     const [categories, products] = await Promise.all([
       Category.find({}),
-      Product.find({}).select(
-        "_id name price quantity category description productPictures"
-      ),
+      Product.find({})
+        .select("_id name price quantity category description productPictures")
+        .populate({ path: "category", select: "_id name" }),
     ]);
     // const categories = await Category.find({});
     // const products = await Product.find({}).select(
