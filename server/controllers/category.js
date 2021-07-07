@@ -17,6 +17,7 @@ const populateCategory = (categories, parentId = null) => {
       _id: category._id,
       name: category.name,
       slug: category.slug,
+      parentId: category.parentId,
       children: populateCategory(categories, category._id),
     });
   }

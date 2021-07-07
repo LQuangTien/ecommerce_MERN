@@ -3,6 +3,7 @@ import Header from "../Header";
 import { Container, Col, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import "./style.css";
 function Layout(props) {
   const auth = useSelector((state) => state.auth);
   const wasLoggedIn = () => (
@@ -11,7 +12,9 @@ function Layout(props) {
         <Col md={2} className="sidebar">
           <ul>
             <li>
-              <NavLink to="/">Home</NavLink>
+              <NavLink exact to="/">
+                Home
+              </NavLink>
             </li>
             <li>
               <NavLink to="/category">Category</NavLink>
