@@ -1,17 +1,16 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Layout from "./components/Layout";
-import Home from "./containers/Home";
-import Signup from "./containers/Signup";
-import Signin from "./containers/Signin";
-import PrivateRoute from "./components/HOC/PrivateRoute";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { isUserLoggedIn } from "./actions";
-import Products from "./containers/Products";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Switch } from "react-router-dom";
+import { isUserLoggedIn, getInitialData } from "./actions";
+import "./App.css";
+import PrivateRoute from "./components/HOC/PrivateRoute";
+import Layout from "./components/Layout";
 import Category from "./containers/Category";
+import Home from "./containers/Home";
 import Orders from "./containers/Orders";
+import Products from "./containers/Products";
+import Signin from "./containers/Signin";
+import Signup from "./containers/Signup";
 function App() {
   const auth = useSelector((state) => state.auth);
 
@@ -20,6 +19,7 @@ function App() {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
+    dispatch(getInitialData());
   }, []);
   return (
     <div className="App">

@@ -6,6 +6,17 @@ const initState = {
   error: null,
 };
 const updateNewCategories = (categories, newCategory, newCategories = []) => {
+  if (newCategory.parentId == undefined) {
+    return [
+      ...categories,
+      {
+        _id: newCategory._id,
+        name: newCategory.name,
+        slug: newCategory.slug,
+        children: [],
+      },
+    ];
+  }
   for (let category of categories) {
     if (category._id + "" === newCategory.parentId + "") {
       newCategories.push({
@@ -30,10 +41,9 @@ const updateNewCategories = (categories, newCategory, newCategories = []) => {
     } else {
       newCategories.push({
         ...category,
-        children:
-          category.children && category.children.length > 0
-            ? updateNewCategories(category.children, newCategory)
-            : [],
+        children: category.children
+          ? updateNewCategories(category.children, newCategory)
+          : [],
       });
     }
   }
@@ -41,34 +51,34 @@ const updateNewCategories = (categories, newCategory, newCategories = []) => {
 };
 const categoryReducer = (state = initState, action) => {
   switch (action.type) {
-    case categoryConstants.GET_ALL_REQUEST:
+    case categoryConstants.GET_ALL_CATEGORY_REQUEST:
       state = {
         ...state,
         loading: true,
       };
       break;
-    case categoryConstants.GET_ALL_SUCCESS:
+    case categoryConstants.GET_ALL_CATEGORY_SUCCESS:
       state = {
         ...state,
         loading: false,
         categories: action.payload.categories,
       };
       break;
-    case categoryConstants.GET_ALL_FAILURE:
+    case categoryConstants.GET_ALL_CATEGORY_FAILURE:
       state = {
         ...state,
         loading: false,
         error: action.payload.error,
       };
       break;
-    case categoryConstants.ADD_REQUEST:
+    case categoryConstants.ADD_CATEGORY_REQUEST:
       state = {
         ...state,
 
         loading: true,
       };
       break;
-    case categoryConstants.ADD_SUCCESS:
+    case categoryConstants.ADD_CATEGORY_SUCCESS:
       const updatedCategories = updateNewCategories(
         state.categories,
         action.payload.category
@@ -79,7 +89,7 @@ const categoryReducer = (state = initState, action) => {
         loading: false,
       };
       break;
-    case categoryConstants.ADD_FAILURE:
+    case categoryConstants.ADD_CATEGORY_FAILURE:
       state = {
         ...state,
         loading: false,
