@@ -1,13 +1,8 @@
 import React from "react";
 import Header from "../../components/Header";
-import MenuHeader from "../MenuHeader";
+import MenuHeader from "../../components/MenuHeader";
 function HomePage() {
-  return (
-    <div>
-      <Header />
-      <MenuHeader />
-    </div>
-  );
+  return <div>HomePage</div>;
 }
 
 export default HomePage;

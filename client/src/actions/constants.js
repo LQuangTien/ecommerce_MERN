@@ -3,3 +3,6 @@ export const categoryConstants = {
   GET_ALL_CATEGORY_FAILURE: "GET_ALL_CATEGORY_FAILURE",
   GET_ALL_CATEGORY_SUCCESS: "GET_ALL_CATEGORY_SUCCESS",
 };
+export const productConstants = {
+  GET_PRODUCT_BY_SLUG: "GET_PRODUCT_BY_SLUG",
+};
