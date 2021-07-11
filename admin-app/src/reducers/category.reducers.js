@@ -23,20 +23,8 @@ const updateNewCategories = (categories, newCategory, newCategories = []) => {
         ...category,
         children:
           category.children && category.children.length > 0
-            ? updateNewCategories(
-                [
-                  ...category.children,
-                  {
-                    _id: newCategory._id,
-                    name: newCategory.name,
-                    slug: newCategory.slug,
-                    parentId: newCategory.parentId,
-                    children: newCategory.children,
-                  },
-                ],
-                newCategory
-              )
-            : [],
+            ? [...category.children, newCategory]
+            : [newCategory],
       });
     } else {
       newCategories.push({

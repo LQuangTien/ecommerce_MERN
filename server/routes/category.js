@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { create, get } = require("../controllers/category");
+const { create, get, update } = require("../controllers/category");
 const { requireSignin, isAdmin } = require("../middlewares");
 const shortid = require("shortid");
 const multer = require("multer");
@@ -21,5 +21,5 @@ router.post(
   create
 );
 router.get("/category/", get);
-
+router.put("/category/update", upload.array("categoryImage"), update);
 module.exports = router;
