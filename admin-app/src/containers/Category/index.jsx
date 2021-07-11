@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Input from "../../components/UI/Input";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { addCategory, getAllCategory, updateCategory } from "../../actions";
+import {
+  addCategory,
+  getAllCategory,
+  updateCategory,
+  deleteCategory,
+} from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import CustomModal from "../../components/UI/Modal";
 import CheckboxTree from "react-checkbox-tree";
@@ -14,15 +19,21 @@ import {
   IoIosArrowDown,
 } from "react-icons/io";
 function Category(props) {
-  const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const [parentId, setParentId] = useState("");
   const [image, setImage] = useState(null);
+  //
   const [checked, setChecked] = useState([]);
   const [expanded, setExpanded] = useState([]);
   const [checkedArray, setCheckedArray] = useState([]);
   const [expandedArray, setExpandedArray] = useState([]);
+  //
+  const [show, setShow] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  //
+  const dispatch = useDispatch();
+  const categoriesState = useSelector((state) => state.categories);
   const handleClose = () => {
     const form = new FormData();
     form.append("name", name);
@@ -34,16 +45,15 @@ function Category(props) {
     setShow(false);
   };
   const handleShow = () => setShow(true);
-  const dispatch = useDispatch();
-  const categoriesState = useSelector((state) => state.categories);
-
   const renderCategories = (categories) => {
     return categories.map((category) => {
       return {
         label: category.name,
         value: category._id,
         children:
-          category.children.length > 0 && renderCategories(category.children),
+          category.children &&
+          category.children.length > 0 &&
+          renderCategories(category.children),
       };
     });
   };
@@ -54,7 +64,7 @@ function Category(props) {
         name: category.name,
         parentId: category.parentId,
       });
-      if (category.children.length > 0) {
+      if (category.children && category.children.length > 0) {
         createCategoryOptions(category.children, options);
       }
     }
@@ -63,8 +73,11 @@ function Category(props) {
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
-  const handleUpdateOpen = () => {
+  const handleUpdateModalOpen = () => {
+    getCheckedAndExpanded();
     setUpdateModal(true);
+  };
+  const getCheckedAndExpanded = () => {
     const categories = createCategoryOptions(categoriesState.categories);
     const checkedArray =
       checked.length > 0 &&
@@ -78,7 +91,6 @@ function Category(props) {
       });
     setCheckedArray(checkedArray);
     setExpandedArray(expandedArray);
-    console.log({ checked, expanded, categories, checkedArray, expandedArray });
   };
   const handleCategoryInput = (key, value, index, type) => {
     if (type === "checked") {
@@ -113,7 +125,7 @@ function Category(props) {
     }
 
     dispatch(updateCategory(form)).then((result) => {
-      if(result) dispatch(getAllCategory())
+      if (result) dispatch(getAllCategory());
     });
     setUpdateModal(false);
   };
@@ -256,6 +268,52 @@ function Category(props) {
       <input type="file" name="categoryImage" onChange={handleImageChange} />
     </CustomModal>
   );
+  const renderDeleteModal = () => {
+    return (
+      <CustomModal
+        title="Delete category"
+        show={deleteModal}
+        handleClose={handleDeleteModalClose}
+        buttons={[
+          {
+            label: "No",
+            color: "primary",
+            onClick: handleDeleteModalClose,
+          },
+          {
+            label: "Yes",
+            color: "danger",
+            onClick: handleDeleteCategories,
+          },
+        ]}
+      >
+        Are yout sure ?<h5>Expanded</h5>
+        {expandedArray.map((item, index) => (
+          <p key={index}>{item.name}</p>
+        ))}
+        <h5>Checked</h5>
+        {checkedArray.map((item, index) => (
+          <p key={index}>{item.name}</p>
+        ))}
+      </CustomModal>
+    );
+  };
+  const handleDeleteModalClose = () => {
+    setDeleteModal(false);
+  };
+  const handleDeleteModalOpen = () => {
+    getCheckedAndExpanded();
+    setDeleteModal(true);
+  };
+  const handleDeleteCategories = () => {
+    const ids = checkedArray.map((item) => ({ _id: item.value }));
+    // const IdsOfExpanded = expandedArray.map((item) => ({ _id: item.value }));
+    // const ids = IdsOfChecked.concat(IdsOfExpanded);
+    dispatch(deleteCategory(ids)).then((result) => {
+      if (result) dispatch(getAllCategory());
+    });
+    setDeleteModal(false);
+  };
   return (
     <Container>
       <Row>
@@ -291,14 +349,15 @@ function Category(props) {
       </Row>
       <Row>
         <Col>
-          <button>Delete</button>
-          <button onClick={handleUpdateOpen}>Update</button>
+          <button onClick={handleDeleteModalOpen}>Delete</button>
+          <button onClick={handleUpdateModalOpen}>Update</button>
         </Col>
       </Row>
 
       {/* Edit */}
       {renderAddModal()}
       {renderUpdateModal()}
+      {renderDeleteModal()}
     </Container>
   );
 }

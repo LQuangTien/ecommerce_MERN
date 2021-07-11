@@ -9,12 +9,18 @@ function CustomModal(props) {
         </Modal.Header>
         <Modal.Body> {props.children}</Modal.Body>
         <Modal.Footer>
-          {/* <Button variant="secondary" onClick={props.handleClose}>
-            Close
-          </Button> */}
-          <Button variant="primary" onClick={props.handleClose}>
-            Save Changes
-          </Button>
+          {props.buttons ? (
+            props.buttons.map((button, index) => (
+              <Button key={index} variant={button.color} onClick={button.onClick}>
+                {button.label}
+              </Button>
+            ))
+          ) : (
+            <Button variant="primary" onClick={props.handleClose}>
+              Save Changes
+            </Button>
+          )}
+          
         </Modal.Footer>
       </Modal>
     </div>

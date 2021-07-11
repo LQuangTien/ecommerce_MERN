@@ -85,3 +85,12 @@ exports.update = async (req, res) => {
     return res.status(201).json({ updatedCategory });
   }
 };
+
+exports.remove = (req, res) => {
+  const { ids } = req.body;
+  const deletedCategories = ids.map(async (_id) => {
+    const deletedCategory = await Category.findOneAndDelete({ _id });
+    return deletedCategory;
+  });
+  return res.status(200).json({ deletedCategories });
+};

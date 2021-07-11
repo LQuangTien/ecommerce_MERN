@@ -48,3 +48,13 @@ export const updateCategory = (form) => {
     }
   };
 };
+export const deleteCategory = (ids) => {
+  return async (dispatch) => {
+    const res = await axios.put("category/delete", {ids} );
+    if (res.status === 200) {
+      return true;
+    } else {
+      console.log(res.data);
+    }
+  };
+};
