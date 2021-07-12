@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 exports.requireSignin = (req, res, next) => {
   if (!req.headers.authorization)
-    return res.status(400).json({ message: "Signin required" });
+    return res.status(500).json({ message: "Signin required" });
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
     req.user = user;
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Token expired" });
+    return res.status(500).json({ message: "Token expired" });
   }
 };
 

@@ -36,12 +36,11 @@ exports.signup = (req, res) => {
   });
 };
 exports.signin = (req, res) => {
-  User.findOne({ email: req.body.email }).exec((error, user) => {
+  User.findOne({ email: req.body.email }).exec(async (error, user) => {
     if (error) return res.status(400).json({ error });
     if (!user) return res.status(400).json({ messages: "User not exist" });
-    if (!user.authenticate(req.body.password)) {
-      return res.status(400).json({ messages: "Wrong password" });
-    }
+    const isAuthen = await user.authenticate(req.body.password);
+    if (!isAuthen) return res.status(400).json({ messages: "Wrong password" });
 
     const token = jwt.sign(
       { _id: user._id, role: user.role },
