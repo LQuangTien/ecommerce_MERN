@@ -40,17 +40,23 @@ export const addCategory = (form) => {
 };
 export const updateCategory = (form) => {
   return async (dispatch) => {
+    dispatch({ type: categoryConstants.UPDATE_CATEGORY_REQUEST });
     const res = await axios.put("category/update", form);
     if (res.status === 201) {
-      return true;
+      dispatch({ type: categoryConstants.UPDATE_CATEGORY_SUCCESS });
+      dispatch(getAllCategory());
     } else {
-      console.log(res.data);
+      const { error } = res;
+      dispatch({
+        type: categoryConstants.UPDATE_CATEGORY_SUCCESS,
+        payload: { error },
+      });
     }
   };
 };
 export const deleteCategory = (ids) => {
   return async (dispatch) => {
-    const res = await axios.put("category/delete", {ids} );
+    const res = await axios.put("category/delete", { ids });
     if (res.status === 200) {
       return true;
     } else {

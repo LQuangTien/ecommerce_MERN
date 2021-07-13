@@ -84,6 +84,25 @@ const categoryReducer = (state = initState, action) => {
         error: action.payload.error,
       };
       break;
+    case categoryConstants.UPDATE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        loading: true
+      }
+      break;
+    case categoryConstants.UPDATE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        loading: false
+      }
+      break;
+    case categoryConstants.UPDATE_CATEGORY_FAILURE:
+      state = {
+        ...state,
+        loading: false,
+        error: action.payload.error
+      }
+      break;
     default:
       state = {
         ...state,

@@ -127,9 +127,7 @@ function Category(props) {
       });
     }
 
-    dispatch(updateCategory(form)).then((result) => {
-      if (result) dispatch(getAllCategory());
-    });
+    dispatch(updateCategory(form));
     setUpdateModal(false);
   };
   const handleDeleteModalClose = () => {
