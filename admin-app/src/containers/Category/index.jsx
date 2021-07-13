@@ -18,6 +18,7 @@ import {
   getAllCategory,
   updateCategory,
 } from "../../actions";
+import { createCategoryOptions } from "../../helpers/util";
 import AddModal from "./components/AddModal";
 import DeleteModal from "./components/DeleteModal";
 import UpdateModal from "./components/UpdateModal";
@@ -59,20 +60,6 @@ function Category(props) {
           renderCategories(category.children),
       };
     });
-  };
-  const createCategoryOptions = (categories, options = []) => {
-    for (let category of categories) {
-      options.push({
-        value: category._id,
-        name: category.name,
-        parentId: category.parentId,
-        type: category.type
-      });
-      if (category.children && category.children.length > 0) {
-        createCategoryOptions(category.children, options);
-      }
-    }
-    return options;
   };
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
