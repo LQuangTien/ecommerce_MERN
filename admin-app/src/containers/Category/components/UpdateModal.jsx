@@ -12,7 +12,7 @@ function UpdateModal(props) {
     expandedArray,
     checkedArray,
     handleCategoryInput,
-    categories
+    categories,
   } = props;
   return (
     <CustomModal
@@ -53,17 +53,22 @@ function UpdateModal(props) {
                 }
               >
                 <option value="">Select category</option>
-                {categories.map(
-                  (option) => (
-                    <option value={option.value} key={option.value}>
-                      {option.name}
-                    </option>
-                  )
-                )}
+                {categories.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.name}
+                  </option>
+                ))}
               </select>
             </Col>
             <Col>
-              <select name="" className="form-control">
+              <select
+                name=""
+                className="form-control"
+                value={item.type}
+                onChange={(e) =>
+                  handleCategoryInput("type", e.target.value, index, "expanded")
+                }
+              >
                 <option value="">Select type</option>
                 <option value="store">Store</option>
                 <option value="product">Product</option>
@@ -104,17 +109,22 @@ function UpdateModal(props) {
                 }
               >
                 <option>Select category</option>
-                {categories.map(
-                  (option) => (
-                    <option value={option.value} key={option.value}>
-                      {option.name}
-                    </option>
-                  )
-                )}
+                {categories.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.name}
+                  </option>
+                ))}
               </select>
             </Col>
             <Col>
-              <select name="" className="form-control">
+              <select
+                name=""
+                className="form-control"
+                value={item.type}
+                onChange={(e) =>
+                  handleCategoryInput("type", e.target.value, index, "checked")
+                }
+              >
                 <option value="">Select type</option>
                 <option value="store">Store</option>
                 <option value="product">Product</option>

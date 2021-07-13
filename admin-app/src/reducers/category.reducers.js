@@ -13,6 +13,7 @@ const updateNewCategories = (categories, newCategory, newCategories = []) => {
         _id: newCategory._id,
         name: newCategory.name,
         slug: newCategory.slug,
+        type: newCategory.type,
         children: [],
       },
     ];
@@ -87,21 +88,40 @@ const categoryReducer = (state = initState, action) => {
     case categoryConstants.UPDATE_CATEGORY_REQUEST:
       state = {
         ...state,
-        loading: true
-      }
+        loading: true,
+      };
       break;
     case categoryConstants.UPDATE_CATEGORY_SUCCESS:
       state = {
         ...state,
-        loading: false
-      }
+        loading: false,
+      };
       break;
     case categoryConstants.UPDATE_CATEGORY_FAILURE:
       state = {
         ...state,
         loading: false,
-        error: action.payload.error
-      }
+        error: action.payload.error,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+      };
+      break;
+    case categoryConstants.DELETE_CATEGORY_FAILURE:
+      state = {
+        ...state,
+        loading: false,
+        error: action.payload.error,
+      };
       break;
     default:
       state = {

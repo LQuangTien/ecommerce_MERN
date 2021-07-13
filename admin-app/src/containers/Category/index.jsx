@@ -66,6 +66,7 @@ function Category(props) {
         value: category._id,
         name: category.name,
         parentId: category.parentId,
+        type: category.type
       });
       if (category.children && category.children.length > 0) {
         createCategoryOptions(category.children, options);
@@ -141,9 +142,7 @@ function Category(props) {
     const ids = checkedArray.map((item) => ({ _id: item.value }));
     // const IdsOfExpanded = expandedArray.map((item) => ({ _id: item.value }));
     // const ids = IdsOfChecked.concat(IdsOfExpanded);
-    dispatch(deleteCategory(ids)).then((result) => {
-      if (result) dispatch(getAllCategory());
-    });
+    dispatch(deleteCategory(ids));
     setDeleteModal(false);
   };
   const categoriesList = createCategoryOptions(categoriesState.categories);
