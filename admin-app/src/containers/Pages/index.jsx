@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { create } from "../../actions/page.actions";
 import Input from "../../components/UI/Input";
 import CustomModal from "../../components/UI/Modal";
 import { createCategoryOptions } from "../../helpers/util";
@@ -12,17 +13,42 @@ function Pages() {
   const [categories, setCategories] = useState([]);
   const categoryState = useSelector((state) => state.categories);
   const [categoryId, setCategoryId] = useState("");
+  const [type, setType] = useState("");
+  const [banners, setBanners] = useState([]);
+  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
   useEffect(() => {
     setCategories(createCategoryOptions(categoryState.categories));
   }, [categoryState]);
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    form.append("title", title);
+    form.append("description", description);
+    form.append("category", categoryId);
+    form.append("type", type);
+    banners.forEach((banner) => {
+      form.append("banners", banner);
+    });
+    products.forEach((product) => {
+      form.append("products", product);
+    });
+    dispatch(create(form));
     setShow(false);
   };
   const handleBannerImages = (e) => {
-    console.log(e);
+    setBanners([...banners, e.target.files[0]]);
   };
   const handleProductImages = (e) => {
-    console.log(e);
+    setProducts([...products, e.target.files[0]]);
+  };
+  const handleCategoryChange = (e) => {
+    const category = categories.find(
+      (category) => category.value === e.target.value
+    );
+
+    setCategoryId(e.target.value);
+    setType(category.type);
   };
   const renderAddPage = () => {
     return (
@@ -31,12 +57,12 @@ function Pages() {
           <Col>
             <select
               value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
+              onChange={handleCategoryChange}
               className="form-control mb-3"
             >
               <option value="">Select category</option>
               {categories.map((category) => (
-                <option key={category._id} value={category._id}>
+                <option key={category.value} value={category.value}>
                   {category.name}
                 </option>
               ))}
@@ -63,6 +89,13 @@ function Pages() {
             />
           </Col>
         </Row>
+        {banners.length > 0
+          ? banners.map((banner, index) => (
+              <Row key={index}>
+                <Col>{banner.name}</Col>
+              </Row>
+            ))
+          : null}
         <Row>
           <Col>
             <input
@@ -73,6 +106,13 @@ function Pages() {
             />
           </Col>
         </Row>
+        {products.length > 0
+          ? products.map((product, index) => (
+              <Row key={index}>
+                <Col>{product.name}</Col>
+              </Row>
+            ))
+          : null}
         <Row>
           <Col>
             <input

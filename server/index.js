@@ -5,6 +5,7 @@ const app = express();
 const env = require("dotenv");
 const adminRoutes = require("./routes/admin/auth");
 const initialDataRoutes = require("./routes/admin/initialData");
+const pageRoutes = require("./routes/admin/page");
 const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
@@ -33,6 +34,7 @@ app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", initialDataRoutes);
+app.use("/api", pageRoutes);
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port:", process.env.PORT);
 });
