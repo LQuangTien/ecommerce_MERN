@@ -13,6 +13,7 @@ function UpdateModal(props) {
     checkedArray,
     handleCategoryInput,
     categories,
+    onSubmit
   } = props;
   return (
     <CustomModal
@@ -20,6 +21,7 @@ function UpdateModal(props) {
       show={show}
       handleClose={handleClose}
       size={size}
+      onSubmit={onSubmit}
     >
       <Row>
         <Col>

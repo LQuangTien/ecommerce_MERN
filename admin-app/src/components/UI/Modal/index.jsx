@@ -16,7 +16,7 @@ function CustomModal(props) {
               </Button>
             ))
           ) : (
-            <Button variant="primary" onClick={props.handleClose}>
+            <Button variant="primary" onClick={props.onSubmit}>
               Save Changes
             </Button>
           )}

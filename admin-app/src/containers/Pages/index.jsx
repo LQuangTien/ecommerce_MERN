@@ -16,10 +16,21 @@ function Pages() {
   const [type, setType] = useState("");
   const [banners, setBanners] = useState([]);
   const [products, setProducts] = useState([]);
+  const pageState = useSelector((state) => state.pages);
   const dispatch = useDispatch();
   useEffect(() => {
     setCategories(createCategoryOptions(categoryState.categories));
   }, [categoryState]);
+  useEffect(() => {
+    if (!pageState.loading) {
+      setTitle("");
+      setDescription("");
+      setCategoryId("");
+      setType("");
+      setBanners([]);
+      setProducts([]);
+    }
+  }, [pageState]);
   const handleClose = (e) => {
     e.preventDefault();
     const form = new FormData();
@@ -52,21 +63,21 @@ function Pages() {
   };
   const renderAddPage = () => {
     return (
-      <CustomModal title="Add page" show={show} handleClose={handleClose}>
+      <CustomModal
+        title="Add page"
+        show={show}
+        handleClose={() => setShow(false)}
+        onSubmit={handleClose}
+      >
         <Row>
           <Col>
-            <select
+            <Input
+              type="select"
               value={categoryId}
               onChange={handleCategoryChange}
-              className="form-control mb-3"
-            >
-              <option value="">Select category</option>
-              {categories.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+              placeholder="Select category"
+              options={categories}
+            />
           </Col>
         </Row>
         <Row>
@@ -127,10 +138,16 @@ function Pages() {
     );
   };
   return (
-    <div>
-      <Button onClick={() => setShow(true)}>Add page</Button>
-      {renderAddPage()}
-    </div>
+    <>
+      {pageState.loading ? (
+        <p>LOADINGGGGGGGGGGGGGGGG</p>
+      ) : (
+        <div>
+          <Button onClick={() => setShow(true)}>Add page</Button>
+          {renderAddPage()}
+        </div>
+      )}
+    </>
   );
 }
 

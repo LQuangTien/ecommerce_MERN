@@ -12,7 +12,7 @@ function MenuHeader() {
     return categories.map((category) => (
       <li key={category.name}>
         {category.parentId ? (
-          <a href={category.slug}>{category.name}</a>
+          <a href={`${category.slug}?categoryId=${category._id}&type=${category.type}`}>{category.name}</a>
         ) : (
           <span>{category.name}</span>
         )}

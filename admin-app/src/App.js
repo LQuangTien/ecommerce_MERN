@@ -20,9 +20,10 @@ function App() {
   useEffect(() => {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
+    } else {
+      dispatch(getInitialData());
     }
-    dispatch(getInitialData());
-  }, []);
+  }, [auth.authenticate]);
   return (
     <div className="App">
       <Layout>

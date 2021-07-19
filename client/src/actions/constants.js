@@ -5,4 +5,7 @@ export const categoryConstants = {
 };
 export const productConstants = {
   GET_PRODUCT_BY_SLUG: "GET_PRODUCT_BY_SLUG",
+  GET_PAGE_REQUEST: "GET_PAGE_REQUEST",
+  GET_PAGE_FAILURE: "GET_PAGE_FAILURE",
+  GET_PAGE_SUCCESS: "GET_PAGE_SUCCESS",
 };

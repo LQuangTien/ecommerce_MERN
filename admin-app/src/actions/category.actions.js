@@ -33,7 +33,7 @@ export const addCategory = (form) => {
     } else {
       dispatch({
         type: categoryConstants.ADD_CATEGORY_FAILURE,
-        payload: res.data.error,
+        payload: {error: res.data.error},
       });
     }
   };

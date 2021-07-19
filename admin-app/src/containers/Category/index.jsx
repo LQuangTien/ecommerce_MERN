@@ -38,7 +38,7 @@ function Category(props) {
   //
   const dispatch = useDispatch();
   const categoriesState = useSelector((state) => state.categories);
-  const handleClose = () => {
+  const handleAddModalSubmit = () => {
     const form = new FormData();
     form.append("name", name);
     form.append("parentId", parentId);
@@ -96,7 +96,7 @@ function Category(props) {
       setExpandedArray(updatedExpandedArray);
     }
   };
-  const handleUpdateModalClose = () => {
+  const handleUpdateModalSubmit = () => {
     const form = new FormData();
     if (expandedArray.length > 0) {
       expandedArray.forEach((item) => {
@@ -192,7 +192,8 @@ function Category(props) {
       <AddModal
         title="Add category"
         show={show}
-        handleClose={handleClose}
+        handleClose={() => setShow(false)}
+        onSubmit={handleAddModalSubmit}
         name={name}
         setName={setName}
         parentId={parentId}
@@ -204,7 +205,8 @@ function Category(props) {
         title="Update category"
         size="lg"
         show={updateModal}
-        handleClose={handleUpdateModalClose}
+        handleClose={() => setUpdateModal(false)}
+        onSubmit={handleUpdateModalSubmit}
         expandedArray={expandedArray}
         checkedArray={checkedArray}
         handleCategoryInput={handleCategoryInput}

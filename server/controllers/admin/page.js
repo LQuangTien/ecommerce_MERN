@@ -14,9 +14,34 @@ exports.create = (req, res) => {
     }));
   }
   req.body.createdBy = req.user._id;
-  const page = new Page(req.body);
-  page.save((error, page) => {
+
+  Page.findOne({ category: req.body.category }).exec((error, page) => {
     if (error) return res.status(400).json({ error });
-    return res.status(201).json({ page });
+    if (page) {
+      Page.findOneAndUpdate({ category: req.body.category }, req.body).exec(
+        (error, updatedPage) => {
+          if (error) return res.status(400).json({ error });
+          if (updatedPage) {
+            return res.status(201).json({ page: updatedPage });
+          }
+        }
+      );
+    } else {
+      const page = new Page(req.body);
+      page.save((error, page) => {
+        if (error) return res.status(400).json({ error });
+        return res.status(201).json({ page });
+      });
+    }
   });
+};
+
+exports.get = (req, res) => {
+  const { category, type } = req.params;
+  if (type === "page") {
+    Page.findOne({ category }).exec((error, page) => {
+      if (error) return res.status(400).json({ error });
+      return res.status(200).json({ page });
+    });
+  }
 };

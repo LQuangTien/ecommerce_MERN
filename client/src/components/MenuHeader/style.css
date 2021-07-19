@@ -26,6 +26,7 @@
   color: #2874f0;
 }
 .menuHeader > ul > li > ul {
+  z-index: 1;
   position: absolute;
   left: 0;
   right: 0;

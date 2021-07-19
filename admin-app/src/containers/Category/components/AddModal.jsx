@@ -14,9 +14,15 @@ function AddModal(props) {
     setParentId,
     categories,
     handleImageChange,
+    onSubmit,
   } = props;
   return (
-    <CustomModal title={title} show={show} handleClose={handleClose}>
+    <CustomModal
+      title={title}
+      show={show}
+      handleClose={handleClose}
+      onSubmit={onSubmit}
+    >
       <Row>
         <Col>
           <Input
