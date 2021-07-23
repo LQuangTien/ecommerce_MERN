@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "supervisor index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,6 +24,6 @@
     "slugify": "^1.5.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.9"
+    "supervisor": "^0.12.0"
   }
 }

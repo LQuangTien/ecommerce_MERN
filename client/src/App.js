@@ -4,13 +4,27 @@ import HomePage from "./containers/HomePage";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import ProductPage from "./containers/ProductsPage";
 import Layout from "./components/Layout";
+import { useDispatch, useSelector } from "react-redux";
+import { isUserLoggedIn } from "./actions";
+import { useEffect } from "react";
+import ProductDetailsPage from "./containers/ProductDetailsPage";
+
 function App() {
+  const auth = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!auth.authenticate) {
+      dispatch(isUserLoggedIn());
+    }
+  }, [auth.authenticate]);
   return (
     <div className="App">
       <BrowserRouter>
         <Layout>
           <Switch>
             <Route exact path="/" component={HomePage} />
+            <Route path="/:slug/:productId" component={ProductDetailsPage} />
             <Route path="/:slug" component={ProductPage} />
           </Switch>
         </Layout>

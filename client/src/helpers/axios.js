@@ -4,9 +4,7 @@ import { api } from "../urlConfig";
 const axiosInstance = axios.create({
   baseURL: api + "",
   headers: {
-    Authorization: localStorage.getItem("token")
-      ? localStorage.getItem("token")
-      : "",
+    Authorization: localStorage.getItem("token") || "",
   },
 });
 export default axiosInstance;

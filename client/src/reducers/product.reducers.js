@@ -12,6 +12,8 @@ const initState = {
   loadingPage: false,
   page: {},
   error: null,
+  productDetails: {},
+  loading: false,
 };
 
 const productReducer = (state = initState, action) => {
@@ -35,14 +37,34 @@ const productReducer = (state = initState, action) => {
       state = {
         ...state,
         loadingPage: false,
-        page: action.payload.page
+        page: action.payload.page,
       };
       break;
     case productConstants.GET_PAGE_FAILURE:
       state = {
         ...state,
         loadingPage: false,
-        error: action.payload.error
+        error: action.payload.error,
+      };
+      break;
+    case productConstants.GET_DETAIL_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case productConstants.GET_DETAIL_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+        productDetails: action.payload.productDetails,
+      };
+      break;
+    case productConstants.GET_DETAIL_FAILURE:
+      state = {
+        ...state,
+        loading: false,
+        error: action.payload.error,
       };
       break;
     default:

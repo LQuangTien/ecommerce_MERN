@@ -57,3 +57,11 @@ exports.getBySlug = (req, res) => {
       }
     });
 };
+exports.getById = (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ error: "Params required" });
+  Product.findOne({ _id: id }).exec((error, product) => {
+    if (error) return res.status(400).json({ error });
+    if (product) return res.json({ product });
+  });
+};
