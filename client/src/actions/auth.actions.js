@@ -1,5 +1,5 @@
 import axios from "../helpers/axios";
-import { authConstants } from "./constants";
+import { authConstants, cartContants } from "./constants";
 
 export const login = (user) => {
   return async (dispatch) => {
@@ -46,8 +46,10 @@ export const signout = () => {
 
     const res = await axios.post("/signout");
     if (res.status === 200) {
-      localStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       dispatch({ type: authConstants.LOGOUT_SUCCESS });
+      dispatch({ type: cartContants.RESET_CART });
     } else {
       dispatch({
         type: authConstants.LOGOUT_FAILURE,

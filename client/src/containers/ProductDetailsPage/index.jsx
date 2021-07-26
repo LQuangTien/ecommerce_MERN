@@ -7,6 +7,7 @@ import { AiFillThunderbolt } from "react-icons/ai";
 import { Button } from "../../components/UI/Common";
 import "./style.css";
 import { generatePictureUrl } from "../../urlConfig";
+import { addToCart } from "../../actions/cart.actions";
 
 /**
  * @author
@@ -29,6 +30,11 @@ const ProductDetailsPage = (props) => {
     return null;
   }
 
+  const handleAddToCart = () => {
+    const { _id, name, price } = product.productDetails;
+    const img = product.productDetails.productPictures[0].img;
+    dispatch(addToCart({ _id, name, price, img }));
+  };
   return (
     <div className="productDescriptionContainer">
       <div className="flexRow">
@@ -59,6 +65,7 @@ const ProductDetailsPage = (props) => {
                 marginRight: "5px",
               }}
               icon={<IoMdCart />}
+              onClick={handleAddToCart}
             />
             <Button
               title="BUY NOW"

@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { isUserLoggedIn } from "./actions";
 import { useEffect } from "react";
 import ProductDetailsPage from "./containers/ProductDetailsPage";
+import CartPage from "./containers/CartPage";
+import { updateCart } from "./actions/cart.actions";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -18,12 +20,16 @@ function App() {
       dispatch(isUserLoggedIn());
     }
   }, [auth.authenticate]);
+  useEffect(() => {
+    dispatch(updateCart());
+  }, [auth.authenticate]);
   return (
     <div className="App">
       <BrowserRouter>
         <Layout>
           <Switch>
             <Route exact path="/" component={HomePage} />
+            <Route path="/cart" component={CartPage} />
             <Route path="/:slug/:productId" component={ProductDetailsPage} />
             <Route path="/:slug" component={ProductPage} />
           </Switch>

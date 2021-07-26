@@ -11,6 +11,7 @@ import {
 } from '../UI/Common';
 import { useDispatch, useSelector } from 'react-redux'
 import { login, signout } from "../../actions"
+import { Link } from 'react-router-dom';
 const Header = (props) => {
 
   const [loginModal, setLoginModal] = useState(false);
@@ -31,12 +32,12 @@ const Header = (props) => {
       <DropdownMenu
         menu={<a className="fullname">{auth.user.fullName}</a>}
         menus={[
-          { label: "My Profile", href: "", icon: null },
-          { label: "Flipkart Plus Zone", href: "", icon: null },
-          { label: "Orders", href: "", icon: null },
-          { label: "Wishlist", href: "", icon: null },
-          { label: "Rewards", href: "", icon: null },
-          { label: "Gift Cards", href: "", icon: null },
+          // { label: "My Profile", href: "", icon: null },
+          // { label: "Flipkart Plus Zone", href: "", icon: null },
+          // { label: "Orders", href: "", icon: null },
+          // { label: "Wishlist", href: "", icon: null },
+          // { label: "Rewards", href: "", icon: null },
+          // { label: "Gift Cards", href: "", icon: null },
           { label: "Sign out", href: "", icon: null, onClick: handleLogout },
         ]}
         firstMenu={
@@ -159,10 +160,10 @@ const Header = (props) => {
             ]}
           />
           <div>
-            <a className="cart">
+            <Link to='/cart' className="cart">
               <IoIosCart />
               <span style={{ margin: '0 10px' }}>Cart</span>
-            </a>
+            </Link>
           </div>
         </div>
 
