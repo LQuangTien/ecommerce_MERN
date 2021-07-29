@@ -1,0 +1,10 @@
+const express = require("express");
+const { add, get, update } = require("../controllers/address");
+const router = express.Router();
+const { requireSignin } = require("../middlewares");
+
+router.get("/user/address", requireSignin, get);
+router.post("/user/address/add", requireSignin, add);
+router.put("/user/address/update", requireSignin, update);
+
+module.exports = router;

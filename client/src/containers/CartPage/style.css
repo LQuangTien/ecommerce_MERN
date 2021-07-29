@@ -1,4 +1,15 @@
 .cartContainer {
     display: flex;
     align-items: flex-start;
+    justify-content: center;
+}
+.placeOrderBtnContainer{
+    width: 100%;
+    box-shadow: 0 0 10px 10px #f1f3f6;
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0;
+    box-sizing: border-box;
+    background-color: white;
+    margin: 15px auto;
 }

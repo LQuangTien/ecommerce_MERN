@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
+const addressRoutes = require("./routes/address");
 const path = require("path");
 const cors = require("cors");
 env.config();
@@ -35,6 +36,7 @@ app.use("/api", productRoutes);
 app.use("/api", cartRoutes);
 app.use("/api", initialDataRoutes);
 app.use("/api", pageRoutes);
+app.use("/api", addressRoutes);
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port:", process.env.PORT);
 });

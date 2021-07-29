@@ -4,12 +4,10 @@
 } */
 .cartItemContainer {
   padding: 20px 20px;
-  border-bottom: 1px solid #cecece;
+  /* border-bottom: 1px solid #cecece; */
 }
 .flexRow {
   display: flex;
-  justify-content: space-between;
-  margin: 10px auto;
 }
 .productImgContainer {
   width: 120px;

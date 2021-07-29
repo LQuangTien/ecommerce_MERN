@@ -12,7 +12,9 @@ const storage = multer.diskStorage({
 exports.upload = multer({ storage });
 exports.requireSignin = (req, res, next) => {
   if (!req.headers.authorization)
-    return res.status(500).json({ message: "Signin required" });
+    return res
+      .status(500)
+      .json({ message: "Signin required", error: "Signin required" });
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);

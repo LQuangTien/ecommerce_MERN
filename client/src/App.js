@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import ProductDetailsPage from "./containers/ProductDetailsPage";
 import CartPage from "./containers/CartPage";
 import { updateCart } from "./actions/cart.actions";
+import CheckoutPage from "./containers/CheckoutPage";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -30,6 +31,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route path="/cart" component={CartPage} />
+            <Route path="/checkout" component={CheckoutPage} />
             <Route path="/:slug/:productId" component={ProductDetailsPage} />
             <Route path="/:slug" component={ProductPage} />
           </Switch>
