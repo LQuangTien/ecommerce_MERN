@@ -17,19 +17,24 @@ exports.signup = (req, res) => {
       hash_password,
       username: Math.random().toString(),
     });
-    newUser.save((error, data) => {
+    newUser.save((error, user) => {
       if (error) {
         return res.status(400).json({
           message: "Something went wrong",
         });
       }
-      if (data) {
+      if (user) {
+        const token = jwt.sign(
+          { _id: user._id, role: user.role },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "1000h",
+          }
+        );
+        const { _id, firstName, lastName, email, role, fullName } = user;
         return res.status(201).json({
-          id: data.id,
-          firstName,
-          lastName,
-          email,
-          username: data.username,
+          token,
+          user: { _id, firstName, lastName, email, role, fullName },
         });
       }
     });

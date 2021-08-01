@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, getCart } from "../../actions/cart.actions";
+import { addToCart, getCart, removeCartItem } from "../../actions/cart.actions";
 import Card from "../../components/UI/Card";
 import { Button } from "../../components/UI/Common";
 import CartItem from "./components/CartItem";
@@ -25,6 +25,9 @@ function CartPage(props) {
   const handleDecreaseQuantity = (id, quantity) => {
     dispatch(addToCart(cartItems[id], -1));
   };
+  const handleRemoveItem =(productId) =>{
+    dispatch(removeCartItem(productId))
+  }
   const renderCartItems = () => {
     return Object.keys(cartItems).map((key, index) => (
       <CartItem
@@ -33,20 +36,21 @@ function CartPage(props) {
         key={index}
         handleIncreaseQuantity={handleIncreaseQuantity}
         handleDecreaseQuantity={handleDecreaseQuantity}
+        handleRemoveItem={handleRemoveItem}
       />
     ));
   };
   const getTotalPrice = () => {
     return Object.keys(cartItems).reduce((totalPrice, index) => {
-      return totalPrice + cartItems[index].quantity * cartItems[index].price
-    }, 0)
-  }
+      return totalPrice + cartItems[index].quantity * cartItems[index].price;
+    }, 0);
+  };
   const getTotalAmount = () => {
     return Object.keys(cartItems).reduce((totalAmount, index) => {
       return totalAmount + cartItems[index].quantity;
     }, 0);
   };
-  if(props.isCheckout){
+  if (props.isCheckout) {
     return renderCartItems();
   }
   return (
@@ -61,11 +65,17 @@ function CartPage(props) {
           <Button
             title="Place Order"
             style={{ width: "250px" }}
-            onClick={() => props.history.push("/checkout")}
+            onClick={
+              Object.keys(cartItems).length > 0 &&
+              (() => props.history.push("/checkout"))
+            }
           />
         </div>
       </Card>
-      <PriceDetail totalPrice={getTotalPrice()} totalAmount={getTotalAmount()} />
+      <PriceDetail
+        totalPrice={getTotalPrice()}
+        totalAmount={getTotalAmount()}
+      />
     </div>
   );
 }

@@ -5,17 +5,24 @@ import goldenStar from "../../images/logo/golden-star.png";
 import { IoIosArrowDown, IoIosCart, IoIosSearch } from "react-icons/io";
 import { Modal, Input, Button, DropdownMenu } from "../UI/Common";
 import { useDispatch, useSelector } from "react-redux";
-import { login, signout } from "../../actions";
+import { login, signout, signup } from "../../actions";
 import { Link } from "react-router-dom";
 const Header = (props) => {
   const [loginModal, setLoginModal] = useState(false);
+  const [signupModal, setSignupModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleLogin = () => {
     dispatch(login({ email, password }));
     setLoginModal(false);
+  };
+  const handleSignUp = () => {
+    dispatch(signup({ email, password, firstName, lastName }));
+    setSignupModal(false);
   };
   const handleLogout = (e) => {
     e.preventDefault();
@@ -28,7 +35,7 @@ const Header = (props) => {
         menus={[
           // { label: "My Profile", href: "", icon: null },
           // { label: "Flipkart Plus Zone", href: "", icon: null },
-          // { label: "Orders", href: "", icon: null },
+          { label: "Orders", href: "/account/order", icon: null },
           // { label: "Wishlist", href: "", icon: null },
           // { label: "Rewards", href: "", icon: null },
           // { label: "Gift Cards", href: "", icon: null },
@@ -60,7 +67,7 @@ const Header = (props) => {
           { label: "Gift Cards", href: "", icon: null },
         ]}
         firstMenu={
-          <div className="firstmenu">
+          <div className="firstmenu" onClick={() => setSignupModal(true)}>
             <span>New Customer?</span>
             <a style={{ color: "#2874f0" }}>Sign Up</a>
           </div>
@@ -70,41 +77,6 @@ const Header = (props) => {
   };
   return (
     <div className="header">
-      <Modal visible={loginModal} onClose={() => setLoginModal(false)}>
-        <div className="authContainer">
-          <div className="row">
-            <div className="leftspace">
-              <h2>Login</h2>
-              <p>Get access to your Orders, Wishlist and Recommendations</p>
-            </div>
-            <div className="rightspace">
-              <div className="loginInputContainer">
-                <Input
-                  type="text"
-                  label="Enter Email/Enter Mobile Number"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <Input
-                  type="password"
-                  label="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  rightElement={<a href="#">Forgot?</a>}
-                />
-                <Button
-                  title="Login"
-                  bgColor="#fb641b"
-                  textColor="#ffffff"
-                  style={{ margin: "20px 0" }}
-                  onClick={handleLogin}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
       <div className="subHeader">
         <div className="logo">
           <a href="">
@@ -160,6 +132,91 @@ const Header = (props) => {
           </div>
         </div>
       </div>
+
+      <Modal visible={signupModal} onClose={() => setSignupModal(false)}>
+        <div className="authContainer">
+          <div className="row">
+            <div className="leftspace">
+              <h2>Sign up</h2>
+              <p style={{ minWidth: "200px" }}>
+                Welcome to our shopping website and get the best sale at here
+              </p>
+            </div>
+            <div className="rightspace">
+              <div className="loginInputContainer">
+                <Input
+                  type="text"
+                  label="Enter First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <Input
+                  type="text"
+                  label="Enter Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                <Input
+                  type="text"
+                  label="Enter Email/Enter Mobile Number"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <Input
+                  type="password"
+                  label="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  title="Sign Up"
+                  bgColor="#fb641b"
+                  textColor="#ffffff"
+                  style={{ margin: "20px 0" }}
+                  onClick={handleSignUp}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+      <Modal visible={loginModal} onClose={() => setLoginModal(false)}>
+        <div className="authContainer">
+          <div className="row">
+            <div className="leftspace">
+              <h2>Login</h2>
+              <p style={{ minWidth: "200px" }}>
+                Get access to your Orders, Wishlist and Recommendations
+              </p>
+            </div>
+            <div className="rightspace">
+              <div className="loginInputContainer">
+                <Input
+                  type="text"
+                  label="Enter Email/Enter Mobile Number"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <Input
+                  type="password"
+                  label="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  title="Login"
+                  bgColor="#fb641b"
+                  textColor="#ffffff"
+                  style={{ margin: "20px 0" }}
+                  onClick={handleLogin}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

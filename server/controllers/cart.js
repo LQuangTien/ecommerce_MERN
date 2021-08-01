@@ -68,3 +68,24 @@ exports.getCart = (req, res) => {
       }
     });
 };
+
+exports.removeCartItems = (req, res) => {
+  const { productId } = req.body;
+  if (productId) {
+    Cart.findOneAndUpdate(
+      { user: req.user._id },
+      {
+        $pull: {
+          cartItems: {
+            product: productId,
+          },
+        },
+      }
+    ).exec((error, cartItems) => {
+      if (error) return res.status(400).json({ error });
+      if (cartItems) {
+        res.status(202).json({ cartItems });
+      }
+    });
+  }
+};

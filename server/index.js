@@ -3,14 +3,18 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
 const env = require("dotenv");
+
 const adminRoutes = require("./routes/admin/auth");
 const initialDataRoutes = require("./routes/admin/initialData");
 const pageRoutes = require("./routes/admin/page");
+const adminOrderRoutes = require("./routes/admin/order");
+
 const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
 const addressRoutes = require("./routes/address");
+const orderRoutes = require("./routes/order");
 const path = require("path");
 const cors = require("cors");
 env.config();
@@ -37,6 +41,8 @@ app.use("/api", cartRoutes);
 app.use("/api", initialDataRoutes);
 app.use("/api", pageRoutes);
 app.use("/api", addressRoutes);
+app.use("/api", orderRoutes);
+app.use("/api", adminOrderRoutes);
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port:", process.env.PORT);
 });

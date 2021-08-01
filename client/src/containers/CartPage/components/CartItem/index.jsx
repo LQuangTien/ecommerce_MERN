@@ -21,6 +21,11 @@ function CartItem(props) {
       props.handleDecreaseQuantity(_id);
     }
   };
+  const onRemoveItem = (_id) => {
+    if(props.handleRemoveItem){
+      props.handleRemoveItem(_id);
+    }
+  }
   return (
     <div className="cartItemContainer">
       <div className="flexRow">
@@ -42,7 +47,9 @@ function CartItem(props) {
           <button onClick={onIncreaseQuantity}>+</button>
         </div>
         <button className="cartButton">Save for later</button>
-        <button className="cartButton">Remove</button>
+        <button className="cartButton" onClick={() => onRemoveItem(_id)}>
+          Remove
+        </button>
       </div>
     </div>
   );

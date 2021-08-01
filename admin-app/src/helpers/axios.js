@@ -13,7 +13,11 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((req) => {
-  return req;
+   const { auth } = store.getState();
+   if (auth.token) {
+     req.headers.Authorization = `${auth.token}`;
+   }
+   return req;
 });
 axiosInstance.interceptors.response.use(
   (res) => {

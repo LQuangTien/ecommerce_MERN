@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Anchor, Button } from "../../../../components/UI/Common";
 import "../../style.css";
 import AddressForm from "../AddressForm";
 function Address(props) {
-  const { adr, selectAddress, handleConfirm, enableEditAddress, handleUpdate } = props;
+  const { adr, selectAddress, handleConfirm, enableEditAddress, handleUpdate } =
+    props;
   return (
-    <div className="addressContainer">
+    <div
+      className={
+        !adr.selected ? "addressContainer" : "addressContainer--active"
+      }
+    >
       {!adr.edit ? (
         <div className="flexRow space-between align-items-center">
           <div>

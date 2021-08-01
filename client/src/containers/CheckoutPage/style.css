@@ -73,6 +73,9 @@
 .info-wrapper__container{
   margin: 10px 10px;
 }
+.info-wrapper__container > input{
+  margin: 0 10px 0 0;
+}
 .info-wrapper__title {
   font-weight: bold;
   color: #333;
@@ -82,6 +85,12 @@
   box-sizing: border-box;
   padding: 10px 20px;
   background: #f5faff;
+}
+.addressContainer--active {
+  box-sizing: border-box;
+  padding: 10px 20px;
+  background: #f5faff;
+  background-color: rgba(40,116,240,0.1)
 }
 .addressinfo {
   padding-left: 15px;
@@ -125,3 +134,14 @@
 .delivery-btn{
     width: 250px !important;
 }
+.continue-btn__container {
+  margin: 0;
+}
+.continue-btn__container > .cardHeader {
+  padding: 10px 20px;
+  align-items: center;
+}
+.continue-btn, .payment-btn {
+  width: 250px !important;
+}
+

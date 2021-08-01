@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCart, getAddress } from "../../actions";
+import { getCart, getAddress, addOrder } from "../../actions";
+import Card from "../../components/UI/Card";
 import { Button, Anchor } from "../../components/UI/Common";
 import CartPage from "../CartPage";
 import PriceDetail from "../CartPage/components/PriceDetail";
@@ -28,6 +29,8 @@ function CheckoutPage() {
   const cart = useSelector((state) => state.cart);
   const [addAddressStep, setAddAddressStep] = useState(false);
   const [summaryStep, setSummaryStep] = useState(false);
+  const [paymentStep, setPaymentStep] = useState(false);
+  const [isCompleteOrder, setIsCompleteOrder] = useState(false);
   const [address, setAddress] = useState([]);
   const [wasConfirmedAddress, setWasConfirmedAddress] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -77,6 +80,32 @@ function CheckoutPage() {
     setWasConfirmedAddress(false);
     setAddAddressStep(false);
     setSummaryStep(false);
+    setPaymentStep(false);
+  };
+  const handleContinue = () => {
+    setSummaryStep(false);
+    setPaymentStep(true);
+  };
+  const handleConfirmPayment = () => {
+    setWasConfirmedAddress(false);
+    setAddAddressStep(false);
+    setSummaryStep(false);
+    setPaymentStep(false);
+    setIsCompleteOrder(true);
+
+    const items = Object.keys(cartItems).map((key, index) => ({
+      productId: key,
+      paidPrice: cartItems[key].price,
+      quantity: cartItems[key].quantity,
+    }));
+    const order = {
+      addressId: selectedAddress._id,
+      totalAmount: getTotalPrice(),
+      items,
+      status: "pending",
+      paymentOption: "cod",
+    };
+    dispatch(addOrder(order));
   };
   const getTotalPrice = () => {
     if (cartItems) {
@@ -92,9 +121,12 @@ function CheckoutPage() {
       return totalAmount + cartItems[index].quantity;
     }, 0);
   };
+  if (isCompleteOrder) {
+    return <div>Thank</div>;
+  }
   return (
     <div className="checkoutContainer">
-      <div className="step-wrapper" >
+      <div className="step-wrapper">
         <Step
           stepNumber="1"
           title="LOGIN"
@@ -161,18 +193,63 @@ function CheckoutPage() {
             handleUpdate={handleUpdate}
           />
         ) : (
-          <Step
-            stepNumber="+"
-            title="ADD NEW ADDRESS"
-            active={addAddressStep}
-            onClick={() => setAddAddressStep(!addAddressStep)}
-          />
+          auth.authenticate && (
+            <Step
+              stepNumber="+"
+              title="ADD NEW ADDRESS"
+              active={addAddressStep}
+              onClick={() => setAddAddressStep(!addAddressStep)}
+            />
+          )
         )}
         <Step
           stepNumber="3"
           title="ORDER SUMMARY"
           active={summaryStep}
           body={summaryStep && <CartPage isCheckout />}
+        />
+        {summaryStep && (
+          <Card
+            className="continue-btn__container"
+            leftHeader={`An email will be sent to ${auth.user.email}`}
+            rightHeader={
+              <Button
+                title="CONTINUE"
+                className="continue-btn"
+                onClick={handleContinue}
+              />
+            }
+          />
+        )}
+        <Step
+          stepNumber="4"
+          title="PAYMENT OPTIONS"
+          active={paymentStep}
+          body={
+            paymentStep && (
+              <div className="info-wrapper">
+                <div className="info-wrapper__container">
+                  <input type="radio" name="paymentOptions" id="cash" />
+                  <label htmlFor="cash">Cash on delivery</label>
+                </div>
+                <div className="info-wrapper__container">
+                  <input type="radio" name="paymentOptions" id="casha" />
+                  <label htmlFor="casha">Cash on delivery</label>
+                </div>
+                <div className="info-wrapper__container">
+                  <input type="radio" name="paymentOptions" id="cashb" />
+                  <label htmlFor="cashb">Cash on delivery</label>
+                </div>
+                <div className="info-wrapper__container">
+                  <Button
+                    title="CONFIRM PAYMENT"
+                    className="payment-btn"
+                    onClick={handleConfirmPayment}
+                  />
+                </div>
+              </div>
+            )
+          }
         />
       </div>
 

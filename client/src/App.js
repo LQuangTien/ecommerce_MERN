@@ -11,6 +11,8 @@ import ProductDetailsPage from "./containers/ProductDetailsPage";
 import CartPage from "./containers/CartPage";
 import { updateCart } from "./actions/cart.actions";
 import CheckoutPage from "./containers/CheckoutPage";
+import OrderPage from "./containers/OrderPage";
+import OrderDetailPage from "./containers/OrderDetailPage";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -32,6 +34,8 @@ function App() {
             <Route exact path="/" component={HomePage} />
             <Route path="/cart" component={CartPage} />
             <Route path="/checkout" component={CheckoutPage} />
+            <Route path="/account/order/:_id" component={OrderDetailPage} />
+            <Route path="/account/order" component={OrderPage} />
             <Route path="/:slug/:productId" component={ProductDetailsPage} />
             <Route path="/:slug" component={ProductPage} />
           </Switch>

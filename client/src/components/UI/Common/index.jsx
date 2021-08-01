@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./style.css";
 
 const Modal = (props) => {
@@ -79,9 +80,9 @@ const DropdownMenu = (props) => {
           {props.menus &&
             props.menus.map((item, index) => (
               <li key={index}>
-                <a href={item.href} onClick={item.onClick}>
+                <Link to={item.href} onClick={item.onClick}>
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
         </ul>

@@ -1,0 +1,33 @@
+.order-container {
+  width: 90%;
+  margin: 15px auto;
+  padding: 10px 20px;
+
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.orderCard {
+  box-sizing: border-box;
+  margin: 10px auto;
+
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+
+  text-decoration: none;
+  color: inherit;
+}
+.order-container:hover {
+  box-shadow: 0 0 4px 2px #cecece;
+  transform: scale(1.002);
+  transition: all 0.2s ease-in-out;
+}
+.orderCard__img-container {
+  width: 120px;
+  height: 120px;
+}
+.orderCard__img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
