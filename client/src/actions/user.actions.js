@@ -5,57 +5,54 @@ export const getAddress = () => {
     try {
       dispatch({ type: userConstants.GET_ADDRESS_REQUEST });
       const res = await axios.get("/user/address");
-      if (res.status === 200) {
-        const { userAddress } = res.data;
-        const { address } = userAddress;
-        dispatch({
-          type: userConstants.GET_ADDRESS_SUCCESS,
-          payload: { address },
-        });
-      }
+      const { userAddress } = res.data;
+      const { address } = userAddress;
+      dispatch({
+        type: userConstants.GET_ADDRESS_SUCCESS,
+        payload: { address },
+      });
     } catch (error) {
       dispatch({
-        type: userConstants.GET_ADDRESS_FAILURE,
-        payload: { error },
+        type: userConstants.ADD_ADDRESS_FAILURE,
+        payload: { error: error.response.data.error },
       });
     }
   };
 };
-export const addAddress = (address) => {
+export const addAddress = (adr) => {
   return async (dispatch) => {
     dispatch({ type: userConstants.ADD_ADDRESS_REQUEST });
-    const res = await axios.post("/user/address/add", { address });
-    if (res.status === 201) {
+    try {
+      const res = await axios.post("/user/address/add", { address: adr });
       const { userAddress } = res.data;
       const { address } = userAddress;
-
       dispatch({
         type: userConstants.ADD_ADDRESS_SUCCESS,
         payload: { address },
       });
-    } else {
+    } catch (error) {
       dispatch({
         type: userConstants.ADD_ADDRESS_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };
 };
-export const updateAddress = (address) => {
+export const updateAddress = (adr) => {
   return async (dispatch) => {
-    dispatch({ type: userConstants.UPDATE_ADDRESS_REQUEST });
-    const res = await axios.put("/user/address/update", { address });
-    if (res.status === 201) {
+    try {
+      dispatch({ type: userConstants.UPDATE_ADDRESS_REQUEST });
+      const res = await axios.put("/user/address/update", { address: adr });
       const { userAddress } = res.data;
       const { address } = userAddress;
       dispatch({
         type: userConstants.UPDATE_ADDRESS_SUCCESS,
         payload: { address },
       });
-    } else {
+    } catch (error) {
       dispatch({
         type: userConstants.UPDATE_ADDRESS_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };

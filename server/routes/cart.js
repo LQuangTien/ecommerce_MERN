@@ -1,8 +1,12 @@
 const express = require("express");
-const router = express.Router();
-const { addItem, getCart, removeCartItems } = require("../controllers/cart");
+
 const { requireSignin } = require("../middlewares");
-router.post("/user/cart/add", requireSignin, addItem);
-router.get("/user/cart", requireSignin, getCart);
-router.post("/user/cart/remove", requireSignin, removeCartItems);
+const { add, get, removeItem } = require("../controllers/cart");
+
+const router = express.Router();
+
+router.get("/user/cart", requireSignin, get);
+router.post("/user/cart/add", requireSignin, add);
+router.post("/user/cart/remove", requireSignin, removeItem);
+
 module.exports = router;

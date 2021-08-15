@@ -1,22 +1,12 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const app = express();
-const env = require("dotenv");
-
-const adminRoutes = require("./routes/admin/auth");
-const initialDataRoutes = require("./routes/admin/initialData");
-const pageRoutes = require("./routes/admin/page");
-const adminOrderRoutes = require("./routes/admin/order");
-
-const authRoutes = require("./routes/auth");
-const categoryRoutes = require("./routes/category");
-const productRoutes = require("./routes/product");
-const cartRoutes = require("./routes/cart");
-const addressRoutes = require("./routes/address");
-const orderRoutes = require("./routes/order");
 const path = require("path");
 const cors = require("cors");
+const env = require("dotenv");
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const routes = require('./routes')
+
+const app = express();
 env.config();
 
 mongoose
@@ -28,21 +18,17 @@ mongoose
   .then(() => {
     console.log("DB connected");
   });
+
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public", express.static(path.join(__dirname, "uploads")));
-app.use("/api", authRoutes);
-app.use("/api", adminRoutes);
-app.use("/api", categoryRoutes);
-app.use("/api", productRoutes);
-app.use("/api", cartRoutes);
-app.use("/api", initialDataRoutes);
-app.use("/api", pageRoutes);
-app.use("/api", addressRoutes);
-app.use("/api", orderRoutes);
-app.use("/api", adminOrderRoutes);
+
+routes.forEach(route => {
+  app.use("/api", route);
+})
+
 app.listen(process.env.PORT, () => {
   console.log("Server is running on port:", process.env.PORT);
 });

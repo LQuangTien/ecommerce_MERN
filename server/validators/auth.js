@@ -1,4 +1,5 @@
 const { check, validationResult } = require("express-validator");
+const { BadRequest } = require("../ulti/Response");
 exports.validateSignup = [
   check("firstName").notEmpty().withMessage("First name is required"),
   check("lastName").notEmpty().withMessage("Last name is required"),
@@ -16,5 +17,5 @@ exports.validateSignin = [
 exports.isAuthValidated = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.array().length <= 0) return next();
-  return res.status(400).json({ error: errors.array()[0].msg });
+  return BadRequest(res, errors.array()[0].msg);
 };

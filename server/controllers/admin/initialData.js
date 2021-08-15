@@ -2,16 +2,17 @@ const Category = require("../../models/category");
 const Product = require("../../models/product");
 const Order = require("../../models/order");
 const Address = require("../../models/address");
+const { Response, ServerError } = require("../../ulti/response");
 const populateCategory = (categories, parentId = null) => {
   const result = [];
   let childCategories;
-  if (parentId === null) {
+  if (!parentId) {
     childCategories = categories.filter(
       (category) => category.parentId === undefined
     );
   } else {
     childCategories = categories.filter(
-      (category) => category.parentId + "" === parentId + ""
+      (category) => category.parentId === parentId.toString()
     );
   }
   for (let category of childCategories) {
@@ -35,17 +36,18 @@ exports.initialData = async (req, res) => {
         .populate({ path: "category", select: "_id name" }),
       Order.find({}).populate("items.productId", "name").lean(),
     ]);
-    const orderWithAddress = await populateAddress(orders)
-    return res.status(200).json({
+    const orderWithAddress = populateAddress(orders);
+    return Response(res, {
       categories: populateCategory(categories),
       products,
       orders: orderWithAddress,
     });
   } catch (error) {
-    return res.status(400).json({ error });
+    return ServerError(res, error.message);
   }
 };
-const populateAddress = async (orders, orderPromises = []) => {
+const populateAddress = async (orders) => {
+  let orderPromises = []
   orders.forEach((order) => {
     const newPromise = new Promise((resolve, reject) => {
       Address.findOne({ "address._id": order.addressId })

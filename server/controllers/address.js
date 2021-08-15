@@ -1,4 +1,5 @@
 const Address = require("../models/address");
+const { ServerError, Create, Update, Get } = require("../ulti/response");
 
 exports.add = (req, res) => {
   const { address } = req.body;
@@ -11,10 +12,11 @@ exports.add = (req, res) => {
     },
     { new: true, upsert: true }
   ).exec((error, userAddress) => {
-    if (error) return res.status(400).json({ error });
-    if (userAddress) return res.status(201).json({ userAddress });
+    if (error) return ServerError(res, error.message);
+    if (userAddress) return Create(res, { userAddress });
   });
 };
+
 exports.update = (req, res) => {
   const { address } = req.body;
   Address.findOneAndUpdate(
@@ -26,13 +28,14 @@ exports.update = (req, res) => {
     },
     { new: true }
   ).exec((error, userAddress) => {
-    if (error) return res.status(400).json({ error });
-    if (userAddress) return res.status(201).json({ userAddress });
+    if (error) return ServerError(res, error.message);
+    if (userAddress) return Update(res, { userAddress });
   });
 };
+
 exports.get = (req, res) => {
   Address.findOne({ user: req.user._id }).exec((error, userAddress) => {
-    if (error) return res.status(400).json({ error });
-    if (userAddress) return res.json({ userAddress });
+    if (error) return ServerError(res, error.message);
+    if (userAddress) return Get(res, { userAddress });
   });
 };

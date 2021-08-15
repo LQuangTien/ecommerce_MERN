@@ -1,8 +1,11 @@
 const express = require("express");
-const router = express.Router();
-const { updateOrder, getCustomerOrders } = require("../../controllers/admin/order");
-const { requireSignin, isAdmin } = require("../../middlewares");
 
-router.put("/order/update", requireSignin, isAdmin, updateOrder);
-router.put("/order/", requireSignin, isAdmin, getCustomerOrders);
+const { requireSignin, isAdmin } = require("../../middlewares");
+const { update, getAll } = require("../../controllers/admin/order");
+
+const router = express.Router();
+
+router.put("/order/update", requireSignin, isAdmin, update);
+router.put("/order/", requireSignin, isAdmin, getAll);
+
 module.exports = router;

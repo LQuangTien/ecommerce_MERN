@@ -1,14 +1,39 @@
 const Cart = require("../models/cart");
+const {
+  ServerError,
+  Create,
+  Response,
+  Delete,
+  Get,
+  NotFound,
+  BadRequest,
+} = require("../ulti/response");
 const runUpdate = (condition, update) => {
   return new Promise((resolve, reject) => {
-    Cart.findOneAndUpdate(condition, update, { upsert: true })
-      .then(() => resolve())
+    Cart.findOneAndUpdate(condition, update, { upsert: true, new: true })
+      .populate("cartItems.product", "_id name price productPictures")
+      .then((res) => resolve(res))
       .catch((err) => reject(err));
   });
 };
-exports.addItem = (req, res) => {
+const createCartItems = (cart) => {
+  let cartItems = {};
+  cart.cartItems.forEach((item, index) => {
+    const { product, quantity } = item;
+    const { _id, name, price, productPictures } = product;
+    cartItems[_id.toString()] = {
+      _id,
+      name,
+      price,
+      quantity,
+      img: productPictures[0].img,
+    };
+  });
+  return cartItems;
+};
+exports.add = (req, res) => {
   Cart.findOne({ user: req.user._id }).exec((error, cart) => {
-    if (error) return res.status(400).json({ error });
+    if (error) return ServerError(res, error.message);
     if (cart) {
       let promises = [];
       req.body.cartItems.forEach((cartItem) => {
@@ -32,60 +57,54 @@ exports.addItem = (req, res) => {
         promises.push(runUpdate(condition, update));
       });
       Promise.all(promises)
-        .then((response) => res.status(201).json({ response }))
-        .catch((error) => res.status(400).json({ error }));
+        .then((cart) => {
+          const cartItems = createCartItems(...cart);
+          return Create(res, { cartItems });
+        })
+        .catch((error) => ServerError(res, error.message));
     } else {
       const newCart = new Cart({
         user: req.user._id,
         cartItems: req.body.cartItems,
       });
       newCart.save((error, cart) => {
-        if (error) return res.status(400).json({ error });
-        return res.status(200).json({ cart });
+        if (error) return ServerError(res, error.message);
+        return Response(res, cart);
       });
     }
   });
 };
-exports.getCart = (req, res) => {
+exports.get = (req, res) => {
   Cart.findOne({ user: req.user._id })
     .populate("cartItems.product", "_id name price productPictures")
     .exec((error, cart) => {
-      if (error) return res.status(400).json({ error });
+      if (error) return ServerError(res, error.message);
       if (cart) {
-        let cartItems = {};
-        cart.cartItems.forEach((item, index) => {
-          const { product, quantity } = item;
-          const { _id, name, price, productPictures } = product;
-          cartItems[_id.toString()] = {
-            _id,
-            name,
-            price,
-            quantity,
-            img: productPictures[0].img,
-          };
-        });
-        return res.json({ cartItems });
+        let cartItems = createCartItems(cart);
+        return Get(res, { cartItems });
       }
+      return BadRequest(res,"Empty cart")
     });
 };
 
-exports.removeCartItems = (req, res) => {
+exports.removeItem = (req, res) => {
   const { productId } = req.body;
-  if (productId) {
-    Cart.findOneAndUpdate(
-      { user: req.user._id },
-      {
-        $pull: {
-          cartItems: {
-            product: productId,
-          },
+  if (!productId) return NotFound(res, productId);
+  Cart.findOneAndUpdate(
+    { user: req.user._id },
+    {
+      $pull: {
+        cartItems: {
+          product: productId,
         },
-      }
-    ).exec((error, cartItems) => {
-      if (error) return res.status(400).json({ error });
-      if (cartItems) {
-        res.status(202).json({ cartItems });
-      }
-    });
-  }
+      },
+    },
+    { new: true }
+  ).populate("cartItems.product", "_id name price productPictures").exec((error, cart) => {
+    if (error) return ServerError(res, error.message);
+    if (cart) {
+      let cartItems = createCartItems(cart);
+      return Delete(res, { cartItems });
+    }
+  });
 };

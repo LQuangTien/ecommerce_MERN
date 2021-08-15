@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const shortid = require("shortid");
+const { Unauthenticated, Unauthorized } = require("../ulti/response");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -10,23 +11,20 @@ const storage = multer.diskStorage({
   },
 });
 exports.upload = multer({ storage });
+
 exports.requireSignin = (req, res, next) => {
-  if (!req.headers.authorization)
-    return res
-      .status(500)
-      .json({ message: "Signin required", error: "Signin required" });
+  if (!req.headers.authorization) return Unauthenticated(res, "Signin required");
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
     req.user = user;
-    next();
+    return next();
   } catch (error) {
-    return res.status(500).json({ message: "Token expired" });
+    return Unauthenticated(res, "Token expired");
   }
 };
 
 exports.isAdmin = (req, res, next) => {
-  if (req.user.role !== "admin")
-    return res.status(400).json({ message: "Access denined" });
-  next();
+  if (req.user.role !== "admin") return Unauthorized(res);
+  return next();
 };

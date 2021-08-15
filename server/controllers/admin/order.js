@@ -1,6 +1,6 @@
 const Order = require("../../models/order");
 
-exports.updateOrder = (req, res) => {
+exports.update = (req, res) => {
   Order.findOneAndUpdate(
     { _id: req.body._id, "process.type": req.body.type },
     {
@@ -16,7 +16,7 @@ exports.updateOrder = (req, res) => {
     if (order) return res.status(201).json({ order });
   });
 };
-exports.getCustomerOrders = async (req, res) => {
+exports.getAll = async (req, res) => {
   const orders = await Order.find({}).populate("items.productId", "name");
   return res.json({ orders });
 };

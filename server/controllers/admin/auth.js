@@ -3,66 +3,38 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec(async (error, user) => {
-    if (user) {
-      return res.status(400).json({
-        message: "Admin already registered",
-      });
-    }
+    if (error) return ServerError(res, error);
+    if (user) return BadRequest(res, "User already registered");
     const { firstName, lastName, email, password } = req.body;
-    const hash_password = await bcrypt.hash(password, 10);
-    const newUser = User({
-      firstName,
-      lastName,
-      email,
-      hash_password,
-      username: Math.random().toString(),
-      role: "admin",
-    });
-    newUser.save((error, data) => {
-      if (error) {
-        return res.status(400).json({
-          message: "Something went wrong",
-        });
-      }
-      if (data) {
-        return res.status(201).json({
-          id: data.id,
-          firstName,
-          lastName,
-          email,
-          username: data.username,
-        });
-      }
-    });
-  });
-};
-exports.signin = (req, res) => {
-  User.findOne({ email: req.body.email }).exec((error, user) => {
-    if (error) return res.status(400).json({ error });
-    if (!user) return res.status(400).json({ messages: "Admin not exist" });
-    if (!user.authenticate(req.body.password)) {
-      return res.status(400).json({ messages: "Wrong password" });
+    try {
+      const hash_password = await bcrypt.hash(password, 10);
+      const newUser = User({
+        firstName,
+        lastName,
+        email,
+        hash_password,
+        username: Math.random().toString(),
+        role: "admin",
+      });
+      newUser.save((error, user) => {
+        if (error) return ServerError(res, error.message);
+        if (user) {
+          const token = jwt.sign(
+            { _id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: ONE_HOUR,
+            }
+          );
+          const { firstName, lastName, email, fullName } = user;
+          return Response(res, {
+            token,
+            user: { firstName, lastName, email, fullName },
+          });
+        }
+      });
+    } catch (error) {
+      return ServerError(res, error.message);
     }
-
-    const token = jwt.sign(
-      { _id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
-    const { _id, firstName, lastName, email, role, fullName } = user;
-    res.cookie("token", token, { expiresIn: "1h" });
-    return res.status(200).json({
-      token,
-      user: { _id, firstName, lastName, email, role, fullName },
-    });
-  });
-};
-
-exports.signout = (req, res) => {
-  res.clearCookie("token");
-  return res.status(200).json({
-    message: "Signout successfully ...!",
   });
 };

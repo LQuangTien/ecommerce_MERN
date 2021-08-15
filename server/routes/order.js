@@ -1,10 +1,12 @@
 const express = require("express");
-const { add, get, getById } = require("../controllers/order");
-const router = express.Router();
-const { requireSignin } = require("../middlewares");
 
-router.get("/user/order/:_id", requireSignin, getById);
+const { requireSignin } = require("../middlewares");
+const { add, get, getById } = require("../controllers/order");
+
+const router = express.Router();
+
 router.get("/user/orders", requireSignin, get);
+router.get("/user/order/:_id", requireSignin, getById);
 router.post("/user/order/add", requireSignin, add);
 
 module.exports = router;

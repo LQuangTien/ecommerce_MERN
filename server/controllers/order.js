@@ -93,5 +93,3 @@ exports.getById = (req, res) => {
     });
 };
 
-// .populate("items.productId", "_id name category productPictures")
-// .populate("category", "name")

@@ -1,7 +1,9 @@
 const express = require("express");
-const { add, get, update } = require("../controllers/address");
-const router = express.Router();
+
 const { requireSignin } = require("../middlewares");
+const { add, get, update } = require("../controllers/address");
+
+const router = express.Router();
 
 router.get("/user/address", requireSignin, get);
 router.post("/user/address/add", requireSignin, add);
