@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import flipkartLogo from "../../images/logo/flipkart.png";
 import goldenStar from "../../images/logo/golden-star.png";
-import { IoIosArrowDown, IoIosCart, IoIosSearch } from "react-icons/io";
-import { Modal, Input, Button, DropdownMenu } from "../UI/Common";
+import kinzy from "../../images/logo/kinzy.jpg";
+import {
+  IoLogoFacebook,
+  IoLogoGoogle,
+  IoLogoInstagram,
+  IoSearchSharp,
+  IoCartOutline,
+} from "react-icons/io5";
+import { DropdownMenu } from "../UI/Common";
+import Modal from "../UI/Modal";
+import Input from "../UI/Input";
+import Button from "../UI/Button";
+import Anchor from "../UI/Anchor";
 import { useDispatch, useSelector } from "react-redux";
-import { login, signout, signup } from "../../actions";
+import { getAllCategory, login, signout, signup } from "../../actions";
 import { Link } from "react-router-dom";
 const Header = (props) => {
-  const [loginModal, setLoginModal] = useState(false);
+  const [signinModal, setSigninModal] = useState(false);
   const [signupModal, setSignupModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,9 +27,13 @@ const Header = (props) => {
   const [lastName, setLastName] = useState("");
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const categoryState = useSelector((state) => state.categories);
+  useEffect(() => {
+    dispatch(getAllCategory());
+  }, []);
   const handleLogin = () => {
     dispatch(login({ email, password }));
-    setLoginModal(false);
+    setSigninModal(false);
   };
   const handleSignUp = () => {
     dispatch(signup({ email, password, firstName, lastName }));
@@ -28,196 +43,234 @@ const Header = (props) => {
     e.preventDefault();
     dispatch(signout());
   };
-  const loggedIn = () => {
-    return (
-      <DropdownMenu
-        menu={<a className="fullname">{auth.user.fullName}</a>}
-        menus={[
-          // { label: "My Profile", href: "", icon: null },
-          // { label: "Flipkart Plus Zone", href: "", icon: null },
-          { label: "Orders", href: "/account/order", icon: null },
-          // { label: "Wishlist", href: "", icon: null },
-          // { label: "Rewards", href: "", icon: null },
-          // { label: "Gift Cards", href: "", icon: null },
-          { label: "Sign out", href: "", icon: null, onClick: handleLogout },
-        ]}
-        firstMenu={
-          <div className="firstmenu">
-            <span>New Customer?</span>
-            <a style={{ color: "#2874f0" }}>Sign Up</a>
-          </div>
-        }
-      />
-    );
-  };
-  const notLoggedIn = () => {
-    return (
-      <DropdownMenu
-        menu={
-          <a className="loginButton" onClick={() => setLoginModal(true)}>
-            Login
-          </a>
-        }
-        menus={[
-          { label: "My Profile", href: "", icon: null },
-          { label: "Flipkart Plus Zone", href: "", icon: null },
-          { label: "Orders", href: "", icon: null },
-          { label: "Wishlist", href: "", icon: null },
-          { label: "Rewards", href: "", icon: null },
-          { label: "Gift Cards", href: "", icon: null },
-        ]}
-        firstMenu={
-          <div className="firstmenu" onClick={() => setSignupModal(true)}>
-            <span>New Customer?</span>
-            <a style={{ color: "#2874f0" }}>Sign Up</a>
-          </div>
-        }
-      />
-    );
-  };
-  return (
-    <div className="header">
-      <div className="subHeader">
-        <div className="logo">
-          <a href="">
-            <img src={flipkartLogo} className="logoimage" alt="" />
-          </a>
-          <a style={{ marginTop: "-10px" }}>
-            <span className="exploreText">Explore</span>
-            <span className="plusText">Plus</span>
-            <img src={goldenStar} className="goldenStar" alt="" />
-          </a>
-        </div>
-        <div
-          style={{
-            padding: "0 10px",
-          }}
-        >
-          <div className="searchInputContainer">
-            <input
-              className="searchInput"
-              placeholder={"search for products, brands and more"}
-            />
-            <div className="searchIconContainer">
-              <IoIosSearch
-                style={{
-                  color: "#2874f0",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="rightMenu">
-          {auth.authenticate ? loggedIn() : notLoggedIn()}
-          <DropdownMenu
-            menu={
-              <a className="more">
-                <span>More</span>
-                <IoIosArrowDown />
-              </a>
-            }
-            menus={[
-              { label: "Notification Preference", href: "", icon: null },
-              { label: "Sell on flipkart", href: "", icon: null },
-              { label: "24x7 Customer Care", href: "", icon: null },
-              { label: "Advertise", href: "", icon: null },
-              { label: "Download App", href: "", icon: null },
-            ]}
+  const renderSigninModal = () => (
+    <Modal
+      visible={signinModal}
+      onClose={() => setSigninModal(false)}
+      title="Sign in"
+    >
+      <div className="row">
+        <div className="col sm-12 md-12 lg-12">
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <div>
-            <Link to="/cart" className="cart">
-              <IoIosCart />
-              <span style={{ margin: "0 10px" }}>Cart</span>
-            </Link>
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16">
+          <Input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16 text-align-right">
+          <Anchor title="Forgot password ?" />
+        </div>
+
+        <div className="col sm-12 md-12 lg-12 mt-16 ">
+          <Button title="SIGN IN" onClick={handleLogin} />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16">
+          <Anchor title="No account? Create one here" />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
+          <p className="socials__label">Connect with Social Networks</p>
+          <div className="socials__icons mt-8">
+            <a
+              href="http://facebook.com"
+              target="_blank"
+              rel="noreferrer"
+              className="socials__icons--facebook"
+            >
+              <IoLogoFacebook />
+            </a>
+            <a
+              href="http://google.vn"
+              target="_blank"
+              rel="noreferrer"
+              className="socials__icons--google"
+            >
+              <IoLogoGoogle />
+            </a>
+            <a
+              href="http://instagram.com"
+              target="_blank"
+              rel="noreferrer"
+              className="socials__icons--instagram"
+            >
+              <IoLogoInstagram />
+            </a>
           </div>
         </div>
       </div>
-
-      <Modal visible={signupModal} onClose={() => setSignupModal(false)}>
-        <div className="authContainer">
-          <div className="row">
-            <div className="leftspace">
-              <h2>Sign up</h2>
-              <p style={{ minWidth: "200px" }}>
-                Welcome to our shopping website and get the best sale at here
-              </p>
+    </Modal>
+  );
+  const renderSignupModal = () => (
+    <Modal
+      visible={signupModal}
+      onClose={() => setSignupModal(false)}
+      title="Sign up"
+    >
+      <div className="row">
+        <div className="col sm-12 md-12 lg-12">
+          <Input
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16">
+          <Input
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16">
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16">
+          <Input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16 ">
+          <Button title="SIGN UP" onClick={handleSignUp} />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16">
+          <Anchor title="Already have an account? Login instead here" />
+        </div>
+        <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
+          <p className="socials__label">Connect with Social Networks</p>
+          <div className="socials__icons mt-8">
+            <a
+              href="http://facebook.com"
+              target="_blank"
+              rel="noreferrer"
+              className="socials__icons--facebook"
+            >
+              <IoLogoFacebook />
+            </a>
+            <a
+              href="http://google.vn"
+              target="_blank"
+              rel="noreferrer"
+              className="socials__icons--google"
+            >
+              <IoLogoGoogle />
+            </a>
+            <a
+              href="http://instagram.com"
+              target="_blank"
+              rel="noreferrer"
+              className="socials__icons--instagram"
+            >
+              <IoLogoInstagram />
+            </a>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+  const renderSignedInHeader = () => (
+    <>
+      <span className="auth__span--not-hover">Hello, {auth.user.fullName}</span>
+      <Link className="auth__span" to="/account/order">
+        Your orders
+      </Link>
+      <span className="auth__span" onClick={handleLogout}>
+        Log out
+      </span>
+    </>
+  );
+  const renderUnSignedInHeader = () => (
+    <>
+      <span className="auth__span" onClick={() => setSigninModal(true)}>
+        Sign in
+      </span>
+      <span className="auth__span" onClick={() => setSignupModal(true)}>
+        Register
+      </span>
+    </>
+  );
+  const renderCategories = (categories) => {
+    return categories.map((category) => (
+      <li key={category.name}>
+        {category.parentId ? (
+          <Link
+            to={`/${category.slug}?categoryId=${category._id}&type=${category.type}`}
+          >
+            {category.name}
+          </Link>
+        ) : (
+          <span>{category.name}</span>
+        )}
+        <ul>
+          {category.children.length > 0 && renderCategories(category.children)}
+        </ul>
+      </li>
+    ));
+  };
+  return (
+    <>
+      <header className="header">
+        <div className="header__top">
+          <div className="grid wide">
+            <div className="auth">
+              {auth.authenticate
+                ? renderSignedInHeader()
+                : renderUnSignedInHeader()}
             </div>
-            <div className="rightspace">
-              <div className="loginInputContainer">
+          </div>
+        </div>
+        <div className="header__middle">
+          <div className="grid wide">
+            <div className="header__middle-container row">
+              <div className="logo col lg-3">
+                <img src={kinzy} alt="" />
+              </div>
+              <div className="search-bar col lg-6">
                 <Input
-                  type="text"
-                  label="Enter First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  className="search-bar__input"
+                  placeholder="Search our item here"
                 />
-                <Input
-                  type="text"
-                  label="Enter Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-                <Input
-                  type="text"
-                  label="Enter Email/Enter Mobile Number"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <Input
-                  type="password"
-                  label="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button
-                  title="Sign Up"
-                  bgColor="#fb641b"
-                  textColor="#ffffff"
-                  style={{ margin: "20px 0" }}
-                  onClick={handleSignUp}
-                />
+                <button className="search-bar__button">
+                  <IoSearchSharp className="search-bar__button-icon" />
+                </button>
+              </div>
+              <div className="cart col lg-3">
+                <div className="cart__icon">
+                  <IoCartOutline />
+                </div>
+                <div className="cart__info">
+                  <p className="cart__info-label">my cart</p>
+                  <span className="cart__info-count">0 items</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </Modal>
-      <Modal visible={loginModal} onClose={() => setLoginModal(false)}>
-        <div className="authContainer">
-          <div className="row">
-            <div className="leftspace">
-              <h2>Login</h2>
-              <p style={{ minWidth: "200px" }}>
-                Get access to your Orders, Wishlist and Recommendations
-              </p>
-            </div>
-            <div className="rightspace">
-              <div className="loginInputContainer">
-                <Input
-                  type="text"
-                  label="Enter Email/Enter Mobile Number"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-
-                <Input
-                  type="password"
-                  label="Enter Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button
-                  title="Login"
-                  bgColor="#fb641b"
-                  textColor="#ffffff"
-                  style={{ margin: "20px 0" }}
-                  onClick={handleLogin}
-                />
-              </div>
-            </div>
+        <div className="header__bottom">
+          <div className="grid wide menuHeader">
+            <ul>
+              {categoryState.categories.length > 0 &&
+                renderCategories(categoryState.categories)}
+            </ul>
           </div>
         </div>
-      </Modal>
-    </div>
+      </header>
+      {renderSigninModal()}
+      {renderSignupModal()}
+    </>
   );
 };
 
