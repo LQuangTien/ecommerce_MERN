@@ -6,6 +6,7 @@ import { IoStar } from "react-icons/io5";
 import "./style.css";
 import { generatePictureUrl } from "../../urlConfig";
 import { Link } from "react-router-dom";
+import formatThousand from "../../utils/formatThousand";
 function ProductPage(props) {
   
   const dispatch = useDispatch();
@@ -51,9 +52,9 @@ function ProductPage(props) {
                         </div>
                         <div className="product__info-price">
                           <div className="product__info-price--current">
-                            {products[key].price}
+                            {formatThousand(products[key].price)}
                           </div>
-                          <div className="product__info-price--old">12000</div>
+                          <div className="product__info-price--old">{formatThousand(12000)}</div>
                         </div>
                       </div>
                       <div className="product__rating">
