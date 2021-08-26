@@ -2,6 +2,15 @@ const Product = require("../models/product");
 const Category = require("../models/category");
 const shortid = require("shortid");
 const slugify = require("slugify");
+const {
+  ServerError,
+  Create,
+  Response,
+  Delete,
+  Get,
+  NotFound,
+  BadRequest,
+} = require("../ulti/response");
 exports.create = (req, res) => {
   const { name, price, description, category, quantity } = req.body;
   let pictures = [];
@@ -21,8 +30,9 @@ exports.create = (req, res) => {
     createdBy: req.user._id,
   });
   product.save((error, product) => {
-    if (error) return res.status(400).json({ error });
-    return res.status(200).json({ product });
+    if (error) return ServerError(res, error.message);
+    if (product) return Get(res, { product });
+    return NotFound(res, "Product");
   });
 };
 exports.getBySlug = (req, res) => {
@@ -30,38 +40,22 @@ exports.getBySlug = (req, res) => {
   Category.findOne({ slug })
     .select("_id")
     .exec((error, category) => {
-      if (error) return res.status(400).json({ error });
-      if (category) {
-        Product.find({ category: category._id }).exec((error, products) => {
-          if (error) return res.status(400).json({ error });
-          if (products.length > 0)
-            return res.status(200).json({
-              products,
-              groupByPrice: {
-                under5k: products.filter((p) => p.price <= 5000),
-                under10k: products.filter(
-                  (p) => p.price > 5000 && p.price <= 10000
-                ),
-                under15k: products.filter(
-                  (p) => p.price > 10000 && p.price <= 15000
-                ),
-                under20k: products.filter(
-                  (p) => p.price > 15000 && p.price <= 20000
-                ),
-                under30k: products.filter(
-                  (p) => p.price > 20000 && p.price <= 30000
-                ),
-              },
-            });
-        });
-      }
+      if (error) return ServerError(res, error.message);
+      if (!category) return NotFound(res, slug);
+
+      Product.find({ category: category._id }).exec((error, products) => {
+        if (error) return ServerError(res, error.message);
+        if (products.length) return Get(res, { products });
+        return NotFound(res, slug);
+      });
     });
 };
 exports.getById = (req, res) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ error: "Params required" });
+  if (!id) return ServerError(res, "Params required");
   Product.findOne({ _id: id }).exec((error, product) => {
-    if (error) return res.status(400).json({ error });
+    if (error) return ServerError(res, error.message);
     if (product) return res.json({ product });
+    return NotFound(res, id);
   });
 };

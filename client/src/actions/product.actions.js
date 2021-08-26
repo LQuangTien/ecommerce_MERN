@@ -2,15 +2,19 @@ import axios from "../helpers/axios";
 import { productConstants } from "./constants";
 export const getBySlug = (slug) => {
   return async (dispatch) => {
-    const res = await axios.get(`products/${slug}`);
-    console.log(res);
-    if (res.status === 200) {
+    try {
+      dispatch({ type: productConstants.GET_PRODUCT_BY_SLUG_REQUEST });
+      const res = await axios.get(`products/${slug}`);
       dispatch({
-        type: productConstants.GET_PRODUCT_BY_SLUG,
+        type: productConstants.GET_PRODUCT_BY_SLUG_SUCCESS,
         payload: res.data,
       });
-    } else {
-      return;
+    } catch (error) {
+      console.log({error})
+      dispatch({
+        type: productConstants.GET_PRODUCT_BY_SLUG_FAILURE,
+        payload: { error: error.response.data.error },
+      });
     }
   };
 };
@@ -52,10 +56,9 @@ export const getProductById = (params) => {
         payload: { productDetails: res.data.product },
       });
     } catch (error) {
-      console.log(error)
       dispatch({
-        tyoe: productConstants.GET_DETAIL_FAILURE,
-        payload: { error: res.data.error },
+        type: productConstants.GET_DETAIL_FAILURE,
+        payload: { error: error.response.data.error },
       });
     }
   };

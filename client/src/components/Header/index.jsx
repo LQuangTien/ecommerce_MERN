@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-import "./style.css";
-import flipkartLogo from "../../images/logo/flipkart.png";
-import goldenStar from "../../images/logo/golden-star.png";
-import kinzy from "../../images/logo/kinzy.jpg";
 import {
-  IoLogoFacebook,
+  IoCartOutline, IoLogoFacebook,
   IoLogoGoogle,
   IoLogoInstagram,
-  IoSearchSharp,
-  IoCartOutline,
+  IoSearchSharp
 } from "react-icons/io5";
-import { DropdownMenu } from "../UI/Common";
-import Modal from "../UI/Modal";
-import Input from "../UI/Input";
-import Button from "../UI/Button";
-import Anchor from "../UI/Anchor";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCategory, login, signout, signup } from "../../actions";
 import { Link } from "react-router-dom";
+import { getAllCategory, login, signout, signup } from "../../actions";
+import kinzy from "../../images/logo/kinzy.jpg";
+import Anchor from "../UI/Anchor";
+import Button from "../UI/Button";
+import Input from "../UI/Input";
+import Modal from "../UI/Modal";
+import "./style.css";
 const Header = (props) => {
   const [signinModal, setSigninModal] = useState(false);
   const [signupModal, setSignupModal] = useState(false);

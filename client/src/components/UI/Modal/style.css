@@ -23,13 +23,12 @@
 .modal__container {
   animation: growth ease 0.2s;
   z-index: 1;
+  width: 40%;
 }
 .modal__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: 400px;
-  max-width: 100%;
   padding: 8px 15px;
 
   color: white;

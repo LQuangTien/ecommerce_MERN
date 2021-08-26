@@ -1,28 +1,76 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getBySlug } from "../../actions";
 import getParams from "../../utils/getParams";
-import Page from "./Page";
-import Store from "./Store";
+import { IoStar } from "react-icons/io5";
 import "./style.css";
+import { generatePictureUrl } from "../../urlConfig";
+import { Link } from "react-router-dom";
 function ProductPage(props) {
-  const rednderProductPage = () => {
-    const { type } = getParams(props.location.search);
-    let content = null;
-    switch (type) {
-      case "store":
-        content = <Store {...props} />;
-        break;
-      case "page":
-        content = <Page {...props} />;
-        break;
-      default:
-        content = null;
-        break;
-    }
-    return content;
-  };
+  
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.products);
+  const slug = props.match.params.slug;
+  // Thiếu render theo thanh search
+  // url sẽ có dạng ?product=noi-dung-tim-kiem
+  // kiem tra neu co ?product thi khong chay getBySlug
+  // Ở server tạo thêm controller query theo thanh tìm kiếm
+  useEffect(() => {
+    dispatch(getBySlug(slug));
+  }, [slug]);
   return (
-    <div>
-      {rednderProductPage()}
+    <div className="banner">
+      <img
+        className="banner__image"
+        src="https://rubiktheme.com/demo/at_kinzy_demo/themes/at_kinzy/assets/img/bg-breadcrumb.jpg"
+        alt=""
+      />
+      <h1 className="banner__slug">{slug}</h1>
+      <div className="product">
+        <div className="grid wide">
+          <div className="row">
+            <div className="col lg-3" style={{ textAlign: "right" }}>
+              Filter
+            </div>
+            <div className="col lg-9">
+              <div className="row">
+                {Object.keys(products).map((key, index) => (
+                  <div className="product__card col lg-2-4">
+                    <Link to={`${slug}/${products[key]._id}`} className="">
+                      <div className="product__image">
+                        <img
+                          src={generatePictureUrl(
+                            products[key].productPictures[0].img
+                          )}
+                          alt=""
+                        />
+                      </div>
+                      <div className="product__info">
+                        <div className="product__info-name">
+                          {products[key].name}
+                        </div>
+                        <div className="product__info-price">
+                          <div className="product__info-price--current">
+                            {products[key].price}
+                          </div>
+                          <div className="product__info-price--old">12000</div>
+                        </div>
+                      </div>
+                      <div className="product__rating">
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

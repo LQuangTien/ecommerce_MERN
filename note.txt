@@ -1,4 +1,8 @@
 Client
- + reset form after signin, signup
- + Switch between signin and signup
- + margin left right when mobile 
+ + reset form after signin, signup 
+ + Switch between signin and signup => Bỏ, tốn tgian
+ + margin left right when mobile => Bỏ, tốn tgian
+ + tìm kiếm trên thanh search
+
+Server 
+ + Tìm kiếm các sản phẩm với tên gần giống như input đưa vô 
