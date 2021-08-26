@@ -7,8 +7,8 @@ import "./style.css";
 import { generatePictureUrl } from "../../urlConfig";
 import { Link } from "react-router-dom";
 import formatThousand from "../../utils/formatThousand";
+import Banner from "../../components/UI/Banner";
 function ProductPage(props) {
-  
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
   const slug = props.match.params.slug;
@@ -20,59 +20,56 @@ function ProductPage(props) {
     dispatch(getBySlug(slug));
   }, [slug]);
   return (
-    <div className="banner">
-      <img
-        className="banner__image"
-        src="https://rubiktheme.com/demo/at_kinzy_demo/themes/at_kinzy/assets/img/bg-breadcrumb.jpg"
-        alt=""
-      />
-      <h1 className="banner__slug">{slug}</h1>
-      <div className="product">
-        <div className="grid wide">
-          <div className="row">
-            <div className="col lg-3" style={{ textAlign: "right" }}>
-              Filter
-            </div>
-            <div className="col lg-9">
-              <div className="row">
-                {Object.keys(products).map((key, index) => (
-                  <div className="product__card col lg-2-4">
-                    <Link to={`${slug}/${products[key]._id}`} className="">
-                      <div className="product__image">
-                        <img
-                          src={generatePictureUrl(
-                            products[key].productPictures[0].img
-                          )}
-                          alt=""
-                        />
+    <>
+    <Banner slug={slug} />
+    <div className="product">
+      <div className="grid wide">
+        <div className="row">
+          <div className="col lg-3" style={{ textAlign: "right" }}>
+            Filter
+          </div>
+          <div className="col lg-9">
+            <div className="row">
+              {Object.keys(products).map((key, index) => (
+                <div className="product__card col lg-2-4">
+                  <Link to={`${slug}/${products[key]._id}`} className="">
+                    <div className="product__image">
+                      <img
+                        src={generatePictureUrl(
+                          products[key].productPictures[0].img
+                        )}
+                        alt=""
+                      />
+                    </div>
+                    <div className="product__info">
+                      <div className="product__info-name">
+                        {products[key].name}
                       </div>
-                      <div className="product__info">
-                        <div className="product__info-name">
-                          {products[key].name}
+                      <div className="product__info-price">
+                        <div className="product__info-price--current">
+                          ${formatThousand(products[key].price)}
                         </div>
-                        <div className="product__info-price">
-                          <div className="product__info-price--current">
-                            {formatThousand(products[key].price)}
-                          </div>
-                          <div className="product__info-price--old">{formatThousand(12000)}</div>
+                        <div className="product__info-price--old">
+                          ${formatThousand(12000)}
                         </div>
                       </div>
-                      <div className="product__rating">
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                      </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+                    </div>
+                    <div className="product__rating">
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                    </div>
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
 

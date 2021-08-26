@@ -53,7 +53,7 @@ exports.getBySlug = (req, res) => {
 exports.getById = (req, res) => {
   const { id } = req.params;
   if (!id) return ServerError(res, "Params required");
-  Product.findOne({ _id: id }).exec((error, product) => {
+  Product.findOne({ _id: id }).populate("category", "name").exec((error, product) => {
     if (error) return ServerError(res, error.message);
     if (product) return res.json({ product });
     return NotFound(res, id);
