@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
-  IoCartOutline, IoLogoFacebook,
+  IoCartOutline,
+  IoLogoFacebook,
   IoLogoGoogle,
   IoLogoInstagram,
-  IoSearchSharp
+  IoSearchSharp,
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllCategory, login, signout, signup } from "../../actions";
+import { getAllCategory, getCart, login, signout, signup } from "../../actions";
 import kinzy from "../../images/logo/kinzy.jpg";
 import Anchor from "../UI/Anchor";
 import Button from "../UI/Button";
@@ -24,8 +25,10 @@ const Header = (props) => {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const categoryState = useSelector((state) => state.categories);
+  const { cartItems } = useSelector((state) => state.cart);
   useEffect(() => {
     dispatch(getAllCategory());
+    dispatch(getCart());
   }, []);
   const handleLogin = () => {
     dispatch(login({ email, password }));
@@ -198,6 +201,13 @@ const Header = (props) => {
       </span>
     </>
   );
+  const getItemQuantity = () => {
+    let sum = 0;
+    Object.keys(cartItems).forEach((key) => {
+      sum += cartItems[key].quantity;
+    });
+    return sum;
+  };
   const renderCategories = (categories) => {
     return categories.map((category) => (
       <li key={category.name}>
@@ -231,9 +241,9 @@ const Header = (props) => {
         <div className="header__middle">
           <div className="grid wide">
             <div className="header__middle-container row">
-              <div className="logo col lg-3">
+              <Link to="/" className="logo col lg-3">
                 <img src={kinzy} alt="" />
-              </div>
+              </Link>
               <div className="search-bar col lg-6">
                 <Input
                   className="search-bar__input"
@@ -243,15 +253,15 @@ const Header = (props) => {
                   <IoSearchSharp className="search-bar__button-icon" />
                 </button>
               </div>
-              <div className="cart col lg-3">
+              <Link to="/cart" className="cart col lg-3">
                 <div className="cart__icon">
                   <IoCartOutline />
                 </div>
                 <div className="cart__info">
                   <p className="cart__info-label">my cart</p>
-                  <span className="cart__info-count">0 items</span>
+                  <span className="cart__info-count">{getItemQuantity() > 1 ? getItemQuantity() + " items" : getItemQuantity() + " item" }</span>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>

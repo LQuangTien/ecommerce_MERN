@@ -117,6 +117,7 @@ svg.search-bar__button-icon {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-decoration: none;
 }
 .cart__icon {
   padding: 1.2rem;
@@ -136,9 +137,11 @@ svg.search-bar__button-icon {
   font-size: 1.6rem;
   font-weight: 500;
   text-transform: uppercase;
+  color: var(--black);
 }
 .cart__info-count {
   font-size: 1.2rem;
+  color: var(--black);
 }
 /* Header middle end */
 .header__bottom {

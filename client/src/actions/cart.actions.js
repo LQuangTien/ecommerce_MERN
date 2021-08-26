@@ -5,6 +5,18 @@ import { cartConstants } from "./constants";
 export const getCart = () => {
   return async (dispatch) => {
     try {
+      const { auth } = store.getState();
+      const cart = localStorage.getItem("cart")
+        ? JSON.parse(localStorage.getItem("cart"))
+        : null;
+      if (!cart) return;
+      if (!auth.authenticate) {
+        dispatch({
+          type: cartConstants.GET_CART_SUCCESS,
+          payload: { cartItems: cart },
+        });
+        return;
+      }
       dispatch({ type: cartConstants.GET_CART_REQUEST });
       const res = await axios.get("/user/cart");
       const { cartItems } = res.data;
