@@ -59,7 +59,7 @@ const ProductDetailsPage = (props) => {
                   <img src={generatePictureUrl(thumb.img)} alt={thumb.img} />
                 ))}
               </div>
-              <Button title="Add to cart" className="detail__btn mt-16"></Button>
+              <Button onClick={handleAddToCart} title="Add to cart" className="detail__btn mt-16"></Button>
             </div>
             <div className="col lg-7 md-7 sm-12 detail">
               <h1 className="detail__name">{product.productDetails.name}</h1>
