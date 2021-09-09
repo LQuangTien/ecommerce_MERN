@@ -3,7 +3,7 @@ import { IoTrash } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, getCart, removeCartItem } from "../../actions/cart.actions";
 import Card from "../../components/UI/Card";
-import { Button } from "../../components/UI/Common";
+import  Button from "../../components/UI/Button";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
 import CartItem from "./components/CartItem";
@@ -93,12 +93,29 @@ function CartPage(props) {
       return totalAmount + cartItems[index].quantity;
     }, 0);
   };
+  const renderCartPrice = () => (
+    <div className="cart__content">
+      <div className="cart__price-row">
+        <p className="cart__price-row-key">{getTotalAmount() ===1 ? '1 item' : `${getTotalAmount()} items` }</p>
+        <p className="cart__price-row-value">${formatThousand(getTotalPrice())}</p>
+      </div>
+      <div className="cart__price-row mt-8">
+        <p className="cart__price-row-label">Ship</p>
+        <p className="cart__price-row-value">$0</p>
+      </div>
+      <div className="cart__price-row mt-32">
+        <p className="cart__price-row-key">Total</p>
+        <p>${formatThousand(getTotalPrice())}</p>
+      </div>
+      <Button  title="Proceed to checkout" className="mt-32"></Button>
+    </div>
+  )
   if (props.isCheckout) {
     return renderCartItems();
   }
   // fsz 22px py 16px
   return (
-    <div className="cartContainer">
+    <div className="cartContainer mt-32">
       <div className="grid wide">
         <div className="row">
           <div className="col lg-8">
@@ -107,14 +124,11 @@ function CartPage(props) {
               {renderCartItems()}
             </div>
           </div>
-          <div className="col lg-4">B</div>
+          <div className="col lg-4">{renderCartPrice()}</div>
         </div>
       </div>
 
-      {/* <PriceDetail
-        totalPrice={getTotalPrice()}
-        totalAmount={getTotalAmount()}
-      /> */}
+     
     </div>
   );
 }

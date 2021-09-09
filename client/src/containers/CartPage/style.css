@@ -84,3 +84,17 @@
   opacity: 0.8;
   transition: color 0.2s;
 }
+
+.cart__price-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--black);
+  font-size: 1.4rem;
+}
+.cart__price-row-key{
+
+}
+.cart__price-row-value{
+
+}
