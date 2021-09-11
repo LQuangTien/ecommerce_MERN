@@ -16,12 +16,6 @@
   justify-content: flex-start;
   align-items: flex-start;
 }
-.step-wrapper{
-  width: calc(100% - 400px);
-  max-width: calc(100% - 400px);
-  margin: 20px 10px;
-
-}
 .checkoutStep {
   box-sizing: border-box;
   background: #fff;
@@ -34,7 +28,7 @@
   padding: 10px 20px;
 }
 .checkoutHeader.active {
-  background: #2874f0;
+  background: var(--primary);
 }
 .checkoutHeader .stepNumber {
   display: inline-block;
@@ -42,7 +36,7 @@
   background: #eee;
   color: #2874f0;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 1.2rem;
   box-sizing: border-box;
   padding: 3px 7px;
 }
@@ -51,7 +45,7 @@
 }
 .stepTitle {
   display: inline-block;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: 500;
   color: #878787;
   margin-left: 15px;
@@ -60,9 +54,8 @@
   color: #fff;
 }
 .info-wrapper {
-  font-size: 1rem;
-  padding: 10px;
-  padding-top: 5px;
+  padding: 1rem;
+  font-size: 1.4rem;
 
 }
 .info-wrapper__container--inline {
@@ -93,6 +86,7 @@
   background-color: rgba(40,116,240,0.1)
 }
 .addressinfo {
+  font-size: 1.4rem;
   padding-left: 15px;
   box-sizing: border-box;
   width: 100%;
@@ -105,7 +99,7 @@
   padding-bottom: 20px;
   font-weight: 600;
   font-family: "Roboto";
-  font-size: 12px;
+  font-size: 1.2rem;
   color: #333;
 }
 .addressType {
@@ -145,3 +139,35 @@
   width: 250px !important;
 }
 
+.cart__content {
+  padding: 1.2rem;
+  border: 1px solid #dfdfdf;
+}
+.cart__item-price{
+  width: 8rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+.cart__item-remove {
+  font-size: 2rem;
+  cursor: pointer;
+}
+.cart__item-remove i{
+  font-weight: 300;
+}
+.cart__item-remove:hover {
+  color: var(--red);
+  opacity: 0.8;
+  transition: color 0.2s;
+}
+
+.cart__price-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--black);
+  font-size: 1.4rem;
+}
+.cart__price-nagivate {
+  text-decoration: none;
+}

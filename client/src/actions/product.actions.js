@@ -10,7 +10,6 @@ export const getBySlug = (slug) => {
         payload: res.data,
       });
     } catch (error) {
-      console.log({error})
       dispatch({
         type: productConstants.GET_PRODUCT_BY_SLUG_FAILURE,
         payload: { error: error.response.data.error },
@@ -51,7 +50,6 @@ export const getProductById = (params) => {
     try {
       const { id } = params;
       res = await axios.get(`product/${id}`);
-      console.log(res)
       dispatch({
         type: productConstants.GET_DETAIL_SUCCESS,
         payload: { productDetails: res.data.product },

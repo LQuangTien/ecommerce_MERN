@@ -33,7 +33,7 @@ function CartPage(props) {
   const renderCartItems = () => {
     return (
       <div className="cart__content">
-        {Object.keys(cartItems).map((key, index) => (
+        {cartItems && Object.keys(cartItems).map((key, index) => (
           <div className="cart__item">
             <div className="cart__item-image-container">
               <img
@@ -85,11 +85,13 @@ function CartPage(props) {
     );
   };
   const getTotalPrice = () => {
+    if(!cartItems) return 0;
     return Object.keys(cartItems).reduce((totalPrice, index) => {
       return totalPrice + cartItems[index].quantity * cartItems[index].price;
     }, 0);
   };
   const getTotalAmount = () => {
+    if(!cartItems) return 0;
     return Object.keys(cartItems).reduce((totalAmount, index) => {
       return totalAmount + cartItems[index].quantity;
     }, 0);
@@ -98,7 +100,7 @@ function CartPage(props) {
     <div className="cart__content">
       <div className="cart__price-row">
         <p className="cart__price-row-key">
-          {getTotalAmount() === 1 ? "1 item" : `${getTotalAmount()} items`}
+          {getTotalAmount() <= 1 ? `${getTotalAmount()} item` : `${getTotalAmount()} items`}
         </p>
         <p className="cart__price-row-value">
           ${formatThousand(getTotalPrice())}

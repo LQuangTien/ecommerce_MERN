@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAddress, updateAddress } from "../../../../actions";
-import { Button, Input } from "../../../../components/UI/Common";
+import Button from "../../../../components/UI/Button";
 import "../../style.css";
 function AddressForm(props) {
   const { adr, handleUpdate } = props;
@@ -21,7 +21,6 @@ function AddressForm(props) {
   const dispatch = useDispatch();
   const onSubmit = (e) => {
     if (handleUpdate) {
-      console.log("aaaa")
       const addressInfo = {
         name,
         phone,
@@ -61,87 +60,80 @@ function AddressForm(props) {
         width: props.withoutHeader && "100%",
       }}
     >
-      <div className="flexRow">
-        <div className="inputContainer">
-          <Input
-            label="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+      <div className="address__input-container">
+        <input
+          class="address__input"
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </div>
-      <div className="flexRow">
-        <div className="inputContainer">
-          <Input
-            label="10-digit phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </div>
-        <div className="inputContainer">
-          <Input
-            label="Alternative phone number"
-            value={alternativePhone}
-            onChange={(e) => setAlternativePhone(e.target.value)}
-          />
-        </div>
+      <div className="address__input-container">
+        <input
+          class="address__input"
+          label="10-digit phone number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <input
+          class="address__input"
+          label="Alternative phone number"
+          value={alternativePhone}
+          onChange={(e) => setAlternativePhone(e.target.value)}
+        />
       </div>
-      <div className="flexRow">
-        <div className="inputContainer">
-          <Input
-            label="Address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-        </div>
+      <div className="address__input-container">
+        <input
+          class="address__input"
+          label="Address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
       </div>
-      <div className="flexRow">
-        <div className="inputContainer">
-          <Input
-            label="Ward"
-            value={ward}
-            onChange={(e) => setWard(e.target.value)}
-          />
-        </div>
-        <div className="inputContainer">
-          <Input
-            label="District"
-            value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-          />
-        </div>
-        <div className="inputContainer">
-          <Input
-            label="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-        </div>
+      <div className="address__input-container">
+        <input
+          class="address__input"
+          label="Ward"
+          value={ward}
+          onChange={(e) => setWard(e.target.value)}
+        />
+        <input
+          class="address__input"
+          label="District"
+          value={district}
+          onChange={(e) => setDistrict(e.target.value)}
+        />
+        <input
+          class="address__input"
+          label="City"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        />
       </div>
       <div>
         <label>Type: </label>
-        <div className="flexRow">
+        <div className="">
           <div>
             <input
               type="radio"
-              onChange={() => setType("home")}
+              onChange={() => setType("Home")}
               name="type"
-              value="home"
+              value="Home"
             />
             <span>Home</span>
           </div>
           <div>
             <input
               type="radio"
-              onChange={() => setType("work")}
+              onChange={() => setType("Work")}
               name="type"
-              value="work"
+              value="Work"
             />
             <span>Work</span>
           </div>
         </div>
       </div>
-      <div className="flexRow">
+      <div className="">
         <Button
           title={props.withoutHeader ? "SAVE" : "SAVE AND DELIVERY HERE"}
           onClick={props.withoutHeader ? onSave : onSubmit}

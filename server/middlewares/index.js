@@ -17,10 +17,12 @@ exports.requireSignin = (req, res, next) => {
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
+    if (user.exp < Date.now()) return Unauthenticated(res, "Token expired");
+    
     req.user = user;
     return next();
   } catch (error) {
-    return Unauthenticated(res, "Token expired");
+    return Unauthenticated(res, "Invalid Token");
   }
 };
 

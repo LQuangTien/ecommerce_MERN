@@ -12,7 +12,6 @@ const initState = {
 };
 
 const userReducer = (state = initState, action) => {
-  console.log({ actionowuser: action });
   switch (action.type) {
     case userConstants.GET_ADDRESS_REQUEST:
       state = {

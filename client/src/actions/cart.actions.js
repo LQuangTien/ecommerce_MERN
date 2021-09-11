@@ -8,8 +8,7 @@ export const getCart = () => {
       const { auth } = store.getState();
       const cart = localStorage.getItem("cart")
         ? JSON.parse(localStorage.getItem("cart"))
-        : null;
-      if (!cart) return;
+        : {};
       if (!auth.authenticate) {
         dispatch({
           type: cartConstants.GET_CART_SUCCESS,
@@ -17,6 +16,7 @@ export const getCart = () => {
         });
         return;
       }
+      
       dispatch({ type: cartConstants.GET_CART_REQUEST });
       const res = await axios.get("/user/cart");
       const { cartItems } = res.data;
@@ -82,8 +82,7 @@ export const updateCart = () => {
     const { auth } = store.getState();
     const cart = localStorage.getItem("cart")
       ? JSON.parse(localStorage.getItem("cart"))
-      : null;
-    if (!cart) return;
+      : {};
     if (!auth.authenticate) {
       dispatch({
         type: cartConstants.ADD_TO_CART_SUCCESS,
@@ -91,12 +90,14 @@ export const updateCart = () => {
       });
       return;
     }
-    localStorage.removeItem("cart");
+    if (!cart) return;
     if (Object.keys(cart).length <= 0) return;
+    localStorage.removeItem("cart");
+
     const items = Object.keys(cart).map((key) => {
       return {
-        quantity: items[key].quantity,
-        product: items[key]._id,
+        quantity: cart[key].quantity,
+        product: cart[key]._id,
       };
     });
     try {

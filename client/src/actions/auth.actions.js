@@ -36,6 +36,7 @@ export const isUserLoggedIn = () => {
         type: authConstants.LOGIN_FAILURE,
         payload: { error: "Fail to login" },
       });
+      return;
     }
   };
 };
@@ -44,11 +45,11 @@ export const signout = () => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGOUT_REQUEST });
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      dispatch({ type: authConstants.LOGOUT_SUCCESS });
-      dispatch({ type: cartConstants.RESET_CART });
-      dispatch({ type: userConstants.RESET_USER });
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    dispatch({ type: authConstants.LOGOUT_SUCCESS });
+    dispatch({ type: cartConstants.RESET_CART });
+    dispatch({ type: userConstants.RESET_USER });
   };
 };
 

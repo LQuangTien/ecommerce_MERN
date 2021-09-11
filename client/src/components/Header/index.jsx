@@ -28,8 +28,10 @@ const Header = (props) => {
   const { cartItems } = useSelector((state) => state.cart);
   useEffect(() => {
     dispatch(getAllCategory());
-    dispatch(getCart());
   }, []);
+  useEffect(() => {
+    dispatch(getCart());
+  }, [auth.authenticate]);
   const handleLogin = () => {
     dispatch(login({ email, password }));
     setSigninModal(false);
@@ -203,6 +205,7 @@ const Header = (props) => {
   );
   const getItemQuantity = () => {
     let sum = 0;
+    if(!cartItems) return 0;
     Object.keys(cartItems).forEach((key) => {
       sum += cartItems[key].quantity;
     });
@@ -259,7 +262,11 @@ const Header = (props) => {
                 </div>
                 <div className="cart__info">
                   <p className="cart__info-label">my cart</p>
-                  <span className="cart__info-count">{getItemQuantity() > 1 ? getItemQuantity() + " items" : getItemQuantity() + " item" }</span>
+                  <span className="cart__info-count">
+                    {getItemQuantity() > 1
+                      ? getItemQuantity() + " items"
+                      : getItemQuantity() + " item"}
+                  </span>
                 </div>
               </Link>
             </div>

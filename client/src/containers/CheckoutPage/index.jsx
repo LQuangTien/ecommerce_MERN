@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getCart, getAddress, addOrder } from "../../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
+import { addOrder, getAddress } from "../../actions";
+import Anchor from "../../components/UI/Anchor";
+import Button from "../../components/UI/Button";
 import Card from "../../components/UI/Card";
-import { Button, Anchor } from "../../components/UI/Common";
+import formatThousand from "../../utils/formatThousand";
 import CartPage from "../CartPage";
-import PriceDetail from "../CartPage/components/PriceDetail";
 import Address from "./components/Address";
 import AddressForm from "./components/AddressForm";
+
 const Step = (props) => (
   <div className="checkoutStep">
     <div
@@ -36,14 +39,16 @@ function CheckoutPage() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [cartItems, setCartItems] = useState(cart.cartItems);
   const dispatch = useDispatch();
-  useEffect(() => {
-    setCartItems(cart.cartItems);
-  }, [cart.cartItems]);
+  
+
   useEffect(() => {
     if (auth.authenticate) {
       dispatch(getAddress());
     }
   }, [auth.authenticate]);
+  useEffect(() => {
+    setCartItems(cart.cartItems);
+  }, [cart.cartItems]);
   useEffect(() => {
     const mappedAddress = user.address.map((adr) => ({
       ...adr,
@@ -53,6 +58,8 @@ function CheckoutPage() {
     setAddress(mappedAddress);
   }, [user.address]);
 
+  if(!auth.authenticate)  return <Redirect to="/"/> 
+  
   const selectAddress = (id) => {
     const mappedAddress = address.map((adr) =>
       adr._id == id ? { ...adr, selected: true } : { ...adr, selected: false }
@@ -109,7 +116,6 @@ function CheckoutPage() {
   };
   const getTotalPrice = () => {
     if (cartItems) {
-      console.log(cartItems);
       const result = Object.keys(cartItems).reduce((totalPrice, index) => {
         return totalPrice + cartItems[index].quantity * cartItems[index].price;
       }, 0);
@@ -121,12 +127,39 @@ function CheckoutPage() {
       return totalAmount + cartItems[index].quantity;
     }, 0);
   };
+  const renderCartPrice = () => (
+    <div className="cart__content">
+      <div className="cart__price-row">
+        <p className="cart__price-row-key">
+          {getTotalAmount() === 1 ? "1 item" : `${getTotalAmount()} items`}
+        </p>
+        <p className="cart__price-row-value">
+          ${formatThousand(getTotalPrice())}
+        </p>
+      </div>
+      <div className="cart__price-row mt-8">
+        <p className="cart__price-row-label">Ship</p>
+        <p className="cart__price-row-value">$0</p>
+      </div>
+      <div className="cart__price-row mt-32">
+        <p className="cart__price-row-key">Total</p>
+        <p>${formatThousand(getTotalPrice())}</p>
+      </div>
+      <Link to="/checkout" className="cart__price-nagivate">
+        <Button title="Proceed to checkout" className="mt-32"></Button>
+      </Link>
+    </div>
+  );
+
   if (isCompleteOrder) {
     return <div>Thank</div>;
   }
+
   return (
     <div className="checkoutContainer">
-      <div className="step-wrapper">
+      <div className="grid wide">
+        <div className="row">
+          <div className="col lg-8"><div className="step-wrapper">
         <Step
           stepNumber="1"
           title="LOGIN"
@@ -251,12 +284,13 @@ function CheckoutPage() {
             )
           }
         />
+      </div></div>
+          <div className="col lg-4">{renderCartPrice()}</div>
+        </div>
       </div>
+      
 
-      <PriceDetail
-        totalPrice={getTotalPrice()}
-        totalAmount={getTotalAmount()}
-      />
+      
     </div>
   );
 }
