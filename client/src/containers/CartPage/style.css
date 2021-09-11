@@ -92,9 +92,6 @@
   color: var(--black);
   font-size: 1.4rem;
 }
-.cart__price-row-key{
-
-}
-.cart__price-row-value{
-
+.cart__price-nagivate {
+  text-decoration: none;
 }

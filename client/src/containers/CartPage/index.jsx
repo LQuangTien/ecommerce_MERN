@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { IoTrash } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { addToCart, getCart, removeCartItem } from "../../actions/cart.actions";
-import Card from "../../components/UI/Card";
-import  Button from "../../components/UI/Button";
+import Button from "../../components/UI/Button";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
-import CartItem from "./components/CartItem";
-import PriceDetail from "./components/PriceDetail";
 import "./style.css";
 function CartPage(props) {
   const cart = useSelector((state) => state.cart);
@@ -47,7 +45,10 @@ function CartPage(props) {
             <div className="cart__item-name">{cartItems[key].name}</div>
             <div className="cart__item-quantity">
               <button
-                className={`cart__item-quantity-button ${cartItems[key].quantity <= 1 && 'cart__item-quantity-button--disabled' }`}
+                className={`cart__item-quantity-button ${
+                  cartItems[key].quantity <= 1 &&
+                  "cart__item-quantity-button--disabled"
+                }`}
                 onClick={() =>
                   handleDecreaseQuantity(
                     cartItems[key]._id,
@@ -96,8 +97,12 @@ function CartPage(props) {
   const renderCartPrice = () => (
     <div className="cart__content">
       <div className="cart__price-row">
-        <p className="cart__price-row-key">{getTotalAmount() ===1 ? '1 item' : `${getTotalAmount()} items` }</p>
-        <p className="cart__price-row-value">${formatThousand(getTotalPrice())}</p>
+        <p className="cart__price-row-key">
+          {getTotalAmount() === 1 ? "1 item" : `${getTotalAmount()} items`}
+        </p>
+        <p className="cart__price-row-value">
+          ${formatThousand(getTotalPrice())}
+        </p>
       </div>
       <div className="cart__price-row mt-8">
         <p className="cart__price-row-label">Ship</p>
@@ -107,9 +112,11 @@ function CartPage(props) {
         <p className="cart__price-row-key">Total</p>
         <p>${formatThousand(getTotalPrice())}</p>
       </div>
-      <Button  title="Proceed to checkout" className="mt-32"></Button>
+      <Link to="/checkout" className="cart__price-nagivate">
+        <Button title="Proceed to checkout" className="mt-32"></Button>
+      </Link>
     </div>
-  )
+  );
   if (props.isCheckout) {
     return renderCartItems();
   }
@@ -127,20 +134,7 @@ function CartPage(props) {
           <div className="col lg-4">{renderCartPrice()}</div>
         </div>
       </div>
-
-     
     </div>
   );
-}
-// Go to checkout
-{
-  /* <Button  
-            title="Place Order"
-            style={{ width: "250px" }}
-            onClick={
-              Object.keys(cartItems).length > 0 &&
-              (() => props.history.push("/checkout"))
-            }
-          /> */
 }
 export default CartPage;

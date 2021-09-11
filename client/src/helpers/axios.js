@@ -15,6 +15,9 @@ axiosInstance.interceptors.request.use((req) => {
   return req;
 });
 axiosInstance.interceptors.response.use((res) => {
+  if(res.status === 401){
+    
+  }
   return res;
 });
 export default axiosInstance;
