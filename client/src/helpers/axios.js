@@ -23,5 +23,6 @@ axiosInstance.interceptors.response.use((res) => {
     axios.defaults.headers.common["Authorization"] = ""
     store.dispatch(signout());
   }
+  return Promise.reject(error);
 });
 export default axiosInstance;

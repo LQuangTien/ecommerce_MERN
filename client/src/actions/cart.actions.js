@@ -25,6 +25,7 @@ export const getCart = () => {
         payload: { cartItems },
       });
     } catch (error) {
+      console.log({error: error.response})
       dispatch({
         type: cartConstants.GET_CART_FAILURE,
         payload: { error: error.response.data.error },

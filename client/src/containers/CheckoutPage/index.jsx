@@ -58,8 +58,6 @@ function CheckoutPage() {
     setAddress(mappedAddress);
   }, [user.address]);
 
-  if(!auth.authenticate)  return <Redirect to="/"/> 
-  
   const selectAddress = (id) => {
     const mappedAddress = address.map((adr) =>
       adr._id == id ? { ...adr, selected: true } : { ...adr, selected: false }
@@ -275,6 +273,7 @@ function CheckoutPage() {
                 </div>
                 <div className="info-wrapper__container">
                   <Button
+                    black
                     title="CONFIRM PAYMENT"
                     className="payment-btn"
                     onClick={handleConfirmPayment}
