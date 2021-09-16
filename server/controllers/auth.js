@@ -51,7 +51,7 @@ exports.signin = (req, res) => {
     if (!isAuthen) return BadRequest(res, "Wrong password");
 
     const token = jwt.sign(
-      { _id: user._id, role: user.role, exp: Date.now() + ONE_HOUR/4  },
+      { _id: user._id, role: user.role, exp: Date.now() + ONE_HOUR*24  },
       process.env.JWT_SECRET,
     );
     const { firstName, lastName, email, fullName } = user;

@@ -1,33 +1,40 @@
-.order-container {
-  width: 90%;
-  margin: 15px auto;
-  padding: 10px 20px;
-
+.history-table-wrapper {
+  padding: 2rem;
+  font-size: 1.4rem;
   background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
-.orderCard {
-  box-sizing: border-box;
-  margin: 10px auto;
-
-  display: flex;
-  /* justify-content: space-between; */
-  align-items: center;
-
-  text-decoration: none;
-  color: inherit;
-}
-.order-container:hover {
-  box-shadow: 0 0 4px 2px #cecece;
-  transform: scale(1.002);
-  transition: all 0.2s ease-in-out;
-}
-.orderCard__img-container {
-  width: 120px;
-  height: 120px;
-}
-.orderCard__img-container img {
+.history-table {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  margin-top: 1.2rem;
+  text-align: left;
+  border: 1px solid #ddd;
+  border-spacing: 0;
 }
+.history-table td,
+.history-table th { 
+  padding: 1.2rem;
+  color: #888;
+}
+.history-table__heading {
+}
+.history-table__heading-row th {
+  font-weight: 500;
+  background-color: #f6f6f6;
+}
+.history-table__body {
+}
+.history-table__body-row td {
+  background-color: #f2f2f2;
+}
+.history-table-link a {
+  color: #111;
+  text-decoration: none;
+}
+.history-table-link a:hover {
+  color: var(--primary);
+  transition: color 0.2s;
+}
+.uppercase-first-letter::first-letter {
+  text-transform: uppercase;
+ }

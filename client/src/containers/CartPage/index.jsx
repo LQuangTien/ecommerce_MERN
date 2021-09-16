@@ -114,7 +114,7 @@ function CartPage(props) {
         <p className="cart__price-row-key">Total</p>
         <p>${formatThousand(getTotalPrice())}</p>
       </div>
-      <Link to="/checkout" className="cart__price-nagivate">
+      <Link to={getTotalAmount() !== 0 ? "/checkout" : "/"} className="cart__price-nagivate">
         <Button black title="Proceed to checkout" className="mt-32"></Button>
       </Link>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAddress, updateAddress } from "../../../../actions";
 import Button from "../../../../components/UI/Button";
-import "../../style.css";
+import "./style.css";
 function AddressForm(props) {
   const { adr, handleUpdate } = props;
   const [name, setName] = useState(adr ? adr.name : "");
@@ -60,84 +60,101 @@ function AddressForm(props) {
         width: props.withoutHeader && "100%",
       }}
     >
-      <div className="address__input-container">
-        <input
-          class="address__input"
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      <div className="row">
+        <div className="col lg-12">
+          <input
+            className="address__input"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
       </div>
-      <div className="address__input-container">
-        <input
-          class="address__input"
-          label="10-digit phone number"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <input
-          class="address__input"
-          label="Alternative phone number"
-          value={alternativePhone}
-          onChange={(e) => setAlternativePhone(e.target.value)}
-        />
+      <div className="row">
+        <div className="col lg-6">
+          <input
+            className="address__input"
+            placeholder="10-digit phone number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        </div>
+        <div className="col lg-6">
+          <input
+            className="address__input"
+            placeholder="Alternative phone number"
+            value={alternativePhone}
+            onChange={(e) => setAlternativePhone(e.target.value)}
+          />
+        </div>
       </div>
-      <div className="address__input-container">
-        <input
-          class="address__input"
-          label="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
+      <div className="row">
+        <div className="col lg-12">
+          <input
+            className="address__input"
+            placeholder="Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+        </div>
       </div>
-      <div className="address__input-container">
-        <input
-          class="address__input"
-          label="Ward"
-          value={ward}
-          onChange={(e) => setWard(e.target.value)}
-        />
-        <input
-          class="address__input"
-          label="District"
-          value={district}
-          onChange={(e) => setDistrict(e.target.value)}
-        />
-        <input
-          class="address__input"
-          label="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
+      <div className="row">
+        <div className="col lg-4">
+          <input
+            className="address__input"
+            placeholder="Ward"
+            value={ward}
+            onChange={(e) => setWard(e.target.value)}
+          />
+        </div>
+        <div className="col lg-4">
+          <input
+            className="address__input"
+            placeholder="District"
+            value={district}
+            onChange={(e) => setDistrict(e.target.value)}
+          />
+        </div>
+        <div className="col lg-4">
+          <input
+            className="address__input"
+            placeholder="City"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+        </div>
       </div>
       <div>
-        <label>Type: </label>
-        <div className="">
-          <div>
+        <div className="address__type">
+          <span className="address__type-title">Type: </span>
+          <label for="home">
             <input
               type="radio"
               onChange={() => setType("Home")}
               name="type"
               value="Home"
+              id="home"
             />
-            <span>Home</span>
-          </div>
-          <div>
+            <span className="address__type-span">Home</span>
+          </label>
+
+          <label for="work">
             <input
               type="radio"
               onChange={() => setType("Work")}
               name="type"
               value="Work"
+              id="work"
             />
-            <span>Work</span>
-          </div>
+            <span className="address__type-span">Work</span>
+          </label>
         </div>
       </div>
       <div className="">
         <Button
           title={props.withoutHeader ? "SAVE" : "SAVE AND DELIVERY HERE"}
           onClick={props.withoutHeader ? onSave : onSubmit}
-          style={{ margin: "20px 0", width: "250px" }}
+          className="address__btn"
         />
       </div>
     </div>

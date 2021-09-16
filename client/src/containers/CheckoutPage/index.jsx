@@ -150,7 +150,7 @@ function CheckoutPage() {
   );
 
   if (isCompleteOrder) {
-    return <div>Thank</div>;
+    return <Redirect to="/" />;
   }
 
   return (
