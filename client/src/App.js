@@ -37,7 +37,7 @@ function App() {
             <PrivateRoute path="/checkout" isAuthenticated={user}>
               <CheckoutPage />
             </PrivateRoute>
-            <PrivateRoute path="/account/order/:_id" isAuthenticated={user}>
+            <PrivateRoute exact path="/account/order/:_id" isAuthenticated={user}>
               <OrderDetailPage />
             </PrivateRoute>
             <PrivateRoute path="/account/order" isAuthenticated={user}>

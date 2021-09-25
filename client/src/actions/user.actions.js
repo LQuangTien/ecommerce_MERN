@@ -100,7 +100,7 @@ export const getOrderDetail = (_id) => {
   return async (dispatch) => {
     try {
       dispatch({ type: userConstants.GET_ORDER_DETAIL_REQUEST });
-      const res = await axios.get(`/user/orders/${_id}`);
+      const res = await axios.get(`/user/order/${_id}`);
       if (res.status === 200) {
         const { order } = res.data;
         dispatch({

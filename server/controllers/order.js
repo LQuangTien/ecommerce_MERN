@@ -81,7 +81,7 @@ exports.get = (req, res) => {
 exports.getById = (req, res) => {
   const { _id } = req.params;
   Order.findOne({ _id })
-    .populate("items.poductId", "_id name productPictures")
+    .populate("items.productId", "_id name productPictures")
     .lean()
     .exec((error, order) => {
       if (error) return ServerError(res, error);

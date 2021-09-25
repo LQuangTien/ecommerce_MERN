@@ -6,3 +6,6 @@ Client
 
 Server 
  + Tìm kiếm các sản phẩm với tên gần giống như input đưa vô 
+ + Tìm kiếm chi tiết 1 hóa đơn, chỉ có user của hóa đơn đó mới xem được hóa đơn đó. 
+    User khác không đươc xem.
+    BE kiểm tra user có sỡ hữu hóa đơn đó không => nếu không phải thì return Unauthorize

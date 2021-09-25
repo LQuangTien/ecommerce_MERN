@@ -8,11 +8,12 @@
   width: 100%;
   margin-top: 1.2rem;
   text-align: left;
-  border: 1px solid #ddd;
+  border-collapse: collapse;
   border-spacing: 0;
 }
 .history-table td,
 .history-table th { 
+  border: 1px solid #ddd;
   padding: 1.2rem;
   color: #888;
 }
