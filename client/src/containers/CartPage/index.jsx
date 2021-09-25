@@ -19,7 +19,7 @@ function CartPage(props) {
     if (auth.authenticate) {
       dispatch(getCart());
     }
-  }, [auth.authenticate]);
+  }, [auth.authenticate, dispatch]);
   const handleIncreaseQuantity = (id, quantity) => {
     dispatch(addToCart(cartItems[id]));
   };
@@ -33,65 +33,67 @@ function CartPage(props) {
   const renderCartItems = () => {
     return (
       <div className="cart__content">
-        {cartItems && Object.keys(cartItems).map((key, index) => (
-          <div className="cart__item">
-            <div className="cart__item-image-container">
-              <img
-                src={generatePictureUrl(cartItems[key].img)}
-                alt=""
-                className="cart__item-image"
-              />
-            </div>
-            <div className="cart__item-name">{cartItems[key].name}</div>
-            <div className="cart__item-quantity">
-              <button
-                className={`cart__item-quantity-button ${
-                  cartItems[key].quantity <= 1 &&
-                  "cart__item-quantity-button--disabled"
-                }`}
-                onClick={() =>
-                  handleDecreaseQuantity(
-                    cartItems[key]._id,
-                    cartItems[key].quantity
-                  )
-                }
+        {cartItems &&
+          Object.keys(cartItems).map((key, index) => (
+            <div className="cart__item">
+              <div className="cart__item-image-container">
+                <img
+                  src={generatePictureUrl(cartItems[key].img)}
+                  alt=""
+                  className="cart__item-image"
+                />
+              </div>
+              <div className="cart__item-name">{cartItems[key].name}</div>
+              <div className="cart__item-quantity">
+                <button
+                  className={`cart__item-quantity-button ${
+                    cartItems[key].quantity <= 1 &&
+                    "cart__item-quantity-button--disabled"
+                  }`}
+                  onClick={() =>
+                    handleDecreaseQuantity(
+                      cartItems[key]._id,
+                      cartItems[key].quantity
+                    )
+                  }
+                >
+                  -
+                </button>
+                <input
+                  className="cart__item-quantity-input"
+                  value={cartItems[key].quantity}
+                  readOnly
+                />
+                <button
+                  className="cart__item-quantity-button"
+                  onClick={() => handleIncreaseQuantity(cartItems[key]._id)}
+                >
+                  +
+                </button>
+              </div>
+              <p className="cart__item-price">
+                $
+                {formatThousand(cartItems[key].quantity * cartItems[key].price)}
+              </p>
+              <div
+                className="cart__item-remove"
+                onClick={() => handleRemoveItem(cartItems[key]._id)}
               >
-                -
-              </button>
-              <input
-                className="cart__item-quantity-input"
-                value={cartItems[key].quantity}
-                readOnly
-              />
-              <button
-                className="cart__item-quantity-button"
-                onClick={() => handleIncreaseQuantity(cartItems[key]._id)}
-              >
-                +
-              </button>
+                <IoTrash />
+              </div>
             </div>
-            <p className="cart__item-price">
-              ${formatThousand(cartItems[key].quantity * cartItems[key].price)}
-            </p>
-            <div
-              className="cart__item-remove"
-              onClick={() => handleRemoveItem(cartItems[key]._id)}
-            >
-              <IoTrash />
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
     );
   };
   const getTotalPrice = () => {
-    if(!cartItems) return 0;
+    if (!cartItems) return 0;
     return Object.keys(cartItems).reduce((totalPrice, index) => {
       return totalPrice + cartItems[index].quantity * cartItems[index].price;
     }, 0);
   };
   const getTotalAmount = () => {
-    if(!cartItems) return 0;
+    if (!cartItems) return 0;
     return Object.keys(cartItems).reduce((totalAmount, index) => {
       return totalAmount + cartItems[index].quantity;
     }, 0);
@@ -100,7 +102,9 @@ function CartPage(props) {
     <div className="cart__content">
       <div className="cart__price-row">
         <p className="cart__price-row-key">
-          {getTotalAmount() <= 1 ? `${getTotalAmount()} item` : `${getTotalAmount()} items`}
+          {getTotalAmount() <= 1
+            ? `${getTotalAmount()} item`
+            : `${getTotalAmount()} items`}
         </p>
         <p className="cart__price-row-value">
           ${formatThousand(getTotalPrice())}
@@ -114,7 +118,10 @@ function CartPage(props) {
         <p className="cart__price-row-key">Total</p>
         <p>${formatThousand(getTotalPrice())}</p>
       </div>
-      <Link to={getTotalAmount() !== 0 ? "/checkout" : "/"} className="cart__price-nagivate">
+      <Link
+        to={getTotalAmount() !== 0 ? "/checkout" : "/"}
+        className="cart__price-nagivate"
+      >
         <Button black title="Proceed to checkout" className="mt-32"></Button>
       </Link>
     </div>

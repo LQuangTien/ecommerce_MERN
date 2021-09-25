@@ -1,16 +1,13 @@
 import React, { useEffect } from "react";
+import { IoChatbubblesOutline, IoStar } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductById } from "../../actions";
-import { IoIosArrowForward, IoIosStar, IoMdCart } from "react-icons/io";
-import { BiRupee } from "react-icons/bi";
-import { AiFillThunderbolt } from "react-icons/ai";
-import Button from "../../components/UI/Button";
-import "./style.css";
-import { generatePictureUrl } from "../../urlConfig";
 import { addToCart } from "../../actions/cart.actions";
-import { IoStar, IoChatbubblesOutline } from "react-icons/io5";
-import formatThousand from "../../utils/formatThousand";
 import Banner from "../../components/UI/Banner";
+import Button from "../../components/UI/Button";
+import { generatePictureUrl } from "../../urlConfig";
+import formatThousand from "../../utils/formatThousand";
+import "./style.css";
 
 /**
  * @author
@@ -21,14 +18,14 @@ const ProductDetailsPage = (props) => {
   const dispatch = useDispatch();
   const product = useSelector((state) => state.products);
   const slug = props.match.params.slug;
+  const { productId } = props.match.params;
 
   useEffect(() => {
-    const { productId } = props.match.params;
     const params = {
       id: productId,
     };
     dispatch(getProductById(params));
-  }, []);
+  }, [dispatch, productId]);
 
   if (Object.keys(product.productDetails).length === 0) {
     return null;
@@ -59,7 +56,11 @@ const ProductDetailsPage = (props) => {
                   <img src={generatePictureUrl(thumb.img)} alt={thumb.img} />
                 ))}
               </div>
-              <Button onClick={handleAddToCart} title="Add to cart" className="detail__btn mt-16"></Button>
+              <Button
+                onClick={handleAddToCart}
+                title="Add to cart"
+                className="detail__btn mt-16"
+              ></Button>
             </div>
             <div className="col lg-7 md-7 sm-12 detail">
               <h1 className="detail__name">{product.productDetails.name}</h1>
@@ -84,7 +85,7 @@ const ProductDetailsPage = (props) => {
                   ${formatThousand(12000)}
                 </span>
               </p>
-              <p className="detail__tax" >Tax Excluded</p>
+              <p className="detail__tax">Tax Excluded</p>
               <table className="detail__brand">
                 <tbody>
                   <tr>

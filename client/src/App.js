@@ -1,18 +1,17 @@
-import logo from "./logo.svg";
-import "./App.css";
-import HomePage from "./containers/HomePage";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ProductPage from "./containers/ProductsPage";
-import Layout from "./components/Layout";
-import { useDispatch, useSelector } from "react-redux";
-import { isUserLoggedIn } from "./actions";
 import { useEffect } from "react";
-import ProductDetailsPage from "./containers/ProductDetailsPage";
-import CartPage from "./containers/CartPage";
+import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { isUserLoggedIn } from "./actions";
 import { updateCart } from "./actions/cart.actions";
+import "./App.css";
+import Layout from "./components/Layout";
+import CartPage from "./containers/CartPage";
 import CheckoutPage from "./containers/CheckoutPage";
-import OrderPage from "./containers/OrderPage";
+import HomePage from "./containers/HomePage";
 import OrderDetailPage from "./containers/OrderDetailPage";
+import OrderPage from "./containers/OrderPage";
+import ProductDetailsPage from "./containers/ProductDetailsPage";
+import ProductPage from "./containers/ProductsPage";
 import PrivateRoute from "./helpers/privateRoute";
 
 function App() {
@@ -23,10 +22,10 @@ function App() {
     if (!auth.authenticate) {
       dispatch(isUserLoggedIn());
     }
-  }, [auth.authenticate]);
+  }, [auth.authenticate, dispatch]);
   useEffect(() => {
     dispatch(updateCart());
-  }, [auth.authenticate]);
+  }, [auth.authenticate, dispatch]);
   return (
     <div className="App">
       <BrowserRouter>
@@ -37,13 +36,17 @@ function App() {
             <PrivateRoute path="/checkout" isAuthenticated={user}>
               <CheckoutPage />
             </PrivateRoute>
-            <PrivateRoute exact path="/account/order/:_id" isAuthenticated={user}>
+            <PrivateRoute
+              exact
+              path="/account/order/:_id"
+              isAuthenticated={user}
+            >
               <OrderDetailPage />
             </PrivateRoute>
             <PrivateRoute path="/account/order" isAuthenticated={user}>
               <OrderPage />
             </PrivateRoute>
-            <Route path="/:slug/:productId" component={ProductDetailsPage} />
+            <Route path="/product/:productId" component={ProductDetailsPage} />
             <Route path="/:slug" component={ProductPage} />
           </Switch>
         </Layout>

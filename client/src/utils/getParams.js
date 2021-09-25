@@ -1,4 +1,4 @@
-export default (query) => {
+export default function getParams(query) {
   const queryString = query.split("?")[1];
   if (queryString.length > 0) {
     const params = queryString.split("&");
@@ -8,4 +8,4 @@ export default (query) => {
       return accumulator;
     }, {});
   }
-};
+}

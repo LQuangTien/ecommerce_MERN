@@ -39,13 +39,12 @@ function CheckoutPage() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [cartItems, setCartItems] = useState(cart.cartItems);
   const dispatch = useDispatch();
-  
 
   useEffect(() => {
     if (auth.authenticate) {
       dispatch(getAddress());
     }
-  }, [auth.authenticate]);
+  }, [auth.authenticate, dispatch]);
   useEffect(() => {
     setCartItems(cart.cartItems);
   }, [cart.cartItems]);
@@ -60,13 +59,17 @@ function CheckoutPage() {
 
   const selectAddress = (id) => {
     const mappedAddress = address.map((adr) =>
-      adr._id == id ? { ...adr, selected: true } : { ...adr, selected: false }
+      adr._id.toString() === id.toString()
+        ? { ...adr, selected: true }
+        : { ...adr, selected: false }
     );
     setAddress(mappedAddress);
   };
   const enableEditAddress = (id) => {
     const mappedAddress = address.map((adr) =>
-      adr._id == id ? { ...adr, edit: true } : { ...adr, edit: false }
+      adr._id.toString() === id.toString()
+        ? { ...adr, edit: true }
+        : { ...adr, edit: false }
     );
     setAddress(mappedAddress);
   };
@@ -157,139 +160,142 @@ function CheckoutPage() {
     <div className="checkoutContainer">
       <div className="grid wide">
         <div className="row">
-          <div className="col lg-8"><div className="step-wrapper">
-        <Step
-          stepNumber="1"
-          title="LOGIN"
-          active={!auth.authenticate}
-          body={
-            auth.authenticate && (
-              <div className="info-wrapper">
-                <div className="info-wrapper__container--inline">
-                  <span className="info-wrapper__title">Username:</span>
-                  {auth.user.fullName}
-                </div>
-                <div className="info-wrapper__container--inline">
-                  <span className="info-wrapper__title">Email:</span>
-                  {auth.user.email}
-                </div>
-              </div>
-            )
-          }
-        />
-        <Step
-          stepNumber="2"
-          title="ADDRESS"
-          active={!wasConfirmedAddress && auth.authenticate}
-          body={
-            wasConfirmedAddress ? (
-              <div className="info-wrapper">
-                <div className="info-wrapper__container">
-                  <span className="info-wrapper__title">Your phone: </span>
-                  <span>{selectedAddress.phone}</span>
-                </div>
-                <div className="info-wrapper__container">
-                  <span className="info-wrapper__title">Your address: </span>
-                  <span>
-                    {selectedAddress.address}, {selectedAddress.ward},{" "}
-                    {selectedAddress.district}, {selectedAddress.city}
-                  </span>
-                </div>
-                <div className="info-wrapper__container">
-                  <span className="info-wrapper__title">
-                    <Anchor
-                      name="Select other address ?"
-                      style={{ color: "#2874f0", padding: 0 }}
-                      onClick={() => handleUpdate()}
-                    />
-                  </span>
-                </div>
-              </div>
-            ) : (
-              address.map((adr) => (
-                <Address
-                  adr={adr}
-                  selectAddress={selectAddress}
-                  handleConfirm={handleConfirm}
-                  handleUpdate={handleUpdate}
-                  enableEditAddress={enableEditAddress}
-                />
-              ))
-            )
-          }
-        />
-        {wasConfirmedAddress ? null : addAddressStep ? (
-          <AddressForm
-            onClick={() => setAddAddressStep(!addAddressStep)}
-            handleUpdate={handleUpdate}
-          />
-        ) : (
-          auth.authenticate && (
-            <Step
-              stepNumber="+"
-              title="ADD NEW ADDRESS"
-              active={addAddressStep}
-              onClick={() => setAddAddressStep(!addAddressStep)}
-            />
-          )
-        )}
-        <Step
-          stepNumber="3"
-          title="ORDER SUMMARY"
-          active={summaryStep}
-          body={summaryStep && <CartPage isCheckout />}
-        />
-        {summaryStep && (
-          <Card
-            className="continue-btn__container"
-            leftHeader={`An email will be sent to ${auth.user.email}`}
-            rightHeader={
-              <Button
-                title="CONTINUE"
-                className="continue-btn"
-                onClick={handleContinue}
+          <div className="col lg-8">
+            <div className="step-wrapper">
+              <Step
+                stepNumber="1"
+                title="LOGIN"
+                active={!auth.authenticate}
+                body={
+                  auth.authenticate && (
+                    <div className="info-wrapper">
+                      <div className="info-wrapper__container--inline">
+                        <span className="info-wrapper__title">Username:</span>
+                        {auth.user.fullName}
+                      </div>
+                      <div className="info-wrapper__container--inline">
+                        <span className="info-wrapper__title">Email:</span>
+                        {auth.user.email}
+                      </div>
+                    </div>
+                  )
+                }
               />
-            }
-          />
-        )}
-        <Step
-          stepNumber="4"
-          title="PAYMENT OPTIONS"
-          active={paymentStep}
-          body={
-            paymentStep && (
-              <div className="info-wrapper">
-                <div className="info-wrapper__container">
-                  <input type="radio" name="paymentOptions" id="cash" />
-                  <label htmlFor="cash">Cash on delivery</label>
-                </div>
-                <div className="info-wrapper__container">
-                  <input type="radio" name="paymentOptions" id="casha" />
-                  <label htmlFor="casha">Cash on delivery</label>
-                </div>
-                <div className="info-wrapper__container">
-                  <input type="radio" name="paymentOptions" id="cashb" />
-                  <label htmlFor="cashb">Cash on delivery</label>
-                </div>
-                <div className="info-wrapper__container">
-                  <Button
-                    black
-                    title="CONFIRM PAYMENT"
-                    className="payment-btn"
-                    onClick={handleConfirmPayment}
+              <Step
+                stepNumber="2"
+                title="ADDRESS"
+                active={!wasConfirmedAddress && auth.authenticate}
+                body={
+                  wasConfirmedAddress ? (
+                    <div className="info-wrapper">
+                      <div className="info-wrapper__container">
+                        <span className="info-wrapper__title">
+                          Your phone:{" "}
+                        </span>
+                        <span>{selectedAddress.phone}</span>
+                      </div>
+                      <div className="info-wrapper__container">
+                        <span className="info-wrapper__title">
+                          Your address:{" "}
+                        </span>
+                        <span>
+                          {selectedAddress.address}, {selectedAddress.ward},{" "}
+                          {selectedAddress.district}, {selectedAddress.city}
+                        </span>
+                      </div>
+                      <div className="info-wrapper__container">
+                        <span className="info-wrapper__title">
+                          <Anchor
+                            name="Select other address ?"
+                            style={{ color: "#2874f0", padding: 0 }}
+                            onClick={() => handleUpdate()}
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    address.map((adr) => (
+                      <Address
+                        adr={adr}
+                        selectAddress={selectAddress}
+                        handleConfirm={handleConfirm}
+                        handleUpdate={handleUpdate}
+                        enableEditAddress={enableEditAddress}
+                      />
+                    ))
+                  )
+                }
+              />
+              {wasConfirmedAddress ? null : addAddressStep ? (
+                <AddressForm
+                  onClick={() => setAddAddressStep(!addAddressStep)}
+                  handleUpdate={handleUpdate}
+                />
+              ) : (
+                auth.authenticate && (
+                  <Step
+                    stepNumber="+"
+                    title="ADD NEW ADDRESS"
+                    active={addAddressStep}
+                    onClick={() => setAddAddressStep(!addAddressStep)}
                   />
-                </div>
-              </div>
-            )
-          }
-        />
-      </div></div>
+                )
+              )}
+              <Step
+                stepNumber="3"
+                title="ORDER SUMMARY"
+                active={summaryStep}
+                body={summaryStep && <CartPage isCheckout />}
+              />
+              {summaryStep && (
+                <Card
+                  className="continue-btn__container"
+                  leftHeader={`An email will be sent to ${auth.user.email}`}
+                  rightHeader={
+                    <Button
+                      title="CONTINUE"
+                      className="continue-btn"
+                      onClick={handleContinue}
+                    />
+                  }
+                />
+              )}
+              <Step
+                stepNumber="4"
+                title="PAYMENT OPTIONS"
+                active={paymentStep}
+                body={
+                  paymentStep && (
+                    <div className="info-wrapper">
+                      <div className="info-wrapper__container">
+                        <input type="radio" name="paymentOptions" id="cash" />
+                        <label htmlFor="cash">Cash on delivery</label>
+                      </div>
+                      <div className="info-wrapper__container">
+                        <input type="radio" name="paymentOptions" id="casha" />
+                        <label htmlFor="casha">Cash on delivery</label>
+                      </div>
+                      <div className="info-wrapper__container">
+                        <input type="radio" name="paymentOptions" id="cashb" />
+                        <label htmlFor="cashb">Cash on delivery</label>
+                      </div>
+                      <div className="info-wrapper__container">
+                        <Button
+                          black
+                          title="CONFIRM PAYMENT"
+                          className="payment-btn"
+                          onClick={handleConfirmPayment}
+                        />
+                      </div>
+                    </div>
+                  )
+                }
+              />
+            </div>
+          </div>
           <div className="col lg-4">{renderCartPrice()}</div>
         </div>
       </div>
-      
-
-      
     </div>
   );
 }

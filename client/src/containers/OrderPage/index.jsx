@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrder } from "../../actions";
-import { generatePictureUrl } from "../../urlConfig";
 import { Link } from "react-router-dom";
-import "./style.css";
-import formatThousand from "../../utils/formatThousand";
+import { getOrder } from "../../actions";
 import Banner from "../../components/UI/Banner";
+import formatThousand from "../../utils/formatThousand";
+import "./style.css";
 function OrderPage() {
   const user = useSelector((state) => state.user);
   const auth = useSelector((state) => state.auth);
@@ -15,7 +14,7 @@ function OrderPage() {
     if (auth.authenticate) {
       dispatch(getOrder());
     }
-  }, [auth.authenticate]);
+  }, [auth.authenticate, dispatch]);
   useEffect(() => {
     setOrders(user.orders);
   }, [user.orders]);
@@ -23,7 +22,11 @@ function OrderPage() {
     <div>
       <Banner slug={"Order history"} />
       <div className="grid wide history-table-wrapper">
-        <p><strong>Here are the orders you've placed since your account was created.</strong></p>
+        <p>
+          <strong>
+            Here are the orders you've placed since your account was created.
+          </strong>
+        </p>
         <table className="history-table">
           <thead className="history-table__heading">
             <tr className="history-table__heading-row">
@@ -41,9 +44,13 @@ function OrderPage() {
                 <td>{order._id}</td>
                 <td>{new Date(order.createdAt).toLocaleString()}</td>
                 <td>${formatThousand(order.totalAmount)}</td>
-                <td className="uppercase-first-letter">{order.paymentOption}</td>
+                <td className="uppercase-first-letter">
+                  {order.paymentOption}
+                </td>
                 <td className="uppercase-first-letter">{order.status}</td>
-                <td className="history-table-link"><Link to={`/account/order/${order._id}`}>View detail</Link></td>
+                <td className="history-table-link">
+                  <Link to={`/account/order/${order._id}`}>View detail</Link>
+                </td>
               </tr>
             ))}
           </tbody>

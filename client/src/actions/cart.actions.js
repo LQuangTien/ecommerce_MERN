@@ -16,7 +16,7 @@ export const getCart = () => {
         });
         return;
       }
-      
+
       dispatch({ type: cartConstants.GET_CART_REQUEST });
       const res = await axios.get("/user/cart");
       const { cartItems } = res.data;
@@ -25,7 +25,6 @@ export const getCart = () => {
         payload: { cartItems },
       });
     } catch (error) {
-      console.log({error: error.response})
       dispatch({
         type: cartConstants.GET_CART_FAILURE,
         payload: { error: error.response.data.error },

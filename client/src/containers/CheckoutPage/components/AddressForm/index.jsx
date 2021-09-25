@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { addAddress, updateAddress } from "../../../../actions";
 import Button from "../../../../components/UI/Button";
 import "./style.css";
@@ -15,9 +15,7 @@ function AddressForm(props) {
     adr ? adr.alternativePhone : ""
   );
   const [type, setType] = useState(adr ? adr.type : "");
-  const [_id, setId] = useState(adr ? adr._id : "");
-  const [submitFlag, setSubmitFlag] = useState(false);
-  const user = useSelector((state) => state.user);
+  const [_id] = useState(adr ? adr._id : "");
   const dispatch = useDispatch();
   const onSubmit = (e) => {
     if (handleUpdate) {

@@ -51,7 +51,10 @@ html {
   justify-content: center;
   align-items: center;
 }
-
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
 .mt-8 {
   margin-top: 8px !important;
 }

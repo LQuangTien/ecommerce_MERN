@@ -14,7 +14,7 @@ function OrderDetailPage(props) {
 
   useEffect(() => {
     dispatch(getOrderDetail(_id));
-  }, []);
+  }, [_id, dispatch]);
   const getTotal = () => {
     if (!order.items) return;
     return order.items.reduce((totalPrice, currentItem) => {
