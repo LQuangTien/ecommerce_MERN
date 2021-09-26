@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-
+import { IoStar } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { getBySlug } from "../../actions";
-import { useDispatch, useSelector } from "react-redux";
-import "./style.css";
 import { Link } from "react-router-dom";
+import { getBySlug } from "../../actions";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
-import { IoStar } from "react-icons/io5";
+import "./style.css";
+
 function HomePage() {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);

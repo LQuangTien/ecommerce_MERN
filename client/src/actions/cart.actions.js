@@ -122,8 +122,8 @@ export const removeCartItem = (productId) => {
     const cart = localStorage.getItem("cart")
       ? JSON.parse(localStorage.getItem("cart"))
       : null;
-    if (!cart) return;
     if (!auth.authenticate) {
+      if (!cart) return;
       delete cart[productId];
       localStorage.setItem("cart", JSON.stringify(cart));
       dispatch({

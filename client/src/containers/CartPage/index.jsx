@@ -35,7 +35,7 @@ function CartPage(props) {
       <div className="cart__content">
         {cartItems &&
           Object.keys(cartItems).map((key, index) => (
-            <div className="cart__item">
+            <div className="cart__item" key={cartItems[key]._id}>
               <div className="cart__item-image-container">
                 <img
                   src={generatePictureUrl(cartItems[key].img)}

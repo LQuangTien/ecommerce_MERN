@@ -31,7 +31,10 @@ function ProductPage(props) {
             <div className="col lg-9">
               <div className="row">
                 {Object.keys(products).map((key, index) => (
-                  <div className="product__card col lg-3">
+                  <div
+                    className="product__card col lg-3"
+                    key={products[key]._id}
+                  >
                     <Link to={"/product/" + products[key]._id} className="">
                       <div className="product__image">
                         <img

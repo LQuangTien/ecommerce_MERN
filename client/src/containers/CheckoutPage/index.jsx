@@ -152,7 +152,7 @@ function CheckoutPage() {
     </div>
   );
 
-  if (isCompleteOrder) {
+  if (isCompleteOrder || Object.keys(cart.cartItems).length === 0) {
     return <Redirect to="/" />;
   }
 

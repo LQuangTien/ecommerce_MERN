@@ -215,11 +215,7 @@ const Header = (props) => {
     return categories.map((category) => (
       <li key={category.name}>
         {category.parentId ? (
-          <Link
-            to={`/${category.slug}?categoryId=${category._id}&type=${category.type}`}
-          >
-            {category.name}
-          </Link>
+          <Link to={"/" + category.slug}>{category.name}</Link>
         ) : (
           <span>{category.name}</span>
         )}

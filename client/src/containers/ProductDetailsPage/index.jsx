@@ -38,7 +38,7 @@ const ProductDetailsPage = (props) => {
   };
   return (
     <>
-      <Banner slug={slug} />
+      <Banner slug={product.productDetails.category.name} />
       <div className="product-wraper">
         <div className="grid wide">
           <div className="row">
@@ -53,7 +53,11 @@ const ProductDetailsPage = (props) => {
               </div>
               <div className="picture__sub mt-16">
                 {product.productDetails.productPictures.map((thumb, index) => (
-                  <img src={generatePictureUrl(thumb.img)} alt={thumb.img} />
+                  <img
+                    key={index}
+                    src={generatePictureUrl(thumb.img)}
+                    alt={thumb.img}
+                  />
                 ))}
               </div>
               <Button
