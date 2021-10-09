@@ -31,8 +31,25 @@ const productSchema = mongoose.Schema(
       },
     ],
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      // type: mongoose.Schema.Types.ObjectId,
+      // ref: "Category",
+      type: String,
+      required: true,
+    },
+    brand: {
+      type:String,
+      required: true,
+    },
+    color: {
+      type:Array,
+      required: true,
+    },
+    ram: {
+      type:Array,
+      required: true,
+    },
+    rom: {
+      type:Array,
       required: true,
     },
     createdBy: {
@@ -46,3 +63,4 @@ const productSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("Product", productSchema);
+
