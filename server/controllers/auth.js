@@ -24,6 +24,7 @@ exports.signup = (req, res) => {
         username: Math.random().toString(),
       });
       newUser.save((error, user) => {
+        //test bỏ cái này thử
         if (error) return ServerError(res, error.message);
         if (user) {
           const token = jwt.sign(
@@ -31,6 +32,7 @@ exports.signup = (req, res) => {
             process.env.JWT_SECRET,
     
           );
+          //test bỏ thử
           const { firstName, lastName, email, fullName } = user;
           return Response(res, {
             token,

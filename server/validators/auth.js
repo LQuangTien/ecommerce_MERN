@@ -7,7 +7,7 @@ exports.validateSignup = [
   check("password")
     .isLength({ min: 3 })
     .withMessage("Password must be at least 3 character long"),
-];
+]; 
 exports.validateSignin = [
   check("email").isEmail().withMessage("Valid email is required"),
   check("password")
