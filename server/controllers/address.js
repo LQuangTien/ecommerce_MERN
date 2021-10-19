@@ -1,5 +1,5 @@
 const Address = require("../models/address");
-const { ServerError, Create, Update, Get } = require("../ulti/response");
+const { ServerError, Create, Update, Get, Delete } = require("../ulti/response");
 
 exports.add = (req, res) => {
   const { address } = req.body;
@@ -31,6 +31,19 @@ exports.update = (req, res) => {
     if (error) return ServerError(res, error.message);
     if (userAddress) return Update(res, { userAddress });
   });
+};
+
+exports.deleteAddress = async (req, res) => {
+  const { address } = req.body;
+  try {
+    await Address.findByIdAndDelete(address._id);
+
+    if (updatedProduct) return Get(res,"Address has been deleted...");
+    return NotFound(res, "Address");
+
+  } catch (error) {
+    return ServerError(res, error.message);
+  }
 };
 
 exports.get = (req, res) => {

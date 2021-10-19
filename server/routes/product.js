@@ -3,7 +3,7 @@ const express = require("express");
 const shortid = require("shortid");
 
 const { requireSignin, isAdmin } = require("../middlewares");
-const { create, getBySlug, getById, getByQuery, update,deleteProduct  } = require("../controllers/product");
+const { create, getBySlug, getById, getByQuery, update, remove, search } = require("../controllers/product");
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -11,24 +11,40 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, shortid.generate() + "-" + file.originalname);
+    // cb(null, shortid.generate() + "-" + file.originalname);
+
+    cb(null, req.body.name + "-" + Date.now() + ".jpg");
   },
 });
 const upload = multer({ storage });
 
 router.post(
   "/product/create",
-  requireSignin,
-  isAdmin,
-  upload.array("productPicture"),
+  // requireSignin,
+  // isAdmin,
+  upload.array("productPictures"),
   create
 );
-router.put("/product/:id",update);
-router.delete("/product/:id",deleteProduct);
+router.put("/product/:id",
+  // requireSignin,
+  // isAdmin,
+  upload.array("productPictures"),
+  update
+);
+router.delete("/product/:id",
+  // requireSignin,
+  // isAdmin,
+  remove
+);
 router.get("/product/:id", getById);
 
+router.get("/products/search/:page/:perPage", search);
 router.get("/products/filter/:page/:perPage", getByQuery);
 router.get("/products/:slug", getBySlug);
+
+
+
+
 
 
 
