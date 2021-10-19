@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const fs = require('fs/promises');
 const Product = require("../models/product");
 const Category = require("../models/category");
 const shortid = require("shortid");
@@ -8,105 +10,90 @@ const {
   Response,
   Delete,
   Get,
+  Update,
   NotFound,
   BadRequest,
 } = require("../ulti/response");
 
 exports.create = async (req, res) => {
-  // const { name, price, description, category, quantity } = req.body;
-  // let pictures = [];
-  // if (req.files.length > 0) {
-  //   pictures = req.files.map((file) => {
-  //     return { img: file.filename };
-  //   });
-  // }
-  // const product = new Product({
-  //   name,
-  //   slug: slugify(name),
-  //   price,
-  //   quantity,
-  //   description,
-  //   productPictures: pictures,
-  //   category,
-  //   createdBy: req.user._id,
-  // });
-  // product.save((error, product) => {
-  //   if (error) return ServerError(res, error.message);
-  //   if (product) return Get(res, { product });
-  //   return NotFound(res, "Product");
-  // });
-
-  const { name, price, description, category, brand, color, ram, rom, quantity } = req.body;
-  let pictures = [];
-  if (req.files.length > 0) {
-    pictures = req.files.map((file) => {
-      return { img: file.filename };
-    });
-  }
-  const newProduct = new Product({
-    name,
-    slug: slugify(name),
-    price,
-    quantity,
-    description,
-    productPictures: pictures,
-    category,
-    brand,
-    color,
-    ram,
-    rom,
-    createdBy: req.user._id,
-  });
-
   try {
+    const { name, category, regularPrice, sale, quantity, description, insurance, screen, frontCamera, rearCamera,
+      chipset, screenSize, battery, soldAmount, salePrice, brand, color, ram, rom } = req.body;
+
+    const pictures = req.files.map(file => file.filename);
+
+    const newProduct = new Product({
+      name,
+      slug: slugify(name),
+      category,
+      regularPrice,
+      sale,
+      quantity,
+      description,
+      productPictures: pictures,
+      insurance,
+      screen,
+      frontCamera,
+      rearCamera,
+      chipset,
+      screenSize,
+      battery,
+      soldAmount,
+      salePrice,
+      brand,
+      color,
+      ram,
+      rom
+    });
+
     const savedProduct = await newProduct.save();
-    if (savedProduct) return Get(res, { savedProduct });
-    return NotFound(res, "Product");
-  } catch (err) {
+    return Create(res, { savedProduct });
+
+  } catch (error) {
     return ServerError(res, error.message);
   }
 };
 
-exports.update = async (req,res) => {
+exports.update = async (req, res) => {
   try {
+    deleteOldProductImg(req.params.id);
+
+    const pictures = req.files.map(file => file.filename);
+    req.body.productPictures = pictures;
+
+    req.body.slug = slugify(req.body.name);
+
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
       },
-      { new: true }
-    );
-    if (updatedProduct) return Get(res, { updatedProduct });
+      { new: true, useFindAndModify: false }
+    ).exec();
+
+    if (updatedProduct) return Update(res, { updatedProduct });
     return NotFound(res, "Product");
-  } catch (err) {
+  } catch (error) {
     return ServerError(res, error.message);
   }
 };
 
-exports.deleteProduct= async (req, res) => {
+exports.remove = async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.id);
-    if (updatedProduct) return Get(res,"Product has been deleted...");
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    if (deletedProduct) return Delete(res, "Product has been deleted...");
     return NotFound(res, "Product");
-  } catch (err) {
+  } catch (error) {
     return ServerError(res, error.message);
   }
 };
 
 exports.getById = async (req, res) => {
-  // const { id } = req.params;
-  // if (!id) return ServerError(res, "Params required");
-  // Product.findOne({ _id: id }).populate("category", "name").exec((error, product) => {
-  //   if (error) return ServerError(res, error.message);
-  //   if (product) return res.json({ product });
-  //   return NotFound(res, id);
-  // });
-
   try {
     const product = await Product.findById(req.params.id);
     if (product) return Get(res, { product });
     return NotFound(res, "Product");
-  } catch (err) {
+  } catch (error) {
     return ServerError(res, error.message);
   }
 };
@@ -114,12 +101,11 @@ exports.getById = async (req, res) => {
 exports.getBySlug = (req, res) => {
   const { slug } = req.params;
   Category.findOne({ slug })
-    .select("_id")
+    .select("name")
     .exec((error, category) => {
       if (error) return ServerError(res, error.message);
       if (!category) return NotFound(res, slug);
-
-      Product.find({ category: category._id }).exec((error, products) => {
+      Product.find({ category: category.name }).exec((error, products) => {
         if (error) return ServerError(res, error.message);
         if (products.length) return Get(res, { products });
         return NotFound(res, slug);
@@ -140,7 +126,7 @@ exports.getByQuery = async (req, res) => {
 
   const rangeFilter = '..';
   const collectionFilter = ' ';
-  let listQuery = [];
+  const listQuery = [];
 
   // POJO = plain old js object
   // let productPOJO = Product.toObject();
@@ -154,52 +140,118 @@ exports.getByQuery = async (req, res) => {
       //Filter là giá trị trong khoảng nào đó 
       //vd: từ 10 ngàn tới 1 triệu sẽ là 10000..1000000
       if (element.indexOf(rangeFilter) !== -1) {
-        max = 99999999999999;
-        min = 0;
-        from_to = element.split(rangeFilter);
+        const max = 99999999999999;
+        const min = 0;
+        const fromToRawInput = element.split(rangeFilter);
 
-        from = from_to[0] === '' ? min : parseFloat(from_to[0]);
-        to = from_to[1] === '' ? max : parseFloat(from_to[1]);
+        const selectValueAndRemoveUnit = (input) => {
+          // const endOfValue = item.match(/[^0-9]/) === null ? item.match(/[^0-9]/).index : -1;
+          let endOfValue;
 
-        rangeQuery = { $match: { [filter]: { $gte: from, $lte: to } } };
+          // Tìm kí tự đầu tien ko phải là số 
+          if (input.match(/[^0-9]/)) {
+            endOfValue = input.match(/[^0-9]/).index;
+            return input.slice(0, endOfValue)
+          } else {
+            return input;
+          }
+        };
+
+        const fromTo = fromToRawInput.map(selectValueAndRemoveUnit);
+
+        const from = fromTo[0] === '' ? min : parseFloat(fromTo[0]);
+        const to = fromTo[1] === '' ? max : parseFloat(fromTo[1]);
+
+        const rangeQuery = { $match: { [filter]: { $gte: from, $lte: to } } };
 
         listQuery.push(rangeQuery);
       } else {
         if (element.indexOf(collectionFilter) !== -1) {
           //Filter là tập hợp có nhiều giá trị 
           //vd: thuộc các category: điện thoại, tủ lạnh, máy vi tính sẽ là category:điện thoai+tủ lạnh+máy vi tính
-          collections = element.split(collectionFilter);
-          collectionQuery = { $match: { [filter]: { $in: collections } } };
+          const collections = element.split(collectionFilter);
+          const collectionQuery = { $match: { [filter]: { $in: collections } } };
           // collectionQuery = { [filter]: { $in: collections } };
 
           listQuery.push(collectionQuery);
         } else {
           //Filter các trường hợp riêng lẻ còn lại 
           //vd: category: điện thoại , thương hiệu: asus
-          singeQuery = { $match: { [filter]: element } };
+          const singeQuery = { $match: { [filter]: element } };
           listQuery.push(singeQuery);
         }
       }
     } else {
       // trường hợp property không tồn tại trong product 
-      return NotFound(res, filter);
+      return NotFound(res, "Product");
     }
   }
 
-  productsFilter = await Product.aggregate(listQuery).exec();
-  const result = pagination(productsFilter, page, perPage)
+  try {
+    const productsFilter = await Product.aggregate(listQuery).exec();
+    const result = pagination(productsFilter, page, perPage);
 
-  return Get(res, result);
+    return Get(res, result);
+  } catch (error) {
+    return ServerError(res, error.messages);
+  }
+
 };
 
-function pagination(products, pageInput, itemPerPage) {
-  const page = parseInt(pageInput) || 1;
-  const perPage = parseInt(itemPerPage) || 8;
+exports.search = async (req, res) => {
+  try {
+    let listQuery = [];
+
+    const searchName = req.query.q;
+    const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
+    const searchNameRgx = rgx(searchName);
+
+    const searchQuery = { $match: { name: { $regex: searchNameRgx, $options: "i" } } };
+    listQuery.push(searchQuery);
+
+    //"asc" là tăng dần còn "desc" là giảm dần
+    if (req.query.sortBy) {
+      const order = req.query.sortOrder === "asc" ? 1 : -1
+      listQuery.push({ $sort: { [req.query.sortBy]: order }});
+    }
+
+    const foundProduct = await Product.aggregate(listQuery).exec();
+
+    if (foundProduct) {
+      const { page, perPage } = req.params;
+      const result = pagination(foundProduct, page, perPage);
+      return Get(res, result);
+    }
+
+    NotFound(res, "Product");
+  } catch (error) {
+    return ServerError(res, error.messages);
+  }
+
+};
+
+
+function pagination(products, page = 1, perPage = 8) {
   const previousItem = (page - 1) * perPage;
 
   return {
     products: products.slice(previousItem, previousItem + perPage),
     totalPage: Math.ceil(products.length / perPage),
-    currentPage: page
+    currentPage: page,
+    totalProduct: products.length
   }
-}
+};
+
+async function deleteOldProductImg(id) {
+
+  const oldImg = await Product.aggregate()
+    .match({ "_id": mongoose.Types.ObjectId(id), })
+    .project({ "_id": 0, "productPictures": 1 })
+    .exec();
+  // const imgBeforeUpdate = await Product.aggregate([{$match:{_id: mongoose.Types.ObjectId(req.params.id)}},
+  //{$project:{productPictures: 1}}])
+  // .exec();
+  // oldImg.forEach(async item => await fs.unlink('/upload/' + item));
+
+  oldImg[0].productPictures.forEach(async item => await fs.unlink('./uploads/' + item));
+};

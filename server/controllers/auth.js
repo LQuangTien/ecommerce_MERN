@@ -28,11 +28,9 @@ exports.signup = (req, res) => {
         if (error) return ServerError(res, error.message);
         if (user) {
           const token = jwt.sign(
-            { _id: user._id, role: user.role, exp: Date.now() + ONE_HOUR },
-            process.env.JWT_SECRET,
-    
+            { _id: user._id, role: user.role, exp: Math.floor(Date.now() / 1000) + ONE_HOUR },
+            process.env.JWT_SECRET,   
           );
-          //test bỏ thử
           const { firstName, lastName, email, fullName } = user;
           return Response(res, {
             token,
@@ -53,7 +51,7 @@ exports.signin = (req, res) => {
     if (!isAuthen) return BadRequest(res, "Wrong password");
 
     const token = jwt.sign(
-      { _id: user._id, role: user.role, exp: Date.now() + ONE_HOUR*24  },
+      { _id: user._id, role: user.role, exp: Math.floor(Date.now() / 1000) + ONE_HOUR*24  },
       process.env.JWT_SECRET,
     );
     const { firstName, lastName, email, fullName } = user;

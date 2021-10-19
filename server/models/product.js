@@ -12,52 +12,106 @@ const productSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
-    price: {
-      type: Number,
-      required: true,
-    },
-    quantity: { type: Number, required: true },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    offer: { type: Number },
-    productPictures: [{ img: { type: String } }],
-    reviews: [
-      {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        review: String,
-      },
-    ],
     category: {
       // type: mongoose.Schema.Types.ObjectId,
       // ref: "Category",
       type: String,
       required: true,
     },
+    regularPrice: {
+      type: Number,
+      required: true,
+    },
+    sale: {
+      type: String,
+      required: true,
+    },
+    quantity: { 
+      type: Number, 
+      required: true 
+    },
+    
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    // productPictures: [{ img: { type: String } }],
+    productPictures: {
+      type: Array,
+      required: true,
+    },
+    insurance: {
+      type: String,
+      required: true,
+    },
+    screen: {
+      type: String,
+      required: true,
+    },
+    frontCamera: {
+      type: String,
+      required: true,
+    },
+    rearCamera: {
+      type: String,
+      required: true,
+    },
+    chipset: {
+      type: String,
+      required: true,
+    },
+    
+    screenSize: {
+      type: String,
+      required: true,
+    },
+    
+    battery: {
+      type: String,
+      required: true,
+    },
+    soldAmount: { 
+      type: Number, 
+      required: true 
+    },
+    
+    
+    
+    salePrice: {
+      type: Number,
+      required: true,
+    },
     brand: {
-      type:String,
+      type: String,
       required: true,
     },
     color: {
-      type:Array,
+      type: Array,
       required: true,
     },
     ram: {
-      type:Array,
+      type: Array,
       required: true,
     },
     rom: {
-      type:Array,
+      type: Array,
       required: true,
     },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    updatedAt: Date,
+    
+   
+    // createdBy: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
+    offer: { type: Number },
+    reviews: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        review: String,
+      },
+    ],
   },
   { timestamps: true }
 );

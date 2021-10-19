@@ -17,12 +17,12 @@ exports.requireSignin = (req, res, next) => {
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    if (user.exp < Date.now()) return Unauthenticated(res, "Token expired");
+    if (user.exp < Math.floor(Date.now() / 1000)) return Unauthenticated(res, "Token expired");
     
     req.user = user;
     return next();
   } catch (error) {
-    return Unauthenticated(res, "Invalid Token");
+    return Unauthenticated(res, error.message);
   }
 };
 
@@ -30,3 +30,4 @@ exports.isAdmin = (req, res, next) => {
   if (req.user.role !== "admin") return Unauthorized(res);
   return next();
 };
+
