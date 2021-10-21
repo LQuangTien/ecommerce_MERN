@@ -26,11 +26,11 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    quantity: { 
-      type: Number, 
-      required: true 
+    quantity: {
+      type: Number,
+      required: true,
     },
-    
+
     description: {
       type: String,
       required: true,
@@ -61,23 +61,20 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    
+
     screenSize: {
       type: String,
       required: true,
     },
-    
+
     battery: {
       type: String,
       required: true,
     },
-    soldAmount: { 
-      type: Number, 
-      required: true 
+    soldAmount: {
+      type: Number,
+      required: true,
     },
-    
-    
-    
     salePrice: {
       type: Number,
       required: true,
@@ -98,8 +95,7 @@ const productSchema = mongoose.Schema(
       type: Array,
       required: true,
     },
-    
-   
+
     // createdBy: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "User",
@@ -117,4 +113,3 @@ const productSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("Product", productSchema);
-

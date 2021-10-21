@@ -7,21 +7,45 @@ const initState = {
   error: null,
   productDetails: {},
   loading: false,
+  totalPage: 0,
 };
 
 const productReducer = (state = initState, action) => {
   switch (action.type) {
+    case productConstants.GET_PRODUCT_BY_QUERY_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case productConstants.GET_PRODUCT_BY_QUERY_SUCCESS:
+      state = {
+        ...state,
+        products: action.payload.products,
+        totalPage: action.payload.totalPage,
+        loading: false,
+      };
+      break;
+    case productConstants.GET_PRODUCT_BY_QUERY_FAILURE:
+      state = {
+        ...state,
+        products: [],
+        error: action.payload.error,
+        totalPage: 0,
+        loading: false,
+      };
+      break;
     case productConstants.GET_PRODUCT_BY_SLUG_REQUEST:
       state = {
         ...state,
-        loading: true
+        loading: true,
       };
       break;
     case productConstants.GET_PRODUCT_BY_SLUG_SUCCESS:
       state = {
         ...state,
         products: action.payload.products,
-        loading: false
+        loading: false,
       };
       break;
     case productConstants.GET_PRODUCT_BY_SLUG_FAILURE:
@@ -29,7 +53,7 @@ const productReducer = (state = initState, action) => {
         ...state,
         products: [],
         error: action.payload.error,
-        loading: false
+        loading: false,
       };
       break;
     case productConstants.GET_PAGE_REQUEST:

@@ -75,12 +75,15 @@ function CartPage(props) {
                 $
                 {formatThousand(cartItems[key].quantity * cartItems[key].price)}
               </p>
-              <div
-                className="cart__item-remove"
-                onClick={() => handleRemoveItem(cartItems[key]._id)}
-              >
-                <IoTrash />
-              </div>
+              {props.isCheckout && <div className="cart__item-remove"></div>}
+              {!props.isCheckout && (
+                <div
+                  className="cart__item-remove"
+                  onClick={() => handleRemoveItem(cartItems[key]._id)}
+                >
+                  <IoTrash />
+                </div>
+              )}
             </div>
           ))}
       </div>
@@ -118,12 +121,11 @@ function CartPage(props) {
         <p className="cart__price-row-key">Total</p>
         <p>${formatThousand(getTotalPrice())}</p>
       </div>
-      <Link
-        to={getTotalAmount() !== 0 ? "/checkout" : "/"}
-        className="cart__price-nagivate"
-      >
-        <Button black title="Proceed to checkout" className="mt-32"></Button>
-      </Link>
+      {getTotalAmount() !== 0 && (
+        <Link to="/checkout" className="cart__price-nagivate">
+          <Button black title="Proceed to checkout" className="mt-32"></Button>
+        </Link>
+      )}
     </div>
   );
   if (props.isCheckout) {

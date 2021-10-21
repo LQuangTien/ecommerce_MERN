@@ -64,11 +64,6 @@ exports.get = (req, res) => {
       populate: {
         path: "productId",
         model: "Product",
-        populate: {
-          path: "category",
-          model: "Category",
-          select: "name",
-        },
         select: "_id name category productPictures",
       },
     })

@@ -16,7 +16,7 @@ function OrderDetailPage(props) {
     dispatch(getOrderDetail(_id));
   }, [_id, dispatch]);
   const getTotal = () => {
-    if (!order.items) return;
+    if (!order.items) return 0;
     return order.items.reduce((totalPrice, currentItem) => {
       totalPrice += currentItem.quantity * currentItem.paidPrice;
       return totalPrice;
@@ -116,7 +116,7 @@ function OrderDetailPage(props) {
                         <img
                           className="order-detail__product-table-image"
                           src={generatePictureUrl(
-                            item.productId.productPictures[0].img
+                            item.productId.productPictures[0]
                           )}
                           alt=""
                         />

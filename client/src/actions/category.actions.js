@@ -7,10 +7,12 @@ export const getAllCategory = () => {
 
     const res = await axios.get("category/");
     if (res.status === 200) {
-      const { categories } = res.data;
+      const result = res.data.data[0].filterField.find(
+        (field) => field.name === "brand"
+      );
       dispatch({
         type: categoryConstants.GET_ALL_CATEGORY_SUCCESS,
-        payload: { categories },
+        payload: { categories: result.value },
       });
     } else {
       dispatch({

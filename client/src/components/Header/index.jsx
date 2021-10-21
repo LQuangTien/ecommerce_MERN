@@ -213,15 +213,8 @@ const Header = (props) => {
   };
   const renderCategories = (categories) => {
     return categories.map((category) => (
-      <li key={category.name}>
-        {category.parentId ? (
-          <Link to={"/" + category.slug}>{category.name}</Link>
-        ) : (
-          <span>{category.name}</span>
-        )}
-        <ul>
-          {category.children.length > 0 && renderCategories(category.children)}
-        </ul>
+      <li key={category}>
+        <Link to={"/products/" + category}>{category}</Link>
       </li>
     ));
   };

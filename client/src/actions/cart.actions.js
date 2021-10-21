@@ -19,7 +19,7 @@ export const getCart = () => {
 
       dispatch({ type: cartConstants.GET_CART_REQUEST });
       const res = await axios.get("/user/cart");
-      const { cartItems } = res.data;
+      const cartItems = res.data.data;
       dispatch({
         type: cartConstants.GET_CART_SUCCESS,
         payload: { cartItems },
@@ -63,7 +63,8 @@ export const addToCart = (product, amount = 1) => {
     ];
     try {
       const res = await axios.post("/user/cart/add", { cartItems: items });
-      const { cartItems } = res.data;
+      const cartItems = res.data.data;
+      console.log(cartItems);
       dispatch({
         type: cartConstants.ADD_TO_CART_SUCCESS,
         payload: { cartItems },
@@ -102,7 +103,7 @@ export const updateCart = () => {
     });
     try {
       const res = await axios.post("/user/cart/add", { cartItems: items });
-      const { cartItems } = res.data;
+      const cartItems = res.data.data;
       dispatch({
         type: cartConstants.ADD_TO_CART_SUCCESS,
         payload: { cartItems },
@@ -135,7 +136,7 @@ export const removeCartItem = (productId) => {
     try {
       dispatch({ type: cartConstants.DELETE_CART_ITEM_REQUEST });
       const res = await axios.post(`/user/cart/remove`, { productId });
-      const { cartItems } = res.data;
+      const cartItems = res.data.data;
       dispatch({
         type: cartConstants.DELETE_CART_ITEM_SUCCESS,
         payload: { cartItems },

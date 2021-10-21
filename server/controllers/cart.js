@@ -11,7 +11,7 @@ const {
 const runUpdate = (condition, update) => {
   return new Promise((resolve, reject) => {
     Cart.findOneAndUpdate(condition, update, { upsert: true, new: true })
-      .populate("cartItems.product", "_id name price productPictures")
+      .populate("cartItems.product", "_id name salePrice productPictures")
       .then((res) => resolve(res))
       .catch((err) => reject(err));
   });
@@ -20,13 +20,13 @@ const createCartItems = (cart) => {
   let cartItems = {};
   cart.cartItems.forEach((item, index) => {
     const { product, quantity } = item;
-    const { _id, name, price, productPictures } = product;
+    const { _id, name, salePrice, productPictures } = product;
     cartItems[_id.toString()] = {
       _id,
       name,
-      price,
+      price: salePrice,
       quantity,
-      img: productPictures[0].img,
+      img: productPictures[0],
     };
   });
   return cartItems;
@@ -76,14 +76,14 @@ exports.add = (req, res) => {
 };
 exports.get = (req, res) => {
   Cart.findOne({ user: req.user._id })
-    .populate("cartItems.product", "_id name price productPictures")
+    .populate("cartItems.product", "_id name salePrice productPictures")
     .exec((error, cart) => {
       if (error) return ServerError(res, error.message);
       if (cart) {
         let cartItems = createCartItems(cart);
         return Get(res, { cartItems });
       }
-      return BadRequest(res,"Empty cart")
+      return BadRequest(res, "Empty cart");
     });
 };
 
@@ -100,11 +100,13 @@ exports.removeItem = (req, res) => {
       },
     },
     { new: true }
-  ).populate("cartItems.product", "_id name price productPictures").exec((error, cart) => {
-    if (error) return ServerError(res, error.message);
-    if (cart) {
-      let cartItems = createCartItems(cart);
-      return Delete(res, { cartItems });
-    }
-  });
+  )
+    .populate("cartItems.product", "_id name price productPictures")
+    .exec((error, cart) => {
+      if (error) return ServerError(res, error.message);
+      if (cart) {
+        let cartItems = createCartItems(cart);
+        return Delete(res, { cartItems });
+      }
+    });
 };

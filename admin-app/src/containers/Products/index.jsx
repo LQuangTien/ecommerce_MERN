@@ -94,7 +94,7 @@ function Products(props) {
             <div className="d-flex">
               {product.productPictures.map((picture) => (
                 <div className="pictureContainer">
-                  <img src={generatePictureUrl(picture.img)} alt="" />
+                  <img src={generatePictureUrl(picture)} alt="" />
                 </div>
               ))}
             </div>

@@ -10,31 +10,45 @@ const message = {
 };
 
 const Response = (res, data, httpStatus = statusCode.OK) => {
-  return res.status(httpStatus).json({...data} );
+  return res.status(httpStatus).json(data);
 };
 
 const Get = (res, data) => {
-  return Response(res, { message: message.GET, ...data }, statusCode.OK);
+  return Response(
+    res,
+    { message: message.GET, data: flat(data) },
+    statusCode.OK
+  );
 };
 
 const Create = (res, data) => {
-  return Response(res, { message: message.CREATE, ...data }, statusCode.CREATED);
+  return Response(
+    res,
+    { message: message.CREATE, data: flat(data) },
+    statusCode.CREATED
+  );
 };
 
 const Update = (res, data) => {
-  return Response(res, { message: message.UPDATE, ...data });
+  return Response(res, {
+    message: message.UPDATE,
+    data: flat(data),
+  });
 };
 
 const Delete = (res, data) => {
-  return Response(res, { message: message.DELETE, ...data });
+  return Response(res, {
+    message: message.DELETE,
+    data: flat(data),
+  });
 };
 
 const ServerError = (res, error) => {
-  return Response( res, { error }, statusCode.INTERNAL_SERVER_ERROR );
+  return Response(res, { error }, statusCode.INTERNAL_SERVER_ERROR);
 };
 
 const Unauthenticated = (res, error) => {
-  return Response( res, { error }, statusCode.UNAUTHORIZED );
+  return Response(res, { error }, statusCode.UNAUTHORIZED);
 };
 
 const Unauthorized = (res) => {
@@ -42,13 +56,17 @@ const Unauthorized = (res) => {
 };
 
 const BadRequest = (res, error) => {
-  return Response( res, { error }, statusCode.BAD_REQUEST );
+  return Response(res, { error }, statusCode.BAD_REQUEST);
 };
 
 const NotFound = (res, input) => {
   return Response(res, { message: `${input} not found` }, statusCode.NOT_FOUND);
 };
- 
+
+const flat = (data) => {
+  return Object.keys(data).map((key) => data[key])[0];
+};
+
 module.exports = {
   Response,
   Get,

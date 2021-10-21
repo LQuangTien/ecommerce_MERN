@@ -173,9 +173,7 @@ function HomePage() {
               <Link to={"/product/" + products[key]._id} className="">
                 <div className="product__image">
                   <img
-                    src={generatePictureUrl(
-                      products[key].productPictures[0].img
-                    )}
+                    src={generatePictureUrl(products[key].productPictures[0])}
                     alt=""
                   />
                 </div>
@@ -244,9 +242,7 @@ function HomePage() {
               >
                 <div className="small-product__image">
                   <img
-                    src={generatePictureUrl(
-                      products[key].productPictures[0].img
-                    )}
+                    src={generatePictureUrl(products[key].productPictures[0])}
                     alt=""
                   />
                 </div>

@@ -120,7 +120,15 @@ exports.create = async (req, res) => {
     return ServerError(res, error.message);
   }
 };
-
+exports.getAll = async (req, res) => {
+  try {
+    const foundCategory = await Category.find();
+    if (foundCategory) return Get(res, { foundCategory });
+    return NotFound(res, "Category");
+  } catch (error) {
+    return ServerError(res, error.messages);
+  }
+};
 exports.get = async (req, res) => {
   try {
     const foundCategory = await Category.findById(req.params.id);

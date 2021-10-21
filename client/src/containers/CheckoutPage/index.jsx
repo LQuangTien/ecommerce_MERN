@@ -146,19 +146,16 @@ function CheckoutPage() {
         <p className="cart__price-row-key">Total</p>
         <p>${formatThousand(getTotalPrice())}</p>
       </div>
-      <Link to="/checkout" className="cart__price-nagivate">
-        <Button title="Proceed to checkout" className="mt-32"></Button>
-      </Link>
     </div>
   );
 
-  if (isCompleteOrder || Object.keys(cart.cartItems).length === 0) {
+  if (isCompleteOrder) {
     return <Redirect to="/" />;
   }
 
   return (
     <div className="checkoutContainer">
-      <div className="grid wide">
+      <div className="grid wide mt-16">
         <div className="row">
           <div className="col lg-8">
             <div className="step-wrapper">
@@ -214,8 +211,9 @@ function CheckoutPage() {
                       </div>
                     </div>
                   ) : (
-                    address.map((adr) => (
+                    address.map((adr, index) => (
                       <Address
+                        key={index}
                         adr={adr}
                         selectAddress={selectAddress}
                         handleConfirm={handleConfirm}

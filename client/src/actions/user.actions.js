@@ -5,8 +5,7 @@ export const getAddress = () => {
     try {
       dispatch({ type: userConstants.GET_ADDRESS_REQUEST });
       const res = await axios.get("/user/address");
-      const { userAddress } = res.data;
-      const { address } = userAddress;
+      const { address } = res.data.data;
       dispatch({
         type: userConstants.GET_ADDRESS_SUCCESS,
         payload: { address },
@@ -24,8 +23,7 @@ export const addAddress = (adr) => {
     dispatch({ type: userConstants.ADD_ADDRESS_REQUEST });
     try {
       const res = await axios.post("/user/address/add", { address: adr });
-      const { userAddress } = res.data;
-      const { address } = userAddress;
+      const { address } = res.data.data;
       dispatch({
         type: userConstants.ADD_ADDRESS_SUCCESS,
         payload: { address },
@@ -43,8 +41,7 @@ export const updateAddress = (adr) => {
     try {
       dispatch({ type: userConstants.UPDATE_ADDRESS_REQUEST });
       const res = await axios.put("/user/address/update", { address: adr });
-      const { userAddress } = res.data;
-      const { address } = userAddress;
+      const { address } = res.data.data;
       dispatch({
         type: userConstants.UPDATE_ADDRESS_SUCCESS,
         payload: { address },
@@ -63,7 +60,7 @@ export const getOrder = () => {
       dispatch({ type: userConstants.GET_ORDER_REQUEST });
       const res = await axios.get("/user/orders");
       if (res.status === 200) {
-        const { orders } = res.data;
+        const orders = res.data.data;
         dispatch({
           type: userConstants.GET_ORDER_SUCCESS,
           payload: { orders },
@@ -82,7 +79,7 @@ export const addOrder = (order) => {
     dispatch({ type: userConstants.ADD_ORDER_REQUEST });
     const res = await axios.post("/user/order/add", order);
     if (res.status === 201) {
-      const { order } = res.data;
+      const order = res.data.data;
       dispatch({
         type: userConstants.ADD_ORDER_SUCCESS,
         payload: { order },
@@ -102,7 +99,7 @@ export const getOrderDetail = (_id) => {
       dispatch({ type: userConstants.GET_ORDER_DETAIL_REQUEST });
       const res = await axios.get(`/user/order/${_id}`);
       if (res.status === 200) {
-        const { order } = res.data;
+        const order = res.data.data;
         dispatch({
           type: userConstants.GET_ORDER_DETAIL_SUCCESS,
           payload: { order },

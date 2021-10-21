@@ -129,6 +129,7 @@ function AddressForm(props) {
             <input
               type="radio"
               onChange={() => setType("Home")}
+              checked={type === "Home"}
               name="type"
               value="Home"
               id="home"
@@ -140,6 +141,7 @@ function AddressForm(props) {
             <input
               type="radio"
               onChange={() => setType("Work")}
+              checked={type === "Work"}
               name="type"
               value="Work"
               id="work"
@@ -148,12 +150,18 @@ function AddressForm(props) {
           </label>
         </div>
       </div>
-      <div className="">
+      <div className="address__btn-wrapper">
         <Button
           title={props.withoutHeader ? "SAVE" : "SAVE AND DELIVERY HERE"}
           onClick={props.withoutHeader ? onSave : onSubmit}
           className="address__btn"
         />
+        {props.withoutHeader && (
+          <Button
+            title="Delete"
+            className="address__btn address__btn--delete "
+          />
+        )}
       </div>
     </div>
   );
