@@ -26,6 +26,10 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    salePrice: {
+      type: Number,
+      required: true,
+    },
     quantity: {
       type: Number,
       required: true,
@@ -66,16 +70,11 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-
     battery: {
       type: String,
       required: true,
     },
     soldAmount: {
-      type: Number,
-      required: true,
-    },
-    salePrice: {
       type: Number,
       required: true,
     },

@@ -213,8 +213,10 @@ const Header = (props) => {
   };
   const renderCategories = (categories) => {
     return categories.map((category) => (
-      <li key={category}>
-        <Link to={"/products/" + category}>{category}</Link>
+      <li key={category} className="main-menu-item">
+        <Link className="main-menu-link" to={"/products/" + category}>
+          <span> {category}</span>
+        </Link>
       </li>
     ));
   };
@@ -263,10 +265,25 @@ const Header = (props) => {
         </div>
         <div className="header__bottom">
           <div className="grid wide menuHeader">
-            <ul>
-              {categoryState.categories.length > 0 &&
-                renderCategories(categoryState.categories)}
-            </ul>
+            <div className="row menuHeader">
+              <div className="col lg-3">
+                <ul>All category</ul>
+              </div>
+              <div className="col lg-9">
+                <ul>
+                  {categoryState.categories.length > 0 &&
+                    renderCategories(
+                      categoryState.categories.map(
+                        (category) =>
+                          category.name === "Mobile" &&
+                          category.filterField.find(
+                            (field) => field.name === "brand"
+                          ).value
+                      )[0]
+                    )}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </header>

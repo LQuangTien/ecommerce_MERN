@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { addOrder, getAddress } from "../../actions";
 import Anchor from "../../components/UI/Anchor";
 import Button from "../../components/UI/Button";

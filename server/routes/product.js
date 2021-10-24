@@ -3,7 +3,16 @@ const express = require("express");
 const shortid = require("shortid");
 
 const { requireSignin, isAdmin } = require("../middlewares");
-const { create, getBySlug, getById, getByQuery, update, remove, search } = require("../controllers/product");
+const {
+  create,
+  getBySlug,
+  getById,
+  getByQuery,
+  update,
+  remove,
+  search,
+  getAll,
+} = require("../controllers/product");
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -25,13 +34,15 @@ router.post(
   upload.array("productPictures"),
   create
 );
-router.put("/product/:id",
+router.put(
+  "/product/:id",
   // requireSignin,
   // isAdmin,
   upload.array("productPictures"),
   update
 );
-router.delete("/product/:id",
+router.delete(
+  "/product/:id",
   // requireSignin,
   // isAdmin,
   remove
@@ -40,12 +51,7 @@ router.get("/product/:id", getById);
 
 router.get("/products/search/:page/:perPage", search);
 router.get("/products/filter/:page/:perPage", getByQuery);
+router.get("/products", getAll);
 router.get("/products/:slug", getBySlug);
-
-
-
-
-
-
 
 module.exports = router;

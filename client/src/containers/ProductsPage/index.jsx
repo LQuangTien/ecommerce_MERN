@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoStar } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useHistory, useParams } from "react-router-dom";
-import { getByQuery, getBySlug } from "../../actions";
+import { getByQuery } from "../../actions";
 import Banner from "../../components/UI/Banner";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
@@ -10,44 +10,44 @@ import queryString from "query-string";
 import ReactPaginate from "react-paginate";
 import { useRanger } from "react-ranger";
 import "./style.css";
-const COLOR_LIST = [
-  "red",
-  "orange",
-  "yellow",
-  "green",
-  "blue",
-  "purple",
-  "pink",
-  "copper",
-  "gray",
-  "black",
-];
-const INIT_COLORS_STATE = Array(COLOR_LIST.length).fill(false);
-const INIT_PRICE_STATE = [0, 0];
-const RAM_LIST = ["1GB", "2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"];
-const INIT_RAM_STATE = Array(RAM_LIST.length).fill(false);
-const ROM_LIST = ["8GB", "16GB", "32GB", "64GB", "128GB", "256GB", "512GB"];
-const INIT_ROM_STATE = Array(ROM_LIST.length).fill(false);
-const ORDER_OPTIONS = [
-  {
-    name: "Newest",
-    value: "newest",
-  },
-  {
-    name: "Price - Low to high",
-    value: "asc",
-  },
-  {
-    name: "Price - High to low",
-    value: "desc",
-  },
-];
 
 function ProductPage(props) {
+  const categoryState = useSelector((state) => state.categories);
+  const { brand } = useParams();
+  const getInitField = (fieldName) => {
+    if (!categoryState.categories) return;
+    const category = categoryState.categories.find((category) =>
+      category.filterField.find((field) => field.value.includes(brand))
+    );
+    return (
+      category &&
+      category.filterField.find((field) => field.name === fieldName).value
+    );
+  };
+  const COLOR_LIST = getInitField("color");
+  const INIT_COLORS_STATE = COLOR_LIST && Array(COLOR_LIST.length).fill(false);
+  const INIT_PRICE_STATE = [0, 0];
+  const RAM_LIST = getInitField("ram");
+  const INIT_RAM_STATE = RAM_LIST && Array(RAM_LIST.length).fill(false);
+  const ROM_LIST = getInitField("rom");
+  const INIT_ROM_STATE = ROM_LIST && Array(ROM_LIST.length).fill(false);
+  const ORDER_OPTIONS = [
+    {
+      name: "Newest",
+      value: "newest",
+    },
+    {
+      name: "Price - Low to high",
+      value: "asc",
+    },
+    {
+      name: "Price - High to low",
+      value: "desc",
+    },
+  ];
   const history = useHistory();
   const dispatch = useDispatch();
   const { products, totalPage } = useSelector((state) => state.products);
-  const { brand } = useParams();
   const search = useLocation().search;
   const { page, from, to, ram, rom, orderBy, color } =
     queryString.parse(search);
@@ -63,7 +63,7 @@ function ProductPage(props) {
     color,
   }));
   const handleInitState = (param, CONST_LIST, INIT_LIST) => {
-    if (!param) return INIT_LIST;
+    if (!param) return INIT_LIST || [];
     const selectedIndex = param
       .split("+")
       .map((value) => CONST_LIST.findIndex((x) => x === value));
@@ -199,8 +199,7 @@ function ProductPage(props) {
     setRomQuery(Array(ROM_LIST.length).fill(false));
     setColorQuery(Array(COLOR_LIST.length).fill(false));
     setQuery({});
-    const searchString = queryString.stringify({
-    });
+    const searchString = queryString.stringify({});
 
     history.push({
       search: searchString,
@@ -212,32 +211,35 @@ function ProductPage(props) {
     FIELD_LIST,
     param
   ) => {
-    return FIELD_LIST.map((value, index) => (
-      <label
-        className={`filter__checkbox-label ${
-          fieldQuery[index] ? "filter__checkbox-label--active" : ""
-        } `}
-        key={value}
-      >
-        <input
-          className="filter__checkbox"
-          type="checkbox"
-          name={param}
-          value={value}
-          checked={fieldQuery[index]}
-          onChange={() =>
-            handleFieldChange(
-              index,
-              fieldQuery,
-              setFieldQuery,
-              FIELD_LIST,
-              param
-            )
-          }
-        />
-        {value}
-      </label>
-    ));
+    return (
+      FIELD_LIST &&
+      FIELD_LIST.map((value, index) => (
+        <label
+          className={`filter__checkbox-label ${
+            fieldQuery[index] ? "filter__checkbox-label--active" : ""
+          } `}
+          key={value}
+        >
+          <input
+            className="filter__checkbox"
+            type="checkbox"
+            name={param}
+            value={value}
+            checked={fieldQuery[index]}
+            onChange={() =>
+              handleFieldChange(
+                index,
+                fieldQuery,
+                setFieldQuery,
+                FIELD_LIST,
+                param
+              )
+            }
+          />
+          {value}
+        </label>
+      ))
+    );
   };
   const onOrderChange = (value) => {
     setOrder(value);
