@@ -96,7 +96,7 @@
   display: block;
   position: absolute;
   border: var(--border-width) solid;
-  
+
   border-color: transparent currentColor transparent transparent;
   left: calc(-2 * var(--border-width));
 }
@@ -150,68 +150,38 @@ svg.search-bar__button-icon {
 }
 
 .menuHeader {
-  width: 100%;
   height: 100%;
-  border-bottom: 1px solid #cecece;
+  width: 100%;
 }
+
 .menuHeader ul {
-  list-style: none;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
   padding: 0;
   margin: 0;
-
+  list-style: none;
+  border-bottom: 1px solid #cecece;
 }
-.menuHeader > ul {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  position: relative;
 
-}
-.menuHeader > ul > li {
+.main-menu-item,
+.main-menu-link {
   height: 100%;
   display: flex;
   align-items: center;
 }
-.menuHeader > ul > li > span {
-  display: block;
-  cursor: pointer;
-  padding: 0 20px;
-  font-size: 1.6rem;
-  color: var(--text-color);
-  text-transform: uppercase;
-  font-weight: 500;
-}
-.menuHeader > ul > li > span:hover {
-  color: var(--primary);
-}
-.menuHeader > ul > li > ul {
-  z-index: 1;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  background-color: white;
-  display: none;
-  border: 1px solid #cecece;
-  padding: 0.8rem 0;
-}
-.menuHeader > ul > li:hover > ul {
-  display: block;
-}
-.menuHeader > ul > li > ul > li {
-  margin: 0 20px;
-  float: left;
-}
-.menuHeader > ul > li > ul > li > a {
-  font-weight: 600;
-}
-.menuHeader > ul > li > ul > li a:hover {
-  color: var(--primary);
-}
-.menuHeader > ul > li > ul > li a {
-  padding: 0.4rem 0;
-  display: block;
-  font-size: 1.4rem;
+
+.main-menu-link {
+  margin-right: 4rem;
   text-decoration: none;
-  color: var(--text-color);
+  font-weight: 500;
+  font-size: 1.6rem;
+  color: var(--black);
+  text-transform: uppercase;
+}
+
+.main-menu-link:hover {
+  color: var(--primary);
+  transition: 0.2s ease;
 }

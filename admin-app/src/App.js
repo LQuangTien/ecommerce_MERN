@@ -12,6 +12,9 @@ import Products from "./containers/Products";
 import Signin from "./containers/Signin";
 import Signup from "./containers/Signup";
 import Pages from "./containers/Pages";
+import ProductDetail from "./containers/ProductDetail";
+import AddCategory from "./containers/AddCategory";
+import EditCategory from "./containers/EditCategory";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -30,9 +33,15 @@ function App() {
         <Switch>
           <PrivateRoute exact path="/" component={Home} />
           <PrivateRoute exact path="/products" component={Products} />
-          <PrivateRoute exact path="/pages" component={Pages} />
-          <PrivateRoute exact path="/category" component={Category} />
-          <PrivateRoute exact path="/orders" component={Orders} />
+          <PrivateRoute exact path="/categories" component={Category} />
+          <PrivateRoute exact path="/category/add" component={AddCategory} />
+          <PrivateRoute
+            exact
+            path="/category/edit/:id"
+            component={EditCategory}
+          />
+          <PrivateRoute exact path="/product/:id" component={ProductDetail} />
+          {/* <PrivateRoute exact path="/orders" component={Orders} /> */}
           <Route path="/signup" component={Signup} />
           <Route path="/signin" component={Signin} />
         </Switch>

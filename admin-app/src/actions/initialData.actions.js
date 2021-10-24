@@ -11,7 +11,7 @@ export const getInitialData = () => {
     dispatch({ type: initialDataConstants.GET_INITIALDATA_REQUEST });
     const res = await axios.get("admin/initialdata");
     if (res.status === 200) {
-      const { categories, products, orders } = res.data;
+      const { categories, products, orders } = res.data.data;
       dispatch({
         type: categoryConstants.GET_ALL_CATEGORY_SUCCESS,
         payload: { categories },

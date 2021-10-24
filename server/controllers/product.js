@@ -401,3 +401,13 @@ async function deleteOldProductImg(id) {
     async (item) => await fs.unlink("./uploads/" + item)
   );
 }
+
+exports.getAll = async (req, res) => {
+  try {
+    const products = await Product.find();
+    if (!products) return NotFound(res, "Products");
+    return Get(res, products);
+  } catch (error) {
+    return ServerError(res, error.messages);
+  }
+};

@@ -2,7 +2,7 @@ const Category = require("../../models/category");
 const Product = require("../../models/product");
 const Order = require("../../models/order");
 const Address = require("../../models/address");
-const { Response, ServerError } = require("../../ulti/response");
+const { Response, ServerError, Get } = require("../../ulti/response");
 const populateCategory = (categories, parentId = null) => {
   const result = [];
   let childCategories;
@@ -30,24 +30,24 @@ const populateCategory = (categories, parentId = null) => {
 exports.initialData = async (req, res) => {
   try {
     const [categories, products, orders] = await Promise.all([
-      Category.find({}),
-      Product.find({})
-        .select("_id name price quantity category description productPictures")
-        .populate({ path: "category", select: "_id name" }),
+      Category.find(),
+      Product.find(),
       Order.find({}).populate("items.productId", "name").lean(),
     ]);
-    const orderWithAddress = populateAddress(orders);
-    return Response(res, {
-      categories: populateCategory(categories),
-      products,
-      orders: orderWithAddress,
+    const orderWithAddress = await populateAddress(orders);
+    return Get(res, {
+      result: {
+        categories,
+        products,
+        orders: orderWithAddress,
+      },
     });
   } catch (error) {
     return ServerError(res, error.message);
   }
 };
 const populateAddress = async (orders) => {
-  let orderPromises = []
+  let orderPromises = [];
   orders.forEach((order) => {
     const newPromise = new Promise((resolve, reject) => {
       Address.findOne({ "address._id": order.addressId })

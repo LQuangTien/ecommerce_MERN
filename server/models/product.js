@@ -43,7 +43,6 @@
 //       required: true,
 //     },
 
-
 //     category: {
 //       // type: mongoose.Schema.Types.ObjectId,
 //       // ref: "Category",
@@ -113,7 +112,6 @@
 
 // module.exports = mongoose.model("Product", productSchema);
 
-
 const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema(
@@ -154,19 +152,18 @@ const productSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
-
-    categoryInfo: [{
-      name: {
-        type: String,
-        required: true,
+    categoryInfo: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: String,
+          required: true,
+        },
       },
-      value: {
-        type: String,
-        required: true,
-      }
-    }],
-
-
+    ],
     // createdBy: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "User",

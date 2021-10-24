@@ -13,50 +13,53 @@ const categorySchema = mongoose.Schema(
       required: true,
     },
     categoryImage: { type: String },
-    normalField: [{
-      name: {
-        type: String,
-        required: true,
-        trim: true,
+    normalField: [
+      {
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        // type: {
+        //   type: String,
+        //   enum: ['single', 'multiply'],
+        //   required: true,
+        //   trim: true,
+        // },
+        // valueType:{
+        //   type: String,
+        //   enum: ['string', 'number'],
+        //   required: true,
+        //   trim: true,
+        // },
       },
-      type: {
-        type: String,
-        enum: ['single', 'multiply'],
-        required: true,
-        trim: true,
+    ],
+    filterField: [
+      {
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        value: {
+          type: Array,
+          required: true,
+          trim: true,
+        },
+        type: {
+          type: String,
+          enum: ["single", "multiply"],
+          required: true,
+          trim: true,
+        },
+        valueType: {
+          type: String,
+          enum: ["string", "number"],
+          required: true,
+          trim: true,
+        },
       },
-      valueType:{
-        type: String,
-        enum: ['string', 'number'],
-        required: true,
-        trim: true,
-      },
-    }],
-    filterField: [{
-      name: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      value: {
-        type: Array,
-        required: true,
-        trim: true,
-      },
-      type: {
-        type: String,
-        enum: ['single', 'multiply'],
-        required: true,
-        trim: true,
-      },
-      valueType:{
-        type: String,
-        enum: ['string', 'number'],
-        required: true,
-        trim: true,
-      },
-    }],
-    
+    ],
   },
   { timestamps: true }
 );

@@ -64,7 +64,6 @@ export const addToCart = (product, amount = 1) => {
     try {
       const res = await axios.post("/user/cart/add", { cartItems: items });
       const cartItems = res.data.data;
-      console.log(cartItems);
       dispatch({
         type: cartConstants.ADD_TO_CART_SUCCESS,
         payload: { cartItems },

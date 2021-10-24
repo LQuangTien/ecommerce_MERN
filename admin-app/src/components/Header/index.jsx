@@ -43,7 +43,7 @@ function Header() {
       expand="lg"
       bg="dark"
       variant="dark"
-      style={{ zIndex: 1 }}
+      style={{ zIndex: 999 }}
     >
       <Container fluid>
         <Link to="/" className="navbar-brand">
