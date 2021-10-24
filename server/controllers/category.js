@@ -96,21 +96,26 @@
 //   return res.status(200).json({ deletedCategories });
 // };
 
-const mongoose = require('mongoose');
-const fs = require('fs/promises');
+const mongoose = require("mongoose");
+const fs = require("fs/promises");
 const slugify = require("slugify");
 const Category = require("../models/category");
-const { ServerError, Get, NotFound, Update, Delete } = require("../ulti/response");
+const {
+  ServerError,
+  Get,
+  NotFound,
+  Update,
+  Delete,
+  Create,
+} = require("../ulti/response");
 
 exports.create = async (req, res) => {
-  const { name, filterField, normalField } = JSON.parse(req.body.categoryData);
-
+  const { name, filterField, normalField } = req.body;
   const newCategory = new Category({
     name,
     slug: slugify(name),
-    categoryImage: req.file.filename,
     normalField,
-    filterField
+    filterField,
   });
 
   try {
@@ -141,9 +146,9 @@ exports.get = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    deleteOldCategoryImg(req.params.id);
+    // deleteOldCategoryImg(req.params.id);
 
-    const { name, filterField, normalField } = JSON.parse(req.body.categoryData);
+    const { name, filterField, normalField } = req.body;
 
     const updatedCategory = await Category.findByIdAndUpdate(
       req.params.id,
@@ -151,16 +156,15 @@ exports.update = async (req, res) => {
         $set: {
           name,
           slug: slugify(name),
-          categoryImage: req.file.filename,
           normalField,
-          filterField
+          filterField,
         },
       },
-      { new: true, useFindAndModify: false })
-      .exec();
+      { new: true, useFindAndModify: false }
+    ).exec();
 
-      if (updatedCategory) return Update(res, { updatedCategory });
-      return NotFound(res, "Category");
+    if (updatedCategory) return Update(res, { updatedCategory });
+    return NotFound(res, "Category");
   } catch (error) {
     return ServerError(res, error.messages);
   }
@@ -168,6 +172,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    console.log(req.params.id);
     const deletedCategory = await Category.findByIdAndDelete(req.params.id);
     if (deletedCategory) return Delete(res, "Category has been deleted...");
     return NotFound(res, "Category");
@@ -179,15 +184,17 @@ exports.remove = async (req, res) => {
 deleteOldCategoryImg = async (id) => {
   try {
     const oldImg = await Category.aggregate()
-      .match({ "_id": mongoose.Types.ObjectId(id), })
-      .project({ "_id": 0, "categoryImage": 1 })
+      .match({ _id: mongoose.Types.ObjectId(id) })
+      .project({ _id: 0, categoryImage: 1 })
       .exec();
     // const imgBeforeUpdate = await Product.aggregate([{$match:{_id: mongoose.Types.ObjectId(req.params.id)}},
     //{$project:{productPictures: 1}}])
     // .exec();
     // oldImg.forEach(async item => await fs.unlink('/upload/' + item));
 
-    oldImg.forEach(async item => await fs.unlink('./uploads/' + item.categoryImage));
+    oldImg.forEach(
+      async (item) => await fs.unlink("./uploads/" + item.categoryImage)
+    );
   } catch (error) {
     return ServerError(res, error.messages);
   }

@@ -1,19 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { addCategory } from "../../actions/category.actions";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useHistory } from "react-router";
+import {
+  deleteCategory,
+  editCategory,
+  getCategory,
+} from "../../actions/category.actions";
 import "./style.css";
-function AddCategory(props) {
-  const history = useHistory();
+
+function EditCategory(props) {
   const dispatch = useDispatch();
-  const { register, control, handleSubmit } = useForm({
-    defaultValues: {
-      normalField: [{ name: "", value: "" }],
-      filterField: [{ name: "", value: "", type: "" }],
-    },
-  });
+  const history = useHistory();
+  const { id } = useParams();
+  const { register, control, handleSubmit, reset } = useForm();
+  const { category } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    dispatch(getCategory(id));
+  }, [dispatch, id]);
+  useEffect(() => {
+    reset(category);
+  }, [reset, category]);
   const {
     fields: normalField,
     append: normalAppend,
@@ -42,10 +51,12 @@ function AddCategory(props) {
       acc[index].value.push(cur.value);
       return acc;
     }, []);
-    dispatch(addCategory({ ...data, filterField: mappedFilterField }));
-    history.push("/categories");
+    dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
   };
-
+  const onDelete = () => {
+    history.push("/categories");
+    dispatch(deleteCategory(id));
+  };
   return (
     <Container>
       <div>
@@ -70,11 +81,11 @@ function AddCategory(props) {
             <ul className="form__list">
               {normalField.map((item, index) => {
                 return (
-                  <li key={item.id} className="form__list-item">
+                  <li key={item.id}>
                     <input
                       className="form__input"
                       {...register(`normalField.${index}.name`)}
-                      placeholder="Additional infomation for product"
+                      placeholder="Product info name"
                     />
                     <Button
                       variant="outline-danger"
@@ -103,21 +114,19 @@ function AddCategory(props) {
             <ul className="form__list">
               {filterField.map((item, index) => {
                 return (
-                  <li key={item.id} className="form__list-item">
+                  <li key={item.id}>
                     <input
                       className="form__input"
                       {...register(`filterField.${index}.name`)}
-                      placeholder="Filter field"
+                      placeholder="Product info name"
                     />
                     <input
                       className="form__input"
                       {...register(`filterField.${index}.value`)}
-                      placeholder="Filter value "
+                      placeholder="Product info "
                     />
-
                     <select
                       className="form__input"
-                      defaultValue={"single"}
                       {...register(`filterField.${index}.type`)}
                     >
                       <option value="single">Single</option>
@@ -136,11 +145,25 @@ function AddCategory(props) {
               })}
             </ul>
           </div>
-          <input type="submit" className="btn btn-success w-25 mt-3" />
+          <Button variant="success" className="mt-3 mr-2" type="submit">
+            Submit
+          </Button>
+          <Button variant="danger" className="mt-3 mr-2" onClick={onDelete}>
+            Delete this category
+          </Button>
+          <Button
+            variant="secondary"
+            className="mt-3"
+            onClick={() => {
+              history.push("/categories");
+            }}
+          >
+            Back
+          </Button>
         </form>
       </div>
     </Container>
   );
 }
 
-export default AddCategory;
+export default EditCategory;

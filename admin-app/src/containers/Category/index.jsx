@@ -265,7 +265,7 @@ function Category(props) {
     download: false,
     print: false,
     onRowClick: (rowData, rowMeta) => {
-      history.push(`category/${rowData[0]}`);
+      history.push(`category/edit/${rowData[0]}`);
     },
     selectableRowsHideCheckboxes: true,
   };

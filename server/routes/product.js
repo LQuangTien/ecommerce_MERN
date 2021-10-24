@@ -1,6 +1,6 @@
 const multer = require("multer");
 const express = require("express");
-const shortid = require("shortid");
+const slugify = require("slugify");
 
 const { requireSignin, isAdmin } = require("../middlewares");
 const {
@@ -20,9 +20,8 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    // cb(null, shortid.generate() + "-" + file.originalname);
-
-    cb(null, req.body.name + "-" + Date.now() + ".jpg");
+    const { name } = JSON.parse(req.body.productData);
+    cb(null, slugify(name) + "-" + Date.now() + ".jpg");
   },
 });
 const upload = multer({ storage });
@@ -49,9 +48,7 @@ router.delete(
 );
 router.get("/product/:id", getById);
 
-router.get("/products/search/:page/:perPage", search);
-router.get("/products/filter/:page/:perPage", getByQuery);
-router.get("/products", getAll);
-router.get("/products/:slug", getBySlug);
+router.get("/products/search/:page/:perPage", getByQuery);
+// router.get("/products/filter/:page/:perPage", getByQuery);
 
 module.exports = router;
