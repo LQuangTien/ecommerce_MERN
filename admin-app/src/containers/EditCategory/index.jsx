@@ -16,12 +16,21 @@ function EditCategory(props) {
   const { id } = useParams();
   const { register, control, handleSubmit, reset } = useForm();
   const { category } = useSelector((state) => state.categories);
-
+  let i = 0;
   useEffect(() => {
     dispatch(getCategory(id));
   }, [dispatch, id]);
   useEffect(() => {
-    reset(category);
+    if (category && Object.keys(category).length > 0) {
+      const mapperFilterField = category.filterField.reduce((result, field) => {
+        const fields = field.value.map((value, index) => ({
+          ...field,
+          value,
+        }));
+        return [...result, ...fields];
+      }, []);
+      reset({ ...category, filterField: mapperFilterField });
+    }
   }, [reset, category]);
   const {
     fields: normalField,
@@ -33,10 +42,6 @@ function EditCategory(props) {
     append: filterAppend,
     remove: filterRemove,
   } = useFieldArray({ control, name: "filterField" });
-  const isNumeric = (num) =>
-    (typeof num === "number" ||
-      (typeof num === "string" && num.trim() !== "")) &&
-    !isNaN(num);
   const onSubmit = (data) => {
     const mappedFilterField = data.filterField.reduce((acc, cur) => {
       const index = acc.findIndex((field) => field.name === cur.name);
@@ -44,7 +49,6 @@ function EditCategory(props) {
         acc.push({
           ...cur,
           value: [cur.value],
-          valueType: isNumeric(cur.value) ? "number" : "string",
         });
         return acc;
       }
@@ -114,7 +118,7 @@ function EditCategory(props) {
             <ul className="form__list">
               {filterField.map((item, index) => {
                 return (
-                  <li key={item.id}>
+                  <li key={`${item.id}_${item.value}`}>
                     <input
                       className="form__input"
                       {...register(`filterField.${index}.name`)}
@@ -125,18 +129,20 @@ function EditCategory(props) {
                       {...register(`filterField.${index}.value`)}
                       placeholder="Product info "
                     />
-                    <select
+                    {/* <select
                       className="form__input"
                       {...register(`filterField.${index}.type`)}
                     >
                       <option value="single">Single</option>
                       <option value="multiple">Multiple</option>
-                    </select>
+                    </select> */}
                     <Button
                       variant="outline-danger"
                       className="form__input--delete"
                       type="button"
-                      onClick={() => filterRemove(index)}
+                      onClick={() => {
+                        filterRemove(index);
+                      }}
                     >
                       X
                     </Button>

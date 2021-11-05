@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    const { name } = JSON.parse(req.body.productData);
+    const { name } = req.body;
     cb(null, slugify(name) + "-" + Date.now() + ".jpg");
   },
 });

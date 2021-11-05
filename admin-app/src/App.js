@@ -15,6 +15,7 @@ import Pages from "./containers/Pages";
 import ProductDetail from "./containers/ProductDetail";
 import AddCategory from "./containers/AddCategory";
 import EditCategory from "./containers/EditCategory";
+import AddProduct from "./containers/AddProduct";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -33,6 +34,7 @@ function App() {
         <Switch>
           <PrivateRoute exact path="/" component={Home} />
           <PrivateRoute exact path="/products" component={Products} />
+          <PrivateRoute exact path="/product/add" component={AddProduct} />
           <PrivateRoute exact path="/categories" component={Category} />
           <PrivateRoute exact path="/category/add" component={AddCategory} />
           <PrivateRoute
