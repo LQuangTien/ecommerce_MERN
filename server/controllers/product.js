@@ -17,25 +17,19 @@ const {
 
 exports.create = async (req, res) => {
   try {
-    const {
-      name,
-      categoryInfo,
-      ...other
-    } = JSON.parse(req.body.productData);
-
+    const { name, categoryInfo, ...other } = req.body;
+    const parseCate = categoryInfo.map((cate) => JSON.parse(cate));
     const pictures = req.files.map((file) => file.filename);
-
-    const color = categoryInfo.find(x => x.name === 'color').value;
-
+    const hasColor = parseCate.find((x) => x.name === "color");
+    const color = hasColor ? hasColor.value : new Date().getTime().toString();
     const newProduct = new Product({
       name: name + " " + color,
-      categoryInfo,
+      categoryInfo: parseCate,
       productPictures: pictures,
       ...other,
     });
 
     const savedProduct = await newProduct.save();
-    return Create(res, { savedProduct });
   } catch (error) {
     return ServerError(res, error.message);
   }
@@ -45,15 +39,11 @@ exports.update = async (req, res) => {
   try {
     deleteOldProductImg(req.params.id);
 
-    const {
-      name,
-      categoryInfo,
-      ...other
-    } = JSON.parse(req.body.productData);
+    const { name, categoryInfo, ...other } = JSON.parse(req.body.productData);
 
     const pictures = req.files.map((file) => file.filename);
 
-    const color = categoryInfo.find(x => x.name === 'color').value;
+    const color = categoryInfo.find((x) => x.name === "color").value;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
@@ -271,10 +261,10 @@ exports.getByQuery = async (req, res) => {
       const to = fromTo[1] === "" ? max : parseFloat(fromTo[1]);
 
       //###1
-      //Trường hợp filter cần xử lí ko nằm trong mảng categoryInfo thì xử lí bình thường, 
-      //còn filter nằm trong mảng categoryInfo thì phải sử dụng elemMatch 'categoryInfo.name' với filter 
+      //Trường hợp filter cần xử lí ko nằm trong mảng categoryInfo thì xử lí bình thường,
+      //còn filter nằm trong mảng categoryInfo thì phải sử dụng elemMatch 'categoryInfo.name' với filter
       //để tìm obj nằm trong mảng có tên khớp với filter sau đó elemMatch 'categoryInfo.value' để
-      //lấy ra giá trị thực của filter 
+      //lấy ra giá trị thực của filter
       //VD:model product như sau, ta có filter là quantity
       // {
       //   quantity: 100
@@ -286,22 +276,17 @@ exports.getByQuery = async (req, res) => {
       //   ]
       // }
 
-      const rangeQuery =
-      {
-        $match:
-        {
-          $or:
-            [
-              { [filter]: { $gte: from, $lte: to } },
-              {
-                categoryInfo:
-                {
-                  $elemMatch:
-                    { name: filter, value: { $gte: from, $lte: to } }
-                }
-              }
-            ]
-        }
+      const rangeQuery = {
+        $match: {
+          $or: [
+            { [filter]: { $gte: from, $lte: to } },
+            {
+              categoryInfo: {
+                $elemMatch: { name: filter, value: { $gte: from, $lte: to } },
+              },
+            },
+          ],
+        },
       };
 
       listQuery.push(rangeQuery);
@@ -312,22 +297,17 @@ exports.getByQuery = async (req, res) => {
         const collections = element.split(collectionFilter);
 
         //Tương tự ý tưởng của ###1
-        const collectionQuery =
-        {
-          $match:
-          {
-            $or:
-              [
-                { [filter]: { $in: collections } },
-                {
-                  categoryInfo:
-                  {
-                    $elemMatch:
-                      { name: filter, value: { $in: collections } }
-                  }
-                }
-              ]
-          }
+        const collectionQuery = {
+          $match: {
+            $or: [
+              { [filter]: { $in: collections } },
+              {
+                categoryInfo: {
+                  $elemMatch: { name: filter, value: { $in: collections } },
+                },
+              },
+            ],
+          },
         };
 
         listQuery.push(collectionQuery);
@@ -336,24 +316,19 @@ exports.getByQuery = async (req, res) => {
         //vd: category: điện thoại , thương hiệu: asus
 
         //Tương tự ý tưởng của ###1
-        const singeQuery =
-        {
-          $match:
-          {
-            $or:
-              [
-                { [filter]: element },
-                {
-                  categoryInfo:
-                  {
-                    $elemMatch:
-                      { name: filter, value: element }
-                  }
-                }
-              ]
-          }
+        const singeQuery = {
+          $match: {
+            $or: [
+              { [filter]: element },
+              {
+                categoryInfo: {
+                  $elemMatch: { name: filter, value: element },
+                },
+              },
+            ],
+          },
         };
-        
+
         listQuery.push(singeQuery);
       }
     }

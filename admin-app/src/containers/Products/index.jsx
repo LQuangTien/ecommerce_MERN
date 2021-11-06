@@ -160,7 +160,6 @@ function Products(props) {
   //   </CustomModal>
   // );
   const history = useHistory();
-  const categoriesState = useSelector((state) => state.categories);
   const { products } = useSelector((state) => state.products);
   const columns = [
     {
@@ -172,7 +171,6 @@ function Products(props) {
       },
     },
     "Name",
-    "Brand",
     "Regular Price",
     "Price",
     "Sale",
@@ -205,12 +203,11 @@ function Products(props) {
   const data = products.map((product) => [
     product._id,
     product.name,
-    product.brand,
     product.regularPrice,
     product.salePrice,
     product.sale,
     product.quantity,
-    product.soldAmount,
+    product.soldAmount || 0,
   ]);
   const renderProductsTable = () =>
     data && (
@@ -228,7 +225,14 @@ function Products(props) {
           <Col md={12}>
             <div className="d-flex justify-content-between">
               <h3>Products</h3>
-              <Button variant="primary">Add</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  history.push("/product/add");
+                }}
+              >
+                Add
+              </Button>
             </div>
           </Col>
         </Row>
