@@ -64,6 +64,7 @@ function AddProduct(props) {
       form.append("productPictures", pic.file);
     }
     dispatch(addProduct(form));
+    history.push("/products");
   };
 
   return (
