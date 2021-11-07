@@ -1,5 +1,5 @@
 const { check, validationResult } = require("express-validator");
-const { BadRequest } = require("../ulti/Response");
+const { BadRequest } = require("../ulti/response");
 exports.validateSignup = [
   check("firstName").notEmpty().withMessage("First name is required"),
   check("lastName").notEmpty().withMessage("Last name is required"),

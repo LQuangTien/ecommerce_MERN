@@ -12,7 +12,7 @@ import Products from "./containers/Products";
 import Signin from "./containers/Signin";
 import Signup from "./containers/Signup";
 import Pages from "./containers/Pages";
-import ProductDetail from "./containers/ProductDetail";
+import EditProduct from "./containers/EditProduct";
 import AddCategory from "./containers/AddCategory";
 import EditCategory from "./containers/EditCategory";
 import AddProduct from "./containers/AddProduct";
@@ -42,7 +42,7 @@ function App() {
             path="/category/edit/:id"
             component={EditCategory}
           />
-          <PrivateRoute exact path="/product/:id" component={ProductDetail} />
+          <PrivateRoute exact path="/product/:id" component={EditProduct} />
           {/* <PrivateRoute exact path="/orders" component={Orders} /> */}
           <Route path="/signup" component={Signup} />
           <Route path="/signin" component={Signin} />
