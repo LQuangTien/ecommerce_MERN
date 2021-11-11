@@ -129,13 +129,6 @@ function EditCategory(props) {
                       {...register(`filterField.${index}.value`)}
                       placeholder="Product info "
                     />
-                    {/* <select
-                      className="form__input"
-                      {...register(`filterField.${index}.type`)}
-                    >
-                      <option value="single">Single</option>
-                      <option value="multiple">Multiple</option>
-                    </select> */}
                     <Button
                       variant="outline-danger"
                       className="form__input--delete"

@@ -24,10 +24,7 @@ function AddCategory(props) {
     append: filterAppend,
     remove: filterRemove,
   } = useFieldArray({ control, name: "filterField" });
-  const isNumeric = (num) =>
-    (typeof num === "number" ||
-      (typeof num === "string" && num.trim() !== "")) &&
-    !isNaN(num);
+
   const onSubmit = (data) => {
     const mappedFilterField = data.filterField.reduce((acc, cur) => {
       const index = acc.findIndex((field) => field.name === cur.name);
@@ -35,14 +32,31 @@ function AddCategory(props) {
         acc.push({
           ...cur,
           value: [cur.value],
-          valueType: isNumeric(cur.value) ? "number" : "string",
         });
         return acc;
       }
       acc[index].value.push(cur.value);
       return acc;
     }, []);
-    dispatch(addCategory({ ...data, filterField: mappedFilterField }));
+    const mappedNormalField = data.normalField.reduce((acc, cur) => {
+      const index = acc.findIndex((field) => field.name === cur.name);
+      if (index < 0) {
+        acc.push({
+          ...cur,
+          value: [cur.value],
+        });
+        return acc;
+      }
+      acc[index].value.push(cur.value);
+      return acc;
+    }, []);
+    dispatch(
+      addCategory({
+        ...data,
+        filterField: mappedFilterField,
+        normalField: mappedNormalField,
+      })
+    );
     history.push("/categories");
   };
 
@@ -95,7 +109,7 @@ function AddCategory(props) {
               className="form__button"
               type="button"
               onClick={() => {
-                filterAppend({ name: "", value: "", type: "" });
+                filterAppend({ name: "", value: "" });
               }}
             >
               +
@@ -114,15 +128,6 @@ function AddCategory(props) {
                       {...register(`filterField.${index}.value`)}
                       placeholder="Filter value "
                     />
-
-                    <select
-                      className="form__input"
-                      defaultValue={"single"}
-                      {...register(`filterField.${index}.type`)}
-                    >
-                      <option value="single">Single</option>
-                      <option value="multiple">Multiple</option>
-                    </select>
                     <Button
                       variant="outline-danger"
                       className="form__input--delete"

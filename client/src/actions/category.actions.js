@@ -7,13 +7,6 @@ export const getAllCategory = () => {
 
     const res = await axios.get("category/");
     if (res.status === 200) {
-      // const result = res.data.data.map((category) => {
-      //   return {
-      //     name: category.name,
-      //     brands: category.filterField.find((field) => field.name === "brand")
-      //       .value,
-      //   };
-      // });
       dispatch({
         type: categoryConstants.GET_ALL_CATEGORY_SUCCESS,
         payload: { categories: res.data.data },

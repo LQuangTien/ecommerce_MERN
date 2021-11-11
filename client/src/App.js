@@ -47,7 +47,7 @@ function App() {
               <OrderPage />
             </PrivateRoute>
             <Route path="/product/:productId" component={ProductDetailsPage} />
-            <Route path="/products/:brand" component={ProductPage} />
+            <Route path="/products/:category" component={ProductPage} />
           </Switch>
         </Layout>
       </BrowserRouter>
