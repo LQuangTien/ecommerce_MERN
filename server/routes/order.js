@@ -1,7 +1,7 @@
 const express = require("express");
 
 const { requireSignin } = require("../middlewares");
-const { add, get, getById } = require("../controllers/order");
+const { add, get, getById, test } = require("../controllers/order");
 
 const router = express.Router();
 

@@ -3,34 +3,35 @@ import { productConstants } from "./constants";
 const initParams = {
   page: 1,
   pageSize: 8,
-  brand: "",
   from: 0,
   to: 0,
 };
 export const getByQuery = (params, size = initParams.pageSize) => {
   Object.keys(params).forEach(
-    (key) => params[key] === undefined && delete params[key]
+    (key) =>
+      (params[key] === undefined || params[key].length === 0) &&
+      delete params[key]
   );
-  const { page, pageSize, brand, from, to } = {
+  const { page, pageSize, from, to, ...dynamicParams } = {
     ...initParams,
     ...params,
     pageSize: size,
   };
-  const brandQuery = `brand=${brand}`;
-  let price = "";
+  let price = "..";
   if (from && to) {
-    price = `price=${from}..${to}`;
+    price = `${from}..${to}`;
   } else if (from && !to) {
-    price = `price=${from}..`;
+    price = `${from}..`;
   } else if (!from && to) {
-    price = `price=..${to}`;
+    price = `..${to}`;
   }
+  console.log({ ...dynamicParams, salePrice: price });
   return async (dispatch) => {
     try {
       dispatch({ type: productConstants.GET_PRODUCT_BY_QUERY_REQUEST });
-      const res = await axios.get(
-        `products/filter/${page}/${pageSize}?${brandQuery}&${price}`
-      );
+      const res = await axios.get(`products/search/${page}/${pageSize}`, {
+        params: { ...dynamicParams, salePrice: price },
+      });
       const result = {
         ...res.data.data,
         products: res.data.data.products.map((product) => ({

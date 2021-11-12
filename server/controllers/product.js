@@ -1,19 +1,28 @@
-const mongoose = require('mongoose');
-const fs = require('fs/promises');
-const Product = require('../models/product');
-const Category = require('../models/category');
-const shortid = require('shortid');
-const slugify = require('slugify');
-const { ServerError, Create, Response, Delete, Get, Update, NotFound, BadRequest } = require('../ulti/response');
+const mongoose = require("mongoose");
+const fs = require("fs/promises");
+const Product = require("../models/product");
+const Category = require("../models/category");
+const shortid = require("shortid");
+const slugify = require("slugify");
+const {
+  ServerError,
+  Create,
+  Response,
+  Delete,
+  Get,
+  Update,
+  NotFound,
+  BadRequest,
+} = require("../ulti/response");
 
 exports.create = async (req, res) => {
   try {
     const { name, categoryInfo, ...other } = req.body;
     const parseCate = categoryInfo.map((cate) => JSON.parse(cate));
     const pictures = req.files.map((file) => file.filename);
-    const hasColor = parseCate.find((x) => x.name === 'color');
+    const hasColor = parseCate.find((x) => x.name === "color");
     const newProduct = new Product({
-      name: hasColor ? name + ' ' + hasColor.value : name,
+      name: hasColor ? name + " " + hasColor.value : name,
       categoryInfo: parseCate,
       productPictures: pictures,
       ...other,
@@ -30,31 +39,30 @@ exports.update = async (req, res) => {
   try {
     const { name, categoryInfo, ...other } = req.body;
     const parseCate = categoryInfo.map((cate) => JSON.parse(cate));
+    console.log(parseCate);
     let pictures;
+    const updateOption = {
+      name,
+      categoryInfo: parseCate,
+      ...other,
+    };
     if (req.files.length > 0) {
       if (req.body.productPictures) {
         deleteOldProductImg(req.params.id);
       }
       pictures = req.files.map((file) => file.filename);
-    } else {
-      pictures = req.body.productPictures;
+      updateOption.productPictures = pictures;
     }
-
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       {
-        $set: {
-          name,
-          categoryInfo: parseCate,
-          productPictures: pictures,
-          ...other,
-        },
+        $set: updateOption,
       },
       { new: true, useFindAndModify: false }
     ).exec();
 
     if (updatedProduct) return Update(res, { updatedProduct });
-    return NotFound(res, 'Product');
+    return NotFound(res, "Product");
   } catch (error) {
     return ServerError(res, error.message);
   }
@@ -63,8 +71,8 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (deletedProduct) return Delete(res, 'Product has been deleted...');
-    return NotFound(res, 'Product');
+    if (deletedProduct) return Delete(res, "Product has been deleted...");
+    return NotFound(res, "Product");
   } catch (error) {
     return ServerError(res, error.message);
   }
@@ -74,7 +82,7 @@ exports.getById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) return Get(res, { product });
-    return NotFound(res, 'Product');
+    return NotFound(res, "Product");
   } catch (error) {
     return ServerError(res, error.message);
   }
@@ -204,7 +212,7 @@ exports.getByQuery = async (req, res) => {
 
   const listQuery = [];
 
-  if (q === 'all') {
+  if (q === "all") {
     const searchQuery = {
       $match: { name: { $exists: true } },
     };
@@ -215,19 +223,19 @@ exports.getByQuery = async (req, res) => {
     const searchNameRgx = rgx(searchName);
 
     const searchQuery = {
-      $match: { name: { $regex: searchNameRgx, $options: 'i' } },
+      $match: { name: { $regex: searchNameRgx, $options: "i" } },
     };
     listQuery.push(searchQuery);
   }
 
   //"asc" là tăng dần còn "desc" là giảm dần
   if (sortBy) {
-    const order = sortOrder === 'asc' ? 1 : -1;
+    const order = sortOrder === "asc" ? 1 : -1;
     listQuery.push({ $sort: { [sortBy]: order } });
   }
 
-  const rangeFilter = '..';
-  const collectionFilter = ' ';
+  const rangeFilter = "..";
+  const collectionFilter = " ";
   for (const filter in filters) {
     const element = filters[filter];
 
@@ -252,8 +260,8 @@ exports.getByQuery = async (req, res) => {
 
       const fromTo = fromToRawInput.map(selectValueAndRemoveUnit);
 
-      const from = fromTo[0] === '' ? min : parseFloat(fromTo[0]);
-      const to = fromTo[1] === '' ? max : parseFloat(fromTo[1]);
+      const from = fromTo[0] === "" ? min : parseFloat(fromTo[0]);
+      const to = fromTo[1] === "" ? max : parseFloat(fromTo[1]);
 
       //###1
       //Trường hợp filter cần xử lí ko nằm trong mảng categoryInfo thì xử lí bình thường,
@@ -338,7 +346,7 @@ exports.getByQuery = async (req, res) => {
       return Get(res, result);
     }
 
-    NotFound(res, 'Product');
+    NotFound(res, "Product");
   } catch (error) {
     return ServerError(res, error.messages);
   }
@@ -367,13 +375,15 @@ async function deleteOldProductImg(id) {
   // .exec();
   // oldImg.forEach(async item => await fs.unlink('/upload/' + item));
 
-  oldImg[0].productPictures.forEach(async (item) => await fs.unlink('./uploads/' + item));
+  oldImg[0].productPictures.forEach(
+    async (item) => await fs.unlink("./uploads/" + item)
+  );
 }
 
 exports.getAll = async (req, res) => {
   try {
     const products = await Product.find();
-    if (!products) return NotFound(res, 'Products');
+    if (!products) return NotFound(res, "Products");
     return Get(res, products);
   } catch (error) {
     return ServerError(res, error.messages);

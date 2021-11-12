@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import ImageUploading from "react-images-uploading";
 import "./style.css";
 import { addProduct } from "../../actions/product.actions";
+
 function AddProduct(props) {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -22,12 +23,21 @@ function AddProduct(props) {
   const [images, setImages] = useState([]);
   const maxNumber = 5;
   const { categories } = useSelector((state) => state.categories);
+
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
     console.log(...imageList.map((img) => img.file), addUpdateIndex);
     setImages(imageList);
   };
-  const { register, control, handleSubmit, setValue, getValues } = useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    reset,
+    resetField,
+  } = useForm({
     defaultValues: {
       name: "",
       regularPrice: "",
@@ -39,14 +49,13 @@ function AddProduct(props) {
       category: "",
     },
   });
-  // categoryInfo,
-
   const { fields: categoryInfo } = useFieldArray({
     control,
     name: "categoryInfo",
   });
 
   const onSubmit = (data) => {
+    console.log(data);
     const form = new FormData();
     Object.keys(data).forEach((key, index) => {
       if (!["category", "categoryInfo", "productPictures"].includes(key)) {
@@ -55,10 +64,12 @@ function AddProduct(props) {
     });
     form.append("category", category.name);
     for (let field of data.categoryInfo) {
-      form.append(
-        "categoryInfo",
-        JSON.stringify({ name: field.name, value: field.value })
-      );
+      if (field.value) {
+        form.append(
+          "categoryInfo",
+          JSON.stringify({ name: field.name, value: field.value })
+        );
+      }
     }
     for (let pic of images) {
       form.append("productPictures", pic.file);
@@ -144,9 +155,32 @@ function AddProduct(props) {
               as="select"
               value={(category && category.name) || -1}
               onChange={(e) => {
+                console.log(getValues());
+
+                if (category) {
+                  const prevFieldCount =
+                    category.filterField.length + category.normalField.length;
+                  for (let i = 0; i < prevFieldCount; i++) {
+                    setValue(`categoryInfo.${i}.name`, "");
+                    setValue(`categoryInfo.${i}.value`, "");
+                  }
+                }
+
                 const cate = categories.find(
                   (cate) => cate.name === e.target.value
                 );
+                for (let i = 0; i < cate.filterField.length; i++) {
+                  setValue(`categoryInfo.${i}.name`, cate.filterField[i].name);
+                }
+                let j = 0;
+                for (
+                  let k = cate.filterField.length;
+                  k < cate.filterField.length + cate.normalField.length;
+                  k++
+                ) {
+                  setValue(`categoryInfo.${k}.name`, cate.normalField[j].name);
+                  j++;
+                }
                 setCategory(cate);
               }}
             >
@@ -177,12 +211,36 @@ function AddProduct(props) {
                   as="select"
                   {...register(`categoryInfo.${index}.value`)}
                 >
+                  <option value={null}>Choose your option</option>
                   {field.value.map((value) => (
                     <option value={value} key={value}>
                       {value}
                     </option>
                   ))}
                 </Form.Control>
+              </div>
+            ))}
+          {category &&
+            category.normalField.map((field, index) => (
+              <div>
+                <Form.Label className="form__title d-block">
+                  {field.name}
+                </Form.Label>
+                <Form.Control
+                  hidden
+                  value={field.name}
+                  {...register(
+                    `categoryInfo.${category.filterField.length + index}.name`
+                  )}
+                  placeholder="Description"
+                />
+                <Form.Control
+                  className="form__input w-100"
+                  {...register(
+                    `categoryInfo.${category.filterField.length + index}.value`
+                  )}
+                  placeholder="Product infomation"
+                />
               </div>
             ))}
           <ImageUploading

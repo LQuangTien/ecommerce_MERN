@@ -211,11 +211,11 @@ const Header = (props) => {
     });
     return sum;
   };
-  const renderCategories = (categories) => {
-    return categories.map((category) => (
-      <li key={category} className="main-menu-item">
-        <Link className="main-menu-link" to={"/products/" + category}>
-          <span> {category}</span>
+  const renderCategories = () => {
+    return categoryState.categories.map((category) => (
+      <li key={category._id} className="main-menu-item">
+        <Link className="main-menu-link" to={"/products/" + category.name}>
+          <span>{category.name}</span>
         </Link>
       </li>
     ));
@@ -266,21 +266,9 @@ const Header = (props) => {
         <div className="header__bottom">
           <div className="grid wide menuHeader">
             <div className="row menuHeader">
-              <div className="col lg-3">
-                <ul>All category</ul>
-              </div>
-              <div className="col lg-9">
+              <div className="col lg-o-3 lg-9">
                 <ul>
-                  {categoryState.categories.length > 0 &&
-                    renderCategories(
-                      categoryState.categories.map(
-                        (category) =>
-                          category.name === "Mobile" &&
-                          category.filterField.find(
-                            (field) => field.name === "brand"
-                          ).value
-                      )[0]
-                    )}
+                  {categoryState.categories.length > 0 && renderCategories()}
                 </ul>
               </div>
             </div>
