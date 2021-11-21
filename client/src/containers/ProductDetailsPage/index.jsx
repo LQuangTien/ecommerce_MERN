@@ -83,18 +83,16 @@ const ProductDetailsPage = (props) => {
                 <span className="detail__price--current">
                   ${formatThousand(product.productDetails.price)}
                 </span>
-                <span className="detail__price--discount">(Save 20%)</span>
+                <span className="detail__price--discount">
+                  (Save {product.productDetails.sale}%)
+                </span>
                 <span className="detail__price--old">
-                  ${formatThousand(12000)}
+                  ${formatThousand(product.productDetails.regularPrice)}
                 </span>
               </p>
               <p className="detail__tax">Tax Excluded</p>
               <table className="detail__brand">
                 <tbody>
-                  <tr>
-                    <th>Brand</th>
-                    <td>{product.productDetails.category}</td>
-                  </tr>
                   <tr>
                     <th>Stock:</th>
                     <td>{formatThousand(product.productDetails.quantity)}</td>
@@ -111,38 +109,16 @@ const ProductDetailsPage = (props) => {
                   </p>
                 </div>
                 <p className="system__title">
-                  <strong>Mobile system:</strong> {product.productDetails.name}
+                  <strong>System:</strong>
                 </p>
                 <table className="system__table">
                   <tbody>
-                    <tr className="system__table-row">
-                      <th>Insurance</th>
-                      <td>{product.productDetails.insurance}</td>
-                    </tr>
-                    <tr className="system__table-row">
-                      <th>Battery</th>
-                      <td>{product.productDetails.battery}</td>
-                    </tr>
-                    <tr className="system__table-row">
-                      <th>Chipset</th>
-                      <td>{product.productDetails.chipset}</td>
-                    </tr>
-                    <tr className="system__table-row">
-                      <th>Screen</th>
-                      <td>{product.productDetails.screen}</td>
-                    </tr>
-                    <tr className="system__table-row">
-                      <th>Screen Size</th>
-                      <td>{product.productDetails.screenSize}</td>
-                    </tr>
-                    <tr className="system__table-row">
-                      <th>Front Camera</th>
-                      <td>{product.productDetails.frontCamera}</td>
-                    </tr>
-                    <tr className="system__table-row">
-                      <th>Rear Camera</th>
-                      <td>{product.productDetails.rearCamera}</td>
-                    </tr>
+                    {product.productDetails.categoryInfo.map((info) => (
+                      <tr className="system__table-row">
+                        <th>{info.name}</th>
+                        <td>{info.value}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -155,7 +131,7 @@ const ProductDetailsPage = (props) => {
             {products &&
               Object.keys(products).map((key, index) => (
                 <div className="product__card col lg-3" key={products[key]._id}>
-                  <Link to={"/product/" + products[key]._id} className="">
+                  <a href={"/product/" + products[key]._id} className="">
                     <div className="product__image">
                       <img
                         src={generatePictureUrl(
@@ -184,7 +160,7 @@ const ProductDetailsPage = (props) => {
                         <IoStar />
                       </div>
                     </div>
-                  </Link>
+                  </a>
                 </div>
               ))}
           </div>

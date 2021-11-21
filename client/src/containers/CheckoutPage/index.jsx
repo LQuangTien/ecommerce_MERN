@@ -110,7 +110,7 @@ function CheckoutPage() {
       addressId: selectedAddress._id,
       totalAmount: getTotalPrice(),
       items,
-      status: "pending",
+      status: "in progress",
       paymentOption: "cod",
     };
     dispatch(addOrder(order));

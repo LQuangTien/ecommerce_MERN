@@ -8,6 +8,6 @@ const router = express.Router();
 router.get("/user/address", requireSignin, get);
 router.post("/user/address/add", requireSignin, add);
 router.put("/user/address/update", requireSignin, update);
-router.delete("/user/address/delete", requireSignin, deleteAddress);
+router.put("/user/address/delete", requireSignin, deleteAddress);
 
 module.exports = router;

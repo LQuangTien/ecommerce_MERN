@@ -7,7 +7,7 @@ import {
   IoSearchSharp,
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { getAllCategory, getCart, login, signout, signup } from "../../actions";
 import kinzy from "../../images/logo/kinzy.jpg";
 import Anchor from "../UI/Anchor";
@@ -22,8 +22,10 @@ const Header = (props) => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [search, setSearch] = useState("");
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const history = useHistory();
   const categoryState = useSelector((state) => state.categories);
   const { cartItems } = useSelector((state) => state.cart);
   useEffect(() => {
@@ -43,6 +45,15 @@ const Header = (props) => {
   const handleLogout = (e) => {
     e.preventDefault();
     dispatch(signout());
+  };
+  const handleSearch = () => {
+    history.push(`/search?q=${search}&page=1`);
+  };
+  const handleKeyDown = (e) => {
+    console.log(e.key);
+    if (e.key === "Enter") {
+      history.push(`/search?q=${search}&page=1`);
+    }
   };
   const renderSigninModal = () => (
     <Modal
@@ -240,10 +251,13 @@ const Header = (props) => {
               </Link>
               <div className="search-bar col lg-6">
                 <Input
+                  value={search}
+                  onKeyDown={handleKeyDown}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="search-bar__input"
                   placeholder="Search our item here"
                 />
-                <button className="search-bar__button">
+                <button onClick={handleSearch} className="search-bar__button">
                   <IoSearchSharp className="search-bar__button-icon" />
                 </button>
               </div>

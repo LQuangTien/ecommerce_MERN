@@ -12,7 +12,7 @@ export const getAddress = () => {
       });
     } catch (error) {
       dispatch({
-        type: userConstants.ADD_ADDRESS_FAILURE,
+        type: userConstants.GET_ADDRESS_FAILURE,
         payload: { error: error.response.data.error },
       });
     }
@@ -41,6 +41,24 @@ export const updateAddress = (adr) => {
     try {
       dispatch({ type: userConstants.UPDATE_ADDRESS_REQUEST });
       const res = await axios.put("/user/address/update", { address: adr });
+      const { address } = res.data.data;
+      dispatch({
+        type: userConstants.UPDATE_ADDRESS_SUCCESS,
+        payload: { address },
+      });
+    } catch (error) {
+      dispatch({
+        type: userConstants.UPDATE_ADDRESS_FAILURE,
+        payload: { error: error.response.data.error },
+      });
+    }
+  };
+};
+export const deleteAddress = (adr) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: userConstants.UPDATE_ADDRESS_REQUEST });
+      const res = await axios.put("/user/address/delete", { address: adr });
       const { address } = res.data.data;
       dispatch({
         type: userConstants.UPDATE_ADDRESS_SUCCESS,

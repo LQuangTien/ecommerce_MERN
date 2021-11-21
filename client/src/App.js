@@ -12,6 +12,7 @@ import OrderDetailPage from "./containers/OrderDetailPage";
 import OrderPage from "./containers/OrderPage";
 import ProductDetailsPage from "./containers/ProductDetailsPage";
 import ProductPage from "./containers/ProductsPage";
+import SearchPage from "./containers/SearchPage";
 import PrivateRoute from "./helpers/privateRoute";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
             </PrivateRoute>
             <Route path="/product/:productId" component={ProductDetailsPage} />
             <Route path="/products/:category" component={ProductPage} />
+            <Route path="/search" component={SearchPage} />
           </Switch>
         </Layout>
       </BrowserRouter>

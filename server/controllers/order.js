@@ -5,18 +5,18 @@ const axios = require("axios").default;
 const Cart = require("../models/cart");
 const Order = require("../models/order");
 const Address = require("../models/address");
-const ZaloPay =require("../services/ZaloPay")
+const ZaloPay = require("../services/ZaloPay");
 const { ServerError, BadRequest, Create, Get } = require("../ulti/response");
 exports.add = (req, res) => {
   req.body.user = req.user._id;
   req.body.process = [
     {
-      type: "ordered",
+      type: "in progress",
       date: new Date(),
       isCompleted: true,
     },
     {
-      type: "packed",
+      type: "ordered",
       isCompleted: false,
     },
     {
@@ -35,6 +35,7 @@ exports.add = (req, res) => {
     Cart.findOneAndDelete({ user: req.user._id }).exec((error, cart) => {
       if (error) return ServerError(res, error);
       if (!cart) return BadRequest(res, "Cart does not exist");
+
       Order.populate(
         order,
         {
@@ -42,11 +43,6 @@ exports.add = (req, res) => {
           populate: {
             path: "productId",
             model: "Product",
-            populate: {
-              path: "category",
-              model: "Category",
-              select: "name",
-            },
             select: "_id name category productPictures",
           },
           select: "_id status items",
@@ -98,10 +94,10 @@ exports.getById = (req, res) => {
 };
 
 //http://localhost:8000/api/user/order/momoPayment?money=80000
-exports.payment = (req,res)=>{
-  const newOrder = createOrder(req,res);
-  ZaloPay.createOrder(newOrder); 
-}
+exports.payment = (req, res) => {
+  const newOrder = createOrder(req, res);
+  ZaloPay.createOrder(newOrder);
+};
 
 createOrder = (req, res) => {
   req.body.user = req.user._id;
@@ -149,13 +145,13 @@ createOrder = (req, res) => {
         (error, order) => {
           if (error) return ServerError(res, error);
           if (!order) return BadRequest(res, "Orders does not exist");
-          if (req.body.paymentOption ==="cod") return Create(res, { order });
+          if (req.body.paymentOption === "cod") return Create(res, { order });
           return order;
         }
       );
     });
   });
-}; 
+};
 
 // exports.VerifyZaloPayment =  (req, res) => {
 //   let result = {};
@@ -166,7 +162,6 @@ createOrder = (req, res) => {
 
 //     let mac = CryptoJS.HmacSHA256(dataStr, process.env.ZALO_KEY_FOR_ZALO_REQUEST).toString();
 //     console.log("mac =", mac);
-
 
 //     // kiểm tra callback hợp lệ (đến từ ZaloPay server)
 //     if (reqMac !== mac) {

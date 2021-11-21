@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 
-const Input = (props) => {
+const Input = (props, ...rest) => {
   return (
     <input
       className={"input " + props.className}
@@ -9,6 +9,7 @@ const Input = (props) => {
       value={props.value}
       onChange={props.onChange}
       placeholder={props.placeholder}
+      onKeyDown={props.onKeyDown}
     />
   );
 };

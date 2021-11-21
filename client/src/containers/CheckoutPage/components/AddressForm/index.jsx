@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addAddress, updateAddress } from "../../../../actions";
+import { addAddress, deleteAddress, updateAddress } from "../../../../actions";
 import Button from "../../../../components/UI/Button";
 import "./style.css";
 function AddressForm(props) {
@@ -47,6 +47,23 @@ function AddressForm(props) {
         type,
       };
       dispatch(updateAddress(addressInfo));
+      handleUpdate();
+    }
+  };
+  const onDelete = (id) => {
+    if (handleUpdate) {
+      const addressInfo = {
+        _id,
+        name,
+        phone,
+        address,
+        ward,
+        district,
+        city,
+        alternativePhone,
+        type,
+      };
+      dispatch(deleteAddress(addressInfo));
       handleUpdate();
     }
   };
@@ -160,6 +177,7 @@ function AddressForm(props) {
           <Button
             title="Delete"
             className="address__btn address__btn--delete "
+            onClick={onDelete}
           />
         )}
       </div>

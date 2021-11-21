@@ -239,12 +239,12 @@ exports.getByQuery = async (req, res) => {
 };
 
 function pagination(products, page = 1, perPage = 8) {
-  const previousItem = (page - 1) * perPage;
+  const previousItem = (page - 1) * Number(perPage);
 
   return {
     result: {
-      products: products.slice(previousItem, previousItem + perPage),
-      totalPage: Math.ceil(products.length / perPage),
+      products: products.slice(previousItem, previousItem + Number(perPage)),
+      totalPage: Math.ceil(products.length / Number(perPage)),
       currentPage: page,
       totalProduct: products.length,
     },

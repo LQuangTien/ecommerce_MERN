@@ -1,5 +1,12 @@
 const Address = require("../models/address");
-const { ServerError, Create, Update, Get, Delete } = require("../ulti/response");
+const {
+  ServerError,
+  Create,
+  Update,
+  Get,
+  Delete,
+  NotFound,
+} = require("../ulti/response");
 
 exports.add = (req, res) => {
   const { address } = req.body;
@@ -35,15 +42,18 @@ exports.update = (req, res) => {
 
 exports.deleteAddress = async (req, res) => {
   const { address } = req.body;
-  try {
-    await Address.findByIdAndDelete(address._id);
-
-    if (updatedProduct) return Get(res,"Address has been deleted...");
-    return NotFound(res, "Address");
-
-  } catch (error) {
-    return ServerError(res, error.message);
-  }
+  Address.findOneAndUpdate(
+    { user: req.user._id, "address._id": address._id },
+    {
+      $pull: {
+        address: { _id: address._id },
+      },
+    },
+    { new: true }
+  ).exec((error, userAddress) => {
+    if (error) return ServerError(res, error.message);
+    if (userAddress) return Update(res, { userAddress });
+  });
 };
 
 exports.get = (req, res) => {

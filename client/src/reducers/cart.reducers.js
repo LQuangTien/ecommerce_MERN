@@ -47,6 +47,7 @@ const cartReducer = (state = initState, action) => {
       state = {
         ...state,
         updating: false,
+        cartItems: {},
         error: action.payload.error,
       };
       break;

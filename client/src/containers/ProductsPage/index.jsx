@@ -13,21 +13,22 @@ import { getByQuery } from "../../actions";
 const INIT_PRICE_STATE = [0, 0];
 const ORDER_OPTIONS = [
   {
-    name: "Newest",
     value: "newest",
+    name: "Newest",
   },
   {
+    value: "priceLowToHigh",
     name: "Price - Low to high",
-    value: "asc",
   },
   {
+    value: "priceHighToLow",
     name: "Price - High to low",
-    value: "desc",
   },
 ];
 function ProductPage(props) {
   const history = useHistory();
   const dispatch = useDispatch();
+  console.log(useHistory());
   const { category } = useParams();
   const search = useLocation().search;
   const { page, from, to, orderBy, ...otherSearchParam } =
@@ -70,7 +71,8 @@ function ProductPage(props) {
     setPrices(INIT_PRICE_STATE);
     setQuery({});
     setSearchParam({});
-  }, [category]);
+    history.push({ search: "" });
+  }, [category, history]);
   useEffect(() => {
     dispatch(getByQuery({ ...searchParam, category }));
   }, [dispatch, searchParam, category]);
@@ -115,6 +117,12 @@ function ProductPage(props) {
     history.push({
       search: searchString,
     });
+  };
+  const onOrderChange = (value) => {
+    setOrder(value);
+    const newQuery = { orderBy: value };
+    setQuery({ ...query, ...newQuery });
+    updateQueryString(newQuery);
   };
   /** End Function */
 
@@ -307,17 +315,18 @@ function ProductPage(props) {
                 <>
                   <div className="row">
                     <div className="col col-1">
-                      {/* <select
+                      <select
                         name="order"
                         className="product__selectbox"
                         value={order}
+                        onChange={(e) => onOrderChange(e.target.value)}
                       >
                         {ORDER_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>
                             {option.name}
                           </option>
                         ))}
-                      </select> */}
+                      </select>
                     </div>
                   </div>
                   <div className="row">
