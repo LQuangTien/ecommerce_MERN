@@ -35,7 +35,7 @@ const express = require("express");
 const shortid = require("shortid");
 
 const { requireSignin, isAdmin } = require("../middlewares");
-const { get, create, update, remove, getAll } = require("../controllers/category");
+const { get, create, update, remove, getAll,findDiffFromTwoObj } = require("../controllers/category");
 
 const router = express.Router();
 const storage = multer.diskStorage({

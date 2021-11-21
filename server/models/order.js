@@ -32,10 +32,10 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
-    status: {
-      type: String,
-      enum: ["pending", "completed", "cancelled", "refund"],
-    },
+    // status: {
+    //   type: String,
+    //   enum: ["pending", "completed", "cancelled", "refund"],
+    // },
     paymentOption: {
       type: String,
       enum: ["cod", "card"],
@@ -45,7 +45,7 @@ const orderSchema = new mongoose.Schema(
       {
         type: {
           type: String,
-          enum: ["ordered", "packed", "shipped", "delivered"],
+          enum: ["in progress","ordered", "shipped", "delivered"],
           required: true,
         },
         date: {
