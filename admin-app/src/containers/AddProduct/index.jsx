@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Col,
@@ -9,12 +9,11 @@ import {
   Row,
 } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { addCategory } from "../../actions/category.actions";
-import { useHistory } from "react-router-dom";
 import ImageUploading from "react-images-uploading";
-import "./style.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { addProduct } from "../../actions/product.actions";
+import "./style.css";
 
 function AddProduct(props) {
   const history = useHistory();
@@ -29,15 +28,7 @@ function AddProduct(props) {
     console.log(...imageList.map((img) => img.file), addUpdateIndex);
     setImages(imageList);
   };
-  const {
-    register,
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    reset,
-    resetField,
-  } = useForm({
+  const { register, control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
       name: "",
       regularPrice: "",
@@ -64,7 +55,7 @@ function AddProduct(props) {
     });
     form.append("category", category.name);
     for (let field of data.categoryInfo) {
-      if (field.value) {
+      if (field.value !== "" || field.name !== "") {
         form.append(
           "categoryInfo",
           JSON.stringify({ name: field.name, value: field.value })

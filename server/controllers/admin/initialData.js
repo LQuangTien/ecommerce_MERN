@@ -32,7 +32,7 @@ exports.initialData = async (req, res) => {
     const [categories, products, orders] = await Promise.all([
       Category.find(),
       Product.find(),
-      Order.find({}).populate("items.productId", "name").lean(),
+      Order.find({}).populate("items.productId", "name productPictures").lean(),
     ]);
     const orderWithAddress = await populateAddress(orders);
     return Get(res, {

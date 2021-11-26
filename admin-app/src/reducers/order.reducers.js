@@ -3,6 +3,8 @@ import { orderConstants } from "../actions/constants";
 const initState = {
   orders: [],
   updating: false,
+  order: {},
+  loadingDetail: false,
 };
 
 const orderReducer = (state = initState, action) => {
@@ -22,9 +24,7 @@ const orderReducer = (state = initState, action) => {
     case orderConstants.UPDATE_ORDER_SUCCESS:
       state = {
         ...state,
-        orders: state.orders.map((order) =>
-          order._id == action.payload.order._id ? action.payload.order : order
-        ),
+        order: action.payload.order,
         updating: false,
       };
       break;
@@ -33,6 +33,27 @@ const orderReducer = (state = initState, action) => {
         ...state,
         orders: [],
         updating: false,
+      };
+      break;
+    case orderConstants.GET_ORDER_DETAIL_REQUEST:
+      state = {
+        ...state,
+        loadingDetail: true,
+      };
+      break;
+    case orderConstants.GET_ORDER_DETAIL_SUCCESS:
+      state = {
+        ...state,
+        loadingDetail: false,
+        order: action.payload.order,
+      };
+      break;
+    case orderConstants.GET_ORDER_DETAIL_FAILURE:
+      state = {
+        ...state,
+        loadingDetail: false,
+        order: {},
+        error: action.payload.error,
       };
       break;
     default:

@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import Input from "../../components/UI/Input";
-import CustomModal from "../../components/UI/Modal";
-import PropTypes from "prop-types";
-import { addProduct } from "../../actions/product.actions";
-import "./style.css";
-import { generatePictureUrl } from "../../urlConfig";
 import MUIDataTable from "mui-datatables";
+import React from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import "./style.css";
 function Products(props) {
   const history = useHistory();
   const { products } = useSelector((state) => state.products);

@@ -16,7 +16,6 @@ function EditCategory(props) {
   const { id } = useParams();
   const { register, control, handleSubmit, reset } = useForm();
   const { category } = useSelector((state) => state.categories);
-  let i = 0;
   useEffect(() => {
     dispatch(getCategory(id));
   }, [dispatch, id]);

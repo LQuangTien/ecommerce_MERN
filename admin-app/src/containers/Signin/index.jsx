@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Form, Button, Row, Col } from "react-bootstrap";
-import Input from "../../components/UI/Input";
-import { isUserLoggedIn, login } from "../../actions";
+import React, { useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { login } from "../../actions";
+import Input from "../../components/UI/Input";
 function Signin(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

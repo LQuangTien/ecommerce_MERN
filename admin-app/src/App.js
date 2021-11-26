@@ -1,21 +1,21 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import { isUserLoggedIn, getInitialData } from "./actions";
+import { getInitialData, isUserLoggedIn } from "./actions";
 import "./App.css";
 import PrivateRoute from "./components/HOC/PrivateRoute";
 import Layout from "./components/Layout";
+import AddCategory from "./containers/AddCategory";
+import AddProduct from "./containers/AddProduct";
 import Category from "./containers/Category";
+import EditCategory from "./containers/EditCategory";
+import EditProduct from "./containers/EditProduct";
 import Home from "./containers/Home";
+import OrderDetail from "./containers/OrderDetail";
 import Orders from "./containers/Orders";
 import Products from "./containers/Products";
 import Signin from "./containers/Signin";
 import Signup from "./containers/Signup";
-import Pages from "./containers/Pages";
-import EditProduct from "./containers/EditProduct";
-import AddCategory from "./containers/AddCategory";
-import EditCategory from "./containers/EditCategory";
-import AddProduct from "./containers/AddProduct";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -27,13 +27,15 @@ function App() {
     } else {
       dispatch(getInitialData());
     }
-  }, [auth.authenticate]);
+  }, [auth.authenticate, dispatch]);
   return (
     <div className="App">
       <Layout>
         <Switch>
           <PrivateRoute exact path="/" component={Home} />
           <PrivateRoute exact path="/products" component={Products} />
+          <PrivateRoute exact path="/orders" component={Orders} />
+          <PrivateRoute exact path="/orders/:id" component={OrderDetail} />
           <PrivateRoute exact path="/product/add" component={AddProduct} />
           <PrivateRoute exact path="/categories" component={Category} />
           <PrivateRoute exact path="/category/add" component={AddCategory} />
@@ -43,7 +45,6 @@ function App() {
             component={EditCategory}
           />
           <PrivateRoute exact path="/product/:id" component={EditProduct} />
-          {/* <PrivateRoute exact path="/orders" component={Orders} /> */}
           <Route path="/signup" component={Signup} />
           <Route path="/signin" component={Signin} />
         </Switch>

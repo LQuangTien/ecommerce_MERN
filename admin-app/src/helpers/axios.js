@@ -1,7 +1,6 @@
 import axios from "axios";
-import { api } from "../urlConfig";
 import store from "../store";
-import { authConstants } from "../actions/constants";
+import { api } from "../urlConfig";
 // const token = localStorage.getItem('token');
 const axiosInstance = axios.create({
   baseURL: api + "",
