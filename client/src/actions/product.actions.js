@@ -115,6 +115,33 @@ export const getBySearch = (params, size = initParams.pageSize) => {
     }
   };
 };
+export const getBySearchCustom = (params) => {
+  return async (dispatch) => {
+    try {
+      const { page, ...customParams } = params;
+      dispatch({ type: productConstants.GET_PRODUCT_BY_QUERY_REQUEST });
+      const res = await axios.get(`products/search/${params.page}/${8}`, {
+        params: customParams,
+      });
+      const result = {
+        ...res.data.data,
+        products: res.data.data.products.map((product) => ({
+          ...product,
+          price: product.salePrice,
+        })),
+      };
+      dispatch({
+        type: productConstants.GET_PRODUCT_BY_QUERY_SUCCESS,
+        payload: result,
+      });
+    } catch (error) {
+      dispatch({
+        type: productConstants.GET_PRODUCT_BY_QUERY_FAILURE,
+        payload: { error: error.response.data.error },
+      });
+    }
+  };
+};
 export const getBySlug = (slug) => {
   return async (dispatch) => {
     try {

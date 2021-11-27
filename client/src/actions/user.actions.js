@@ -101,12 +101,21 @@ export const addOrder = (order) => {
     } else {
       res = await axios.post("/user/order/zaloPayment", order);
     }
-    if (res.status === 201) {
-      const order = res.data.data;
-      dispatch({
-        type: userConstants.ADD_ORDER_SUCCESS,
-        payload: { order },
-      });
+    if (res.status === 200) {
+      if (order.paymentOption === "cod") {
+        const data = res.data.data;
+        dispatch({
+          type: userConstants.ADD_ORDER_SUCCESS,
+          payload: { order: data },
+        });
+      } else {
+        const { _doc, redirectUrl, apptransid } = res.data.data;
+        axios.post("/user/order/getOrderStatus", { apptransid });
+        dispatch({
+          type: userConstants.ADD_ORDER_SUCCESS,
+          payload: { order: _doc, redirectUrl, apptransid },
+        });
+      }
       dispatch({ type: cartConstants.RESET_CART });
     } else {
       dispatch({

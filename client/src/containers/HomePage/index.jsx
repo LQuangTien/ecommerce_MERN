@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Link } from "react-router-dom";
-import { getBySlug } from "../../actions";
+import { getBySearchCustom, getBySlug } from "../../actions";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
 import "./style.css";
@@ -13,7 +13,7 @@ function HomePage() {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
   useEffect(() => {
-    dispatch(getBySlug("Samsung"));
+    dispatch(getBySearchCustom({ sortBy: "sale", sortOrder: "desc", page: 1 }));
   }, [dispatch]);
   const renderTabItems = () => {
     const items = [

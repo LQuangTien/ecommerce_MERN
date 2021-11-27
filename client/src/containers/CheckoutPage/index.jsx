@@ -156,7 +156,8 @@ function CheckoutPage() {
     </div>
   );
 
-  if (isCompleteOrder) {
+  if (isCompleteOrder && user.redirectUrl !== "" && user.apptransid !== "") {
+    window.open(user.redirectUrl);
     return <Redirect to="/" />;
   }
 

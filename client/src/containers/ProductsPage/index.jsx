@@ -28,7 +28,6 @@ const ORDER_OPTIONS = [
 function ProductPage(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  console.log(useHistory());
   const { category } = useParams();
   const search = useLocation().search;
   const { page, from, to, orderBy, ...otherSearchParam } =

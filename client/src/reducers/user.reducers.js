@@ -9,6 +9,8 @@ const initState = {
   order: {},
   loadingDetail: false,
   error: null,
+  redirectUrl: "",
+  apptransid: "",
 };
 
 const userReducer = (state = initState, action) => {
@@ -106,6 +108,8 @@ const userReducer = (state = initState, action) => {
         ...state,
         loadingAddOrder: false,
         orders: [...state.orders, action.payload.order],
+        redirectUrl: action.payload.redirectUrl ?? "",
+        apptransid: action.payload.apptransid ?? "",
       };
       break;
     case userConstants.ADD_ORDER_FAILURE:

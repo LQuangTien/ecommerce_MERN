@@ -137,9 +137,15 @@ exports.zaloPayment = async (req, res) => {
   );
 
   if (typeof dataZaloOrder === "string") return ServerError(res, dataZaloOrder);
-  newOrder.redirectUrl = dataZaloOrder.orderurl;
-  newOrder.apptransid = dataZaloOrder.apptransid;
-  return Get(res, { order: newOrder });
+  // newOrder.redirectUrl = dataZaloOrder.orderurl;
+  // newOrder.apptransid = dataZaloOrder.apptransid;
+  return Get(res, {
+    order: {
+      ...newOrder,
+      redirectUrl: dataZaloOrder.orderurl,
+      apptransid: dataZaloOrder.apptransid,
+    },
+  });
 };
 
 exports.getOrderStatus = async (req, res) => {
@@ -150,7 +156,10 @@ exports.getOrderStatus = async (req, res) => {
     if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
     return Get({ order: updatedOrder });
   } else {
-    return ServerError(res, orderStatus.data.returnmessage || orderStatus.error);
+    return ServerError(
+      res,
+      orderStatus.data.returnmessage || orderStatus.error
+    );
   }
 };
 
@@ -160,6 +169,7 @@ createOrder = async (userId, orderInfo) => {
     {
       type: "in progress",
       isCompleted: true,
+      date: new Date(),
     },
     {
       type: "ordered",
@@ -177,28 +187,20 @@ createOrder = async (userId, orderInfo) => {
 
   try {
     const order = new Order(orderInfo);
-    order.save()
+    order.save();
 
-    await Cart.findOneAndDelete(
-      { user: userId },
-      { useFindAndModify: false }
-    );
+    await Cart.findOneAndDelete({ user: userId }, { useFindAndModify: false });
 
-    return await  Order.populate(order, {
+    const newOrder = await Order.populate(order, {
       path: "items",
       populate: {
         path: "productId",
         model: "Product",
-        // populate: {
-        //   path: "category",
-        //   model: "Category",
-        //   select: "name",
-        // },
-        select: "_id name productPictures",
+        select: "_id name category productPictures",
       },
       select: "_id status items",
     });
-
+    return newOrder;
   } catch (error) {
     console.log(error);
     return error;
