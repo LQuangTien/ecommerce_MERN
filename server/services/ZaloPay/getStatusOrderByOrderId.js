@@ -40,19 +40,19 @@ exports.zaloGetStatusOrderByOrderId = (zaloOrderId) => {
         .then(function (res) {
             console.log(res);
             if(res.data.returncode===1){
-                console.log({data:JSON.stringify(res.data)})
+                return{data:res.data}
             } else {
                 setTimeout(request,10000);
             }
             // return Get(res,JSON.stringify(res.data));
         })
         .catch(function (error) {
-            console.log({error:JSON.stringify(error.messages)})
+            return {error:error.messages}
             // return ServerError(error.messages);
         });
     }
 
-    setTimeout(request, 30000);
+    return setTimeout(request, 30000);
 
 };
 
