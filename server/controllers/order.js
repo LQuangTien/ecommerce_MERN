@@ -126,40 +126,39 @@ exports.getById = (req, res) => {
 
 exports.zaloPayment = async (req, res) => {
   const newOrder = await createOrder(req.user._id, req.body);
+
+  if (newOrder instanceof Error) return ServerError(res, newOrder);
+
+  // console.log(newOrder)
   const dataZaloOrder = await zaloCreateOrder(
-    newOrder._id.toString(),
-    newOrder.items,
-    newOrder.totalAmount
+    newOrder._doc._id.toString(),
+    newOrder._doc.items,
+    newOrder._doc.totalAmount
   );
 
-  if (typeof dataZaloOrder === "string") return dataZaloOrder;
+  if (typeof dataZaloOrder === "string") return ServerError(res, dataZaloOrder);
   newOrder.redirectUrl = dataZaloOrder.orderurl;
   newOrder.apptransid = dataZaloOrder.apptransid;
   return Get(res, { order: newOrder });
 };
 
 exports.getOrderStatus = async (req, res) => {
-  const orderStatus = await zaloGetStatusOrderByOrderId(
-    dataZaloOrder.apptransid
-  );
-
-  if (orderStatus.hasOwnProperty("error"))
-    return ServerError(res, orderStatus.error);
+  const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
 
   if (orderStatus.data.returncode === 1) {
     const updatedOrder = await updateOrderStatusToOrdered(newOrder._id);
     if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
     return Get({ order: updatedOrder });
   } else {
-    return ServerError(res, orderStatus.data.returnmessage);
+    return ServerError(res, orderStatus.data.returnmessage || orderStatus.error);
   }
 };
 
 createOrder = async (userId, orderInfo) => {
-  req.body.user = userId;
-  req.body.process = [
+  orderInfo.user = userId;
+  orderInfo.process = [
     {
-      type: "progressing",
+      type: "in progress",
       isCompleted: true,
     },
     {
@@ -178,36 +177,38 @@ createOrder = async (userId, orderInfo) => {
 
   try {
     const order = new Order(orderInfo);
-    await order.save();
+    order.save()
+
     await Cart.findOneAndDelete(
-      { user: req.user._id },
+      { user: userId },
       { useFindAndModify: false }
     );
-    await Order.populate(order, {
+
+    return await  Order.populate(order, {
       path: "items",
       populate: {
         path: "productId",
         model: "Product",
-        populate: {
-          path: "category",
-          model: "Category",
-          select: "name",
-        },
-        select: "_id name category productPictures",
+        // populate: {
+        //   path: "category",
+        //   model: "Category",
+        //   select: "name",
+        // },
+        select: "_id name productPictures",
       },
       select: "_id status items",
     });
 
-    return order;
   } catch (error) {
-    return error.messages;
+    console.log(error);
+    return error;
   }
 };
 
 updateOrderStatusToOrdered = async (orderId) => {
   try {
     const order = await Order.findOneAndUpdate(
-      { _id: req.body._id },
+      { _id: orderId },
       {
         $set: {
           // process: req.body.process,
