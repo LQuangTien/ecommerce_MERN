@@ -41,6 +41,6 @@ router.delete(
 router.get('/product/:id', getById);
 
 router.get('/products/search/:page/:perPage', getByQuery);
-// router.get("/products/filter/:page/:perPage", getByQuery);
+
 
 module.exports = router;
