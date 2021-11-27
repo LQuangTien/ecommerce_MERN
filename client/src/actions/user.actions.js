@@ -95,7 +95,12 @@ export const getOrder = () => {
 export const addOrder = (order) => {
   return async (dispatch) => {
     dispatch({ type: userConstants.ADD_ORDER_REQUEST });
-    const res = await axios.post("/user/order/add", order);
+    let res;
+    if (order.paymentOption === "cod") {
+      res = await axios.post("/user/order/add", order);
+    } else {
+      res = await axios.post("/user/order/zaloPayment", order);
+    }
     if (res.status === 201) {
       const order = res.data.data;
       dispatch({

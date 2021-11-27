@@ -26,6 +26,12 @@ const Step = (props) => (
     {props.body && props.body}
   </div>
 );
+
+const PAYMENT_OPTIONS = [
+  { name: "Cash on delivery", value: "cod" },
+  { name: "Zalopay", value: "zalo" },
+];
+
 function CheckoutPage() {
   const user = useSelector((state) => state.user);
   const auth = useSelector((state) => state.auth);
@@ -38,6 +44,7 @@ function CheckoutPage() {
   const [wasConfirmedAddress, setWasConfirmedAddress] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [cartItems, setCartItems] = useState(cart.cartItems);
+  const [payment, setPayment] = useState("cod");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -111,7 +118,7 @@ function CheckoutPage() {
       totalAmount: getTotalPrice(),
       items,
       status: "in progress",
-      paymentOption: "cod",
+      paymentOption: payment,
     };
     dispatch(addOrder(order));
   };
@@ -265,18 +272,20 @@ function CheckoutPage() {
                 body={
                   paymentStep && (
                     <div className="info-wrapper">
-                      <div className="info-wrapper__container">
-                        <input type="radio" name="paymentOptions" id="cash" />
-                        <label htmlFor="cash">Cash on delivery</label>
-                      </div>
-                      <div className="info-wrapper__container">
-                        <input type="radio" name="paymentOptions" id="casha" />
-                        <label htmlFor="casha">Cash on delivery</label>
-                      </div>
-                      <div className="info-wrapper__container">
-                        <input type="radio" name="paymentOptions" id="cashb" />
-                        <label htmlFor="cashb">Cash on delivery</label>
-                      </div>
+                      {PAYMENT_OPTIONS.map((type, index) => (
+                        <div className="info-wrapper__container" key={index}>
+                          <input
+                            type="radio"
+                            name="paymentOptions"
+                            id={type.value}
+                            checked={payment === type.value}
+                            onChange={(e) => {
+                              setPayment(type.value);
+                            }}
+                          />
+                          <label htmlFor={type.value}>{type.name}</label>
+                        </div>
+                      ))}
                       <div className="info-wrapper__container">
                         <Button
                           black

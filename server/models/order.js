@@ -38,14 +38,14 @@ const orderSchema = new mongoose.Schema(
     // },
     paymentOption: {
       type: String,
-      enum: ["cod", "card"],
+      enum: ["cod", "zalo"],
       required: true,
     },
     process: [
       {
         type: {
           type: String,
-          enum: ["in progress","ordered", "shipped", "delivered"],
+          enum: ["in progress", "ordered", "shipped", "delivered"],
           required: true,
         },
         date: {

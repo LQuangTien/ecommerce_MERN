@@ -3,6 +3,10 @@ import Header from "../Header";
 import { Container, Col, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import CategoryIcon from "@mui/icons-material/Category";
+import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import "./style.css";
 function Layout(props) {
   const auth = useSelector((state) => state.auth);
@@ -13,17 +17,25 @@ function Layout(props) {
           <ul>
             <li>
               <NavLink exact to="/">
-                Home
+                <DashboardIcon /> Home
               </NavLink>
             </li>
             <li>
-              <NavLink to="/categories">Categories</NavLink>
+              <NavLink to="/categories">
+                <CategoryIcon />
+                Categories
+              </NavLink>
             </li>
             <li>
-              <NavLink to="/products">Products</NavLink>
+              <NavLink to="/products">
+                <LocalGroceryStoreIcon /> Products
+              </NavLink>
             </li>
             <li>
-              <NavLink to="/orders">Orders</NavLink>
+              <NavLink to="/orders">
+                <ReceiptIcon />
+                Orders
+              </NavLink>
             </li>
           </ul>
         </Col>

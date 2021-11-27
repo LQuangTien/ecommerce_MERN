@@ -3,9 +3,10 @@
   top: 0;
   bottom: 0;
   left: 0;
-  background-color: #eee;
-  padding-top: 60px;
-  box-shadow: inset 0 0 5px gray;
+  background-color: #999;
+  margin-top: 55px;
+  padding-right: 0;
+  width: 220px;
 }
 
 /* .sidebar {
@@ -20,19 +21,41 @@
   list-style: none;
 }
 .sidebar ul li a {
+  position: relative;
   display: block;
-  color: #333;
-  padding: 5px 10px;
+  color: white;
+  padding: 0.6rem;
   box-sizing: border-box;
-  margin: 5px 0 5px 10px;
   text-decoration: none;
 }
-.sidebar ul li a.active {
-  background-color: #333;
-  color: white;
+.sidebar ul li a.active::before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  background-color: #999;
+  top: 0;
+  right: 0;
+  border-radius: 50%;
+  transform: translateY(-100%);
+  box-shadow: 10px 10px 0 0 #fff;
 }
-.sidebar ul li a:hover {
-  background-color: #333;
-  color: white;
-  transition: all 0.25s ease-in-out;
+
+.sidebar ul li a.active::after {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  background-color: #999;
+  bottom: 0;
+  right: 0;
+  border-radius: 50%;
+  transform: translateY(100%);
+  box-shadow: 10px -10px 0 0 #fff;
+}
+
+.sidebar ul li a.active {
+  background-color: #fff;
+  color: var(--primary);
+  border-radius: 8px 0 0 8px;
 }

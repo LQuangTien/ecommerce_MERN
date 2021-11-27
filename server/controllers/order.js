@@ -2,12 +2,13 @@ const CryptoJS = require("crypto-js");
 const { v1: uuid } = require("uuid");
 const moment = require("moment");
 const axios = require("axios").default;
-const open = require("open");
 const Cart = require("../models/cart");
 const Order = require("../models/order");
 const Address = require("../models/address");
 const { zaloCreateOrder } = require("../services/ZaloPay/createOrder");
-const { zaloGetStatusOrderByOrderId } = require("../services/ZaloPay/getStatusOrderByOrderId");
+const {
+  zaloGetStatusOrderByOrderId,
+} = require("../services/ZaloPay/getStatusOrderByOrderId");
 const { ServerError, BadRequest, Create, Get } = require("../ulti/response");
 exports.add = (req, res) => {
   req.body.user = req.user._id;
@@ -34,7 +35,10 @@ exports.add = (req, res) => {
   order.save((error, order) => {
     if (error) return ServerError(res, error);
     if (!order) return BadRequest(res, "Order does not exist");
-    Cart.findOneAndDelete({ user: req.user._id },{ useFindAndModify: false}).exec((error, cart) => {
+    Cart.findOneAndDelete(
+      { user: req.user._id },
+      { useFindAndModify: false }
+    ).exec((error, cart) => {
       if (error) return ServerError(res, error);
       if (!cart) return BadRequest(res, "Cart does not exist");
 
@@ -122,30 +126,34 @@ exports.getById = (req, res) => {
 
 exports.zaloPayment = async (req, res) => {
   const newOrder = await createOrder(req.user._id, req.body);
-  const dataZaloOrder = await zaloCreateOrder(newOrder._id.toString(), newOrder.items, newOrder.totalAmount);
+  const dataZaloOrder = await zaloCreateOrder(
+    newOrder._id.toString(),
+    newOrder.items,
+    newOrder.totalAmount
+  );
 
-  if (typeof dataZaloOrder === 'string') return dataZaloOrder;
+  if (typeof dataZaloOrder === "string") return dataZaloOrder;
   newOrder.redirectUrl = dataZaloOrder.orderurl;
   newOrder.apptransid = dataZaloOrder.apptransid;
-  return Get({ order: newOrder });
-
-  
+  return Get(res, { order: newOrder });
 };
 
-exports.getOrderStatus = async (req, res) =>{
-  const orderStatus = await zaloGetStatusOrderByOrderId(dataZaloOrder.apptransid);
+exports.getOrderStatus = async (req, res) => {
+  const orderStatus = await zaloGetStatusOrderByOrderId(
+    dataZaloOrder.apptransid
+  );
 
-  if (orderStatus.hasOwnProperty('error')) return ServerError(res,orderStatus.error);
-  
+  if (orderStatus.hasOwnProperty("error"))
+    return ServerError(res, orderStatus.error);
+
   if (orderStatus.data.returncode === 1) {
     const updatedOrder = await updateOrderStatusToOrdered(newOrder._id);
-    if (typeof updatedOrder === 'string') return ServerError(res, updatedOrder);
+    if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
     return Get({ order: updatedOrder });
   } else {
-    return ServerError(res,orderStatus.data.returnmessage);
+    return ServerError(res, orderStatus.data.returnmessage);
   }
-  
-}
+};
 
 createOrder = async (userId, orderInfo) => {
   req.body.user = userId;
@@ -171,25 +179,26 @@ createOrder = async (userId, orderInfo) => {
   try {
     const order = new Order(orderInfo);
     await order.save();
-    await Cart.findOneAndDelete({ user: req.user._id }, { useFindAndModify: false})
-    await Order.populate(
-      order,
-      {
-        path: "items",
+    await Cart.findOneAndDelete(
+      { user: req.user._id },
+      { useFindAndModify: false }
+    );
+    await Order.populate(order, {
+      path: "items",
+      populate: {
+        path: "productId",
+        model: "Product",
         populate: {
-          path: "productId",
-          model: "Product",
-          populate: {
-            path: "category",
-            model: "Category",
-            select: "name",
-          },
-          select: "_id name category productPictures",
+          path: "category",
+          model: "Category",
+          select: "name",
         },
-        select: "_id status items",
-      });
+        select: "_id name category productPictures",
+      },
+      select: "_id status items",
+    });
 
-      return order;
+    return order;
   } catch (error) {
     return error.messages;
   }
@@ -221,10 +230,10 @@ updateOrderStatusToOrdered = async (orderId) => {
               type: "delivered",
               isCompleted: false,
             },
-          ]
+          ],
         },
       },
-      { new: true,  useFindAndModify: false }
+      { new: true, useFindAndModify: false }
     ).populate("items.productId", "name productPictures");
 
     const orderWithAddress = await populateAddress(order);
