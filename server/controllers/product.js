@@ -242,15 +242,11 @@ exports.getAll = async (req, res) => {
   try {
     const products = await Product.find();
     if (!products) return NotFound(res, "Products");
-    return Get(res, products);
+    return Get(res, { result: { products } });
   } catch (error) {
     return ServerError(res, error.messages);
   }
 };
-
-
-
-
 
 function pagination(products, page = 1, perPage = 8) {
   const previousItem = (page - 1) * Number(perPage);

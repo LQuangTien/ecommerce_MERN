@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IoStar } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Link } from "react-router-dom";
-import { getBySearchCustom, getBySlug } from "../../actions";
+import { getAll, getBySlug } from "../../actions";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
 import "./style.css";
@@ -12,21 +12,31 @@ import "./style.css";
 function HomePage() {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
+  const [tabProducts, setTabProducts] = useState([]);
   useEffect(() => {
-    dispatch(getBySearchCustom({ sortBy: "sale", sortOrder: "desc", page: 1 }));
+    dispatch(getAll());
   }, [dispatch]);
+  useEffect(() => {
+    if (products) {
+      setTabProducts(
+        [...products]
+          .sort((p1, p2) => new Date(p2.createdAt) - new Date(p1.createdAt))
+          .slice(0, 8)
+      );
+    }
+  }, [products]);
   const renderTabItems = () => {
     const items = [
       {
         image:
           "https://res.cloudinary.com/quangtien/image/upload/v1632565661/ic-tab4_t5uh31.png",
-        slug: "Samsung",
+        slug: "Mobile",
         color: "tab__item--black",
       },
       {
         image:
           "https://res.cloudinary.com/quangtien/image/upload/v1632565661/ic-tab4_t5uh31.png",
-        slug: "",
+        slug: "Laptop",
         color: "tab__item--green",
       },
       {
@@ -78,7 +88,14 @@ function HomePage() {
           <li
             className={`tab__item flex-center ${item.color}`}
             onClick={() => {
-              dispatch(getBySlug(item.slug));
+              setTabProducts(
+                [...products]
+                  .filter((p) => p.category === item.slug)
+                  .sort(
+                    (p1, p2) => new Date(p2.createdAt) - new Date(p1.createdAt)
+                  )
+                  .slice(0, 8)
+              );
             }}
             key={index}
           >
@@ -167,37 +184,40 @@ function HomePage() {
       <div className="row mt-32">{renderTabItems()}</div>
 
       <div className="row mt-32">
-        {products &&
-          Object.keys(products).map((key, index) => (
-            <div className="col lg-3 product__card" key={products[key]._id}>
-              <Link to={"/product/" + products[key]._id} className="">
-                <div className="product__image">
-                  <img
-                    src={generatePictureUrl(products[key].productPictures[0])}
-                    alt=""
-                  />
+        {tabProducts.length > 0 &&
+          tabProducts.map(
+            (product, index) =>
+              product.category === "Mobile" && (
+                <div className="col lg-3 product__card" key={product._id}>
+                  <Link to={"/product/" + product._id} className="">
+                    <div className="product__image">
+                      <img
+                        src={generatePictureUrl(product.productPictures[0])}
+                        alt=""
+                      />
+                    </div>
+                    <div className="product__info">
+                      <div className="product__info-name">{product.name}</div>
+                      <div className="product__info-price">
+                        <span className="product__info-price--current">
+                          ${formatThousand(product.price)}
+                        </span>
+                        <span className="product__info-price--old">
+                          ${formatThousand(12000)}
+                        </span>
+                      </div>
+                      <div className="product__rating">
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-                <div className="product__info">
-                  <div className="product__info-name">{products[key].name}</div>
-                  <div className="product__info-price">
-                    <span className="product__info-price--current">
-                      ${formatThousand(products[key].price)}
-                    </span>
-                    <span className="product__info-price--old">
-                      ${formatThousand(12000)}
-                    </span>
-                  </div>
-                  <div className="product__rating">
-                    <IoStar />
-                    <IoStar />
-                    <IoStar />
-                    <IoStar />
-                    <IoStar />
-                  </div>
-                </div>
-              </Link>
-            </div>
-          ))}
+              )
+          )}
       </div>
       <div className="row mt-32">
         <div className="col lg-4 advertisement">
@@ -234,41 +254,82 @@ function HomePage() {
           <p className="homepage-title">Onsale Products</p>
         </div>
         {products &&
-          Object.keys(products).map((key, index) => (
-            <div className="col lg-3" key={products[key]._id}>
-              <Link
-                to={"/product/" + products[key]._id}
-                className="small-product"
-              >
-                <div className="small-product__image">
-                  <img
-                    src={generatePictureUrl(products[key].productPictures[0])}
-                    alt=""
-                  />
-                </div>
-                <div className="small-product__info">
-                  <div className="small-product__info-name">
-                    {products[key].name}
+          [...products]
+            .sort((p1, p2) => Number(p2.sale) - Number(p1.sale))
+            .slice(0, 8)
+            .map((product, index) => (
+              <div className="col lg-3" key={product._id}>
+                <Link to={"/product/" + product._id} className="small-product">
+                  <div className="small-product__image">
+                    <img
+                      src={generatePictureUrl(product.productPictures[0])}
+                      alt=""
+                    />
                   </div>
-                  <div className="small-product__info-price">
-                    <span className="small-product__info-price--current">
-                      ${formatThousand(products[key].price)}
-                    </span>
-                    <span className="small-product__info-price--old">
-                      ${formatThousand(12000)}
-                    </span>
+                  <div className="small-product__info">
+                    <div className="small-product__info-name">
+                      {product.name}
+                    </div>
+                    <div className="small-product__info-price">
+                      <span className="small-product__info-price--current">
+                        ${formatThousand(product.price)}
+                      </span>
+                      <span className="small-product__info-price--old">
+                        ${formatThousand(12000)}
+                      </span>
+                    </div>
+                    <div className="small-product__rating">
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                    </div>
                   </div>
-                  <div className="small-product__rating">
-                    <IoStar />
-                    <IoStar />
-                    <IoStar />
-                    <IoStar />
-                    <IoStar />
+                </Link>
+              </div>
+            ))}
+      </div>
+      <div className="row mt-32">
+        <div className="col lg-12">
+          <p className="homepage-title">Affordable price products</p>
+        </div>
+        {products &&
+          [...products]
+            .sort((p1, p2) => Number(p1.price) - Number(p2.price))
+            .slice(0, 8)
+            .map((product, index) => (
+              <div className="col lg-3" key={product._id}>
+                <Link to={"/product/" + product._id} className="small-product">
+                  <div className="small-product__image">
+                    <img
+                      src={generatePictureUrl(product.productPictures[0])}
+                      alt=""
+                    />
                   </div>
-                </div>
-              </Link>
-            </div>
-          ))}
+                  <div className="small-product__info">
+                    <div className="small-product__info-name">
+                      {product.name}
+                    </div>
+                    <div className="small-product__info-price">
+                      <span className="small-product__info-price--current">
+                        ${formatThousand(product.price)}
+                      </span>
+                      <span className="small-product__info-price--old">
+                        ${formatThousand(12000)}
+                      </span>
+                    </div>
+                    <div className="small-product__rating">
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                      <IoStar />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
       </div>
     </div>
   );
