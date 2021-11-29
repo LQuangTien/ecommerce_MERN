@@ -137,8 +137,6 @@ exports.zaloPayment = async (req, res) => {
   );
 
   if (typeof dataZaloOrder === "string") return ServerError(res, dataZaloOrder);
-  // newOrder.redirectUrl = dataZaloOrder.orderurl;
-  // newOrder.apptransid = dataZaloOrder.apptransid;
   return Get(res, {
     order: {
       ...newOrder,
@@ -149,18 +147,24 @@ exports.zaloPayment = async (req, res) => {
 };
 
 exports.getOrderStatus = async (req, res) => {
-  const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
+  try {
+    const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
 
-  if (orderStatus.data.returncode === 1) {
-    const updatedOrder = await updateOrderStatusToOrdered(newOrder._id);
-    if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
-    return Get({ order: updatedOrder });
-  } else {
-    return ServerError(
-      res,
-      orderStatus.data.returnmessage || orderStatus.error
-    );
+    console.log({main:orderStatus});
+    if (orderStatus.returncode === 1) {
+      const updatedOrder = await updateOrderStatusToOrdered(newOrder._id);
+      if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
+      return Get({ order: updatedOrder });
+    } else {
+      return ServerError(
+        res,
+        orderStatus.data.returnmessage || orderStatus.error
+      );
+    }
+  } catch (error) {
+    return ServerError(res, error.messages);
   }
+
 };
 
 createOrder = async (userId, orderInfo) => {

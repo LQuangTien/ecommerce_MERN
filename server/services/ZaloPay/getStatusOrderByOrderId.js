@@ -3,7 +3,7 @@ const CryptoJS = require('crypto-js'); // npm install crypto-js
 const qs = require('qs');
 const { ServerError, BadRequest, Create, Get } = require("../../ulti/response");
 
-exports.zaloGetStatusOrderByOrderId = (zaloOrderId) => {
+exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
     let postData = {
         appid: process.env.ZALO_APPID,
         apptransid: zaloOrderId, // Input your apptransid
@@ -22,37 +22,30 @@ exports.zaloGetStatusOrderByOrderId = (zaloOrderId) => {
         data: qs.stringify(postData)
     };
 
-    // const request = axios(postConfig)
-    //     .then(function (res) {
-    //         if(res.returncode===1){
-    //             console.log({data:JSON.stringify(res.data)})
-    //         } else {
-    //             setTimeout(request,10000);
-    //         }
-    //         // return Get(res,JSON.stringify(res.data));
-    //     })
-    //     .catch(function (error) {
-    //         console.log({error:JSON.stringify(error.messages)})
-    //         // return ServerError(error.messages);
-    //     });
-    const request = () => {
-        axios(postConfig)
-        .then(function (res) {
-            console.log(res);
-            if(res.data.returncode===1){
-                return{data:res.data}
+   
+    const setTimeoutPromise = (timeout) => new Promise((resolve) => {
+        setTimeout(resolve, timeout);
+    });
+
+    const polling = () => {
+        return axios(postConfig)
+        .then( function (res) {
+            // console.log(res);
+            if (res.data.returncode === 1) {
+                console.log(res.data);
+                return res.data;
             } else {
-                setTimeout(request,10000);
+                return setTimeoutPromise(50000).then(()=>{return polling()});
             }
             // return Get(res,JSON.stringify(res.data));
         })
         .catch(function (error) {
-            return {error:error.messages}
+            return (error)
             // return ServerError(error.messages);
         });
     }
 
-    return setTimeout(request, 30000);
-
+    // return await polling();
+    return setTimeoutPromise(50000).then(()=>{return polling()});
 };
 

@@ -7,7 +7,8 @@ const { ServerError, BadRequest, Create, Get } = require("../../ulti/response");
 exports.zaloCreateOrder = (orderIdFromServer,orderItemFromServer,orderPriceFromServer) => {
   //dữ liệu dc callback cho server khi thanh toán thành công
   const embeddata = {
-    merchantinfo: orderIdFromServer
+    merchantinfo: orderIdFromServer,
+    redirecturl: "http://localhost:3000",
   };
 
   //danh sách sản phẩm
@@ -28,7 +29,7 @@ exports.zaloCreateOrder = (orderIdFromServer,orderItemFromServer,orderPriceFromS
     amount:orderPriceFromServer,
     description: "ZaloPay Integration Demo",
     bankcode: "zalopayapp",
-    // redirecturl: "http://localhost:8000/api/user/order/verifyZaloPayment",
+   
     // appuser:"A",
   };
 
