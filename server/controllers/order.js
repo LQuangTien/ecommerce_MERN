@@ -137,8 +137,6 @@ exports.zaloPayment = async (req, res) => {
   );
 
   if (typeof dataZaloOrder === "string") return ServerError(res, dataZaloOrder);
-  // newOrder.redirectUrl = dataZaloOrder.orderurl;
-  // newOrder.apptransid = dataZaloOrder.apptransid;
   return Get(res, {
     order: {
       ...newOrder,
@@ -149,19 +147,27 @@ exports.zaloPayment = async (req, res) => {
 };
 
 exports.getOrderStatus = async (req, res) => {
-  const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
+  try {
+    const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
 
-  if (orderStatus.data.returncode === 1) {
-    const updatedOrder = await updateOrderStatusToOrdered(newOrder._id);
-    if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
-    return Get({ order: updatedOrder });
-  } else {
-    return ServerError(
-      res,
-      orderStatus.data.returnmessage || orderStatus.error
-    );
+    console.log({ main: orderStatus });
+    if (orderStatus.returncode === 1) {
+      const updatedOrder = await updateOrderStatusToOrdered(req.body.orderId);
+      if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
+      return Get({ order: updatedOrder });
+    } else {
+      return ServerError(
+        res,
+        orderStatus.data.returnmessage || orderStatus.error
+      );
+    }
+  } catch (error) {
+    return ServerError(res, error.messages);
   }
+
 };
+
+
 
 createOrder = async (userId, orderInfo) => {
   orderInfo.user = userId;
@@ -239,63 +245,34 @@ updateOrderStatusToOrdered = async (orderId) => {
       { new: true, useFindAndModify: false }
     ).populate("items.productId", "name productPictures");
 
-    const orderWithAddress = await populateAddress(order);
+    const orderWithAddress = await populateAddress([order]);
 
     return orderWithAddress;
   } catch (error) {
     return error.messages;
   }
 };
-// createOrder = (req, res) => {
-//   req.body.user = req.user._id;
-//   req.body.process = [
-//     {
-//       type: "progressing",
-//       isCompleted: true,
-//     },
-//     {
-//       type: "ordered",
-//       isCompleted: false,
-//     },
-//     {
-//       type: "shipped",
-//       isCompleted: false,
-//     },
-//     {
-//       type: "delivered",
-//       isCompleted: false,
-//     },
-//   ];
-//   const order = new Order(req.body);
-//   order.save((error, order) => {
-//     if (error) return ServerError(res, error);
-//     if (!order) return BadRequest(res, "Order does not exist");
-//     Cart.findOneAndDelete({ user: req.user._id }).exec((error, cart) => {
-//       if (error) return ServerError(res, error);
-//       if (!cart) return BadRequest(res, "Cart does not exist");
-//       Order.populate(
-//         order,
-//         {
-//           path: "items",
-//           populate: {
-//             path: "productId",
-//             model: "Product",
-//             populate: {
-//               path: "category",
-//               model: "Category",
-//               select: "name",
-//             },
-//             select: "_id name category productPictures",
-//           },
-//           select: "_id status items",
-//         },
-//         (error, order) => {
-//           if (error) return ServerError(res, error);
-//           if (!order) return BadRequest(res, "Orders does not exist");
-//           if (req.body.paymentOption === "cod") return Create(res, { order });
-//           return order;
-//         }
-//       );
-//     });
-//   });
-// };
+
+const populateAddress = async (orders) => {
+  let orderPromises = [];
+  orders.forEach((order) => {
+    const newPromise = new Promise((resolve, reject) => {
+      Address.findOne({ "address._id": order.addressId })
+        .populate("user", "firstName lastName email")
+        .exec((error, userAddress) => {
+          if (error) reject({ error });
+          userAddress.address.forEach((adr) => {
+            if (adr._id.toString() === order.addressId.toString()) {
+              order.address = adr;
+            }
+          });
+          resolve(order);
+        });
+    });
+    orderPromises.push(newPromise);
+  });
+  return await Promise.all(orderPromises)
+    .then((response) => response)
+    .catch((error) => error);
+  // return newOrders;
+};
