@@ -35,7 +35,7 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
                 console.log(res.data);
                 return res.data;
             } else {
-                return setTimeoutPromise(50000).then(()=>{return polling()});
+                return setTimeoutPromise(20000).then(()=>{return polling()});
             }
             // return Get(res,JSON.stringify(res.data));
         })
@@ -46,6 +46,6 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
     }
 
     // return await polling();
-    return setTimeoutPromise(50000).then(()=>{return polling()});
+    return setTimeoutPromise(20000).then(()=>{return polling()});
 };
 
