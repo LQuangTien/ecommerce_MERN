@@ -115,14 +115,11 @@ export const getBySearch = (params, size = initParams.pageSize) => {
     }
   };
 };
-export const getBySearchCustom = (params) => {
+export const getAll = () => {
   return async (dispatch) => {
     try {
-      const { page, ...customParams } = params;
       dispatch({ type: productConstants.GET_PRODUCT_BY_QUERY_REQUEST });
-      const res = await axios.get(`products/search/${params.page}/${8}`, {
-        params: customParams,
-      });
+      const res = await axios.get(`products`);
       const result = {
         ...res.data.data,
         products: res.data.data.products.map((product) => ({

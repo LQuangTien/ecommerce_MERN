@@ -5,6 +5,7 @@ import { isUserLoggedIn } from "./actions";
 import { updateCart } from "./actions/cart.actions";
 import "./App.css";
 import Layout from "./components/Layout";
+import ScrollToTop from "./components/ScrollToTop";
 import CartPage from "./containers/CartPage";
 import CheckoutPage from "./containers/CheckoutPage";
 import HomePage from "./containers/HomePage";
@@ -31,6 +32,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Layout>
+          <ScrollToTop />
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route path="/cart" component={CartPage} />

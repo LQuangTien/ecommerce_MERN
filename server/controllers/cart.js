@@ -101,7 +101,7 @@ exports.removeItem = (req, res) => {
     },
     { new: true }
   )
-    .populate("cartItems.product", "_id name price productPictures")
+    .populate("cartItems.product", "_id name salePrice productPictures")
     .exec((error, cart) => {
       if (error) return ServerError(res, error.message);
       if (cart) {

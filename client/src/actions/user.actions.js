@@ -110,7 +110,10 @@ export const addOrder = (order) => {
         });
       } else {
         const { _doc, redirectUrl, apptransid } = res.data.data;
-        axios.post("/user/order/getOrderStatus", { apptransid });
+        axios.post("/user/order/getOrderStatus", {
+          apptransid,
+          orderId: _doc._id,
+        });
         dispatch({
           type: userConstants.ADD_ORDER_SUCCESS,
           payload: { order: _doc, redirectUrl, apptransid },
