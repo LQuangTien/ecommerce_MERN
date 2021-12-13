@@ -138,6 +138,14 @@ const productSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    quantitySold: {
+      type: Number,
+      default: 0,
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
     description: {
       type: String,
       required: true,

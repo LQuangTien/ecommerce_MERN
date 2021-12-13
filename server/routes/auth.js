@@ -11,7 +11,7 @@ const { signup, signin, signout } = require("../controllers/auth");
 const router = express.Router();
 
 router.post("/signin", validateSignin, isAuthValidated, signin);
-router.post("/signup",  signup);
+router.post("/signup", validateSignup, isAuthValidated, signup);
 router.post("/signout", requireSignin, signout);
 
 module.exports = router;

@@ -21,7 +21,8 @@ function Products(props) {
     "Price",
     "Sale",
     "Quantity",
-    "Sold Amount",
+    "Quantity sold",
+    "Available",
   ];
   const options = {
     filter: true,
@@ -40,7 +41,8 @@ function Products(props) {
     product.salePrice,
     product.sale,
     product.quantity,
-    product.soldAmount || 0,
+    product.quantitySold,
+    product.isAvailable ? "Yes" : "No",
   ]);
   const renderProductsTable = () =>
     data && (

@@ -16,8 +16,28 @@ function AddressForm(props) {
   );
   const [type, setType] = useState(adr ? adr.type : "");
   const [_id] = useState(adr ? adr._id : "");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
+
+  const isEmpty = () => {
+    if (
+      name === "" ||
+      phone === "" ||
+      address === "" ||
+      ward === "" ||
+      district === "" ||
+      city === "" ||
+      alternativePhone === "" ||
+      type === ""
+    ) {
+      setError("All field are required");
+      return true;
+    }
+    return false;
+  };
+
   const onSubmit = (e) => {
+    if (isEmpty()) return;
     if (handleUpdate) {
       const addressInfo = {
         name,
@@ -34,6 +54,7 @@ function AddressForm(props) {
     }
   };
   const onSave = () => {
+    if (isEmpty()) return;
     if (handleUpdate) {
       const addressInfo = {
         _id,
@@ -76,6 +97,9 @@ function AddressForm(props) {
       }}
     >
       <div className="row">
+        <div className="col lg-12">
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
         <div className="col lg-12">
           <input
             className="address__input"

@@ -29,13 +29,19 @@
 
 // module.exports = router;
 
-
 const multer = require("multer");
 const express = require("express");
 const shortid = require("shortid");
 
 const { requireSignin, isAdmin } = require("../middlewares");
-const { get, create, update, remove, getAll,findDiffFromTwoObj } = require("../controllers/category");
+const {
+  get,
+  create,
+  update,
+  remove,
+  getAll,
+  findDiffFromTwoObj,
+} = require("../controllers/category");
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -53,18 +59,18 @@ router.get("/category/", getAll);
 router.get("/category/:id", get);
 router.post(
   "/category/create",
-  // requireSignin,
-  // isAdmin,
+  requireSignin,
+  isAdmin,
   upload.single("categoryImage"),
   create
 );
-router.delete("/category/:id",
-  // requireSignin,
-  // isAdmin,
-  remove);
-router.put("/category/:id",
-  // requireSignin,
-  // isAdmin,
-  upload.single("categoryImage"), update);
+router.delete("/category/:id", requireSignin, isAdmin, remove);
+router.put(
+  "/category/:id",
+  requireSignin,
+  isAdmin,
+  upload.single("categoryImage"),
+  update
+);
 
 module.exports = router;

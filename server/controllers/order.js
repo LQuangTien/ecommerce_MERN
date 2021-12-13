@@ -5,6 +5,7 @@ const axios = require("axios").default;
 const Cart = require("../models/cart");
 const Order = require("../models/order");
 const Address = require("../models/address");
+const Product = require("../models/product");
 const { zaloCreateOrder } = require("../services/ZaloPay/createOrder");
 const {
   zaloGetStatusOrderByOrderId,
@@ -38,10 +39,20 @@ exports.add = (req, res) => {
     Cart.findOneAndDelete(
       { user: req.user._id },
       { useFindAndModify: false }
-    ).exec((error, cart) => {
+    ).exec(async (error, cart) => {
       if (error) return ServerError(res, error);
       if (!cart) return BadRequest(res, "Cart does not exist");
-
+      const promises = [];
+      req.body.items.forEach((product) => {
+        const promise = Product.findByIdAndUpdate(product.productId, {
+          $inc: {
+            quantity: Number(product.quantity) * -1,
+            quantitySold: Number(product.quantity),
+          },
+        });
+        promises.push(promise);
+      });
+      await Promise.all(promises);
       Order.populate(
         order,
         {
@@ -153,7 +164,8 @@ exports.getOrderStatus = async (req, res) => {
     console.log({ main: orderStatus });
     if (orderStatus.returncode === 1) {
       const updatedOrder = await updateOrderStatusToOrdered(req.body.orderId);
-      if (typeof updatedOrder === "string") return ServerError(res, updatedOrder);
+      if (typeof updatedOrder === "string")
+        return ServerError(res, updatedOrder);
       return Get({ order: updatedOrder });
     } else {
       return ServerError(
@@ -164,10 +176,7 @@ exports.getOrderStatus = async (req, res) => {
   } catch (error) {
     return ServerError(res, error.messages);
   }
-
 };
-
-
 
 createOrder = async (userId, orderInfo) => {
   orderInfo.user = userId;
@@ -196,6 +205,18 @@ createOrder = async (userId, orderInfo) => {
     order.save();
 
     await Cart.findOneAndDelete({ user: userId }, { useFindAndModify: false });
+
+    const promises = [];
+    orderInfo.items.forEach((product) => {
+      const promise = Product.findByIdAndUpdate(product.productId, {
+        $inc: {
+          quantity: Number(product.quantity) * -1,
+          quantitySold: Number(product.quantity),
+        },
+      });
+      promises.push(promise);
+    });
+    await Promise.all(promises);
 
     const newOrder = await Order.populate(order, {
       path: "items",

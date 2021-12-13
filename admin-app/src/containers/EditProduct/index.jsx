@@ -16,6 +16,7 @@ import {
   deleteProduct,
   getProductById,
   updateProduct,
+  enableProduct,
 } from "../../actions/product.actions";
 import { generatePictureUrl } from "../../urlConfig";
 import "./style.css";
@@ -89,6 +90,10 @@ function EditProduct(props) {
   const onDelete = () => {
     dispatch(deleteProduct(id));
     history.push("/products");
+  };
+
+  const onEnable = () => {
+    dispatch(enableProduct(id));
   };
 
   return (
@@ -303,9 +308,15 @@ function EditProduct(props) {
             <Button type="submit" variant="success" className="mr-2">
               Submit
             </Button>
-            <Button variant="danger" onClick={onDelete}>
-              Delete product
-            </Button>
+            {product && product.isAvailable ? (
+              <Button variant="danger" onClick={onDelete}>
+                Delete product
+              </Button>
+            ) : (
+              <Button variant="info" onClick={onEnable}>
+                Enable product
+              </Button>
+            )}
           </div>
         </Form>
       </div>

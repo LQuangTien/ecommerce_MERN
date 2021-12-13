@@ -70,8 +70,30 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    const deletedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { isAvailable: false },
+      },
+      { new: true, useFindAndModify: false }
+    ).exec();
     if (deletedProduct) return Delete(res, "Product has been deleted...");
+    return NotFound(res, "Product");
+  } catch (error) {
+    return ServerError(res, error.message);
+  }
+};
+
+exports.enable = async (req, res) => {
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { isAvailable: true },
+      },
+      { new: true, useFindAndModify: false }
+    ).exec();
+    if (updatedProduct) return Update(res, { updatedProduct });
     return NotFound(res, "Product");
   } catch (error) {
     return ServerError(res, error.message);
@@ -96,7 +118,11 @@ exports.getByQuery = async (req, res) => {
   const { page, perPage } = req.params;
   const { q, sortBy, sortOrder, ...filters } = req.query;
 
-  const listQuery = [];
+  const listQuery = [
+    {
+      $match: { isAvailable: true },
+    },
+  ];
 
   if (q === "all") {
     const searchQuery = {
@@ -240,7 +266,7 @@ exports.getByQuery = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find({ isAvailable: true });
     if (!products) return NotFound(res, "Products");
     return Get(res, { result: { products } });
   } catch (error) {

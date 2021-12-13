@@ -1,11 +1,11 @@
 import axios from "../helpers/axios";
 import { authConstants } from "./constants";
 
-export const login = (user) => {
+export const login = (data) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGIN_REQUEST });
-    const res = await axios.post("signin", { ...user });
-    if (res.status === 200) {
+    try {
+      const res = await axios.post("signin", { ...data });
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -13,10 +13,10 @@ export const login = (user) => {
         type: authConstants.LOGIN_SUCCESS,
         payload: { token, user },
       });
-    } else {
+    } catch (error) {
       dispatch({
         type: authConstants.LOGIN_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };
@@ -34,7 +34,7 @@ export const isUserLoggedIn = () => {
     } else {
       dispatch({
         type: authConstants.LOGIN_FAILURE,
-        payload: { error: "Fail to login" },
+        payload: { error: "" },
       });
     }
   };
@@ -42,17 +42,9 @@ export const isUserLoggedIn = () => {
 
 export const signout = () => {
   return async (dispatch) => {
-    dispatch({ type: authConstants.LOGOUT_REQUEST });
-
-    const res = await axios.post("/admin/signout");
-    if (res.status === 200) {
-      localStorage.clear();
-      dispatch({ type: authConstants.LOGOUT_SUCCESS });
-    } else {
-      dispatch({
-        type: authConstants.LOGOUT_FAILURE,
-        payload: { error: res.data.error },
-      });
-    }
+    dispatch({ type: authConstants.LOGOUT_SUCCESS });
+    axios.defaults.headers.common["Authorization"] = "";
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 };

@@ -35,11 +35,24 @@ exports.initialData = async (req, res) => {
       Order.find({}).populate("items.productId", "name productPictures").lean(),
     ]);
     const orderWithAddress = await populateAddress(orders);
+    const revenue = orders.reduce((acc, o) => {
+      if (
+        o.process.findIndex((p) => p.type === "delivered" && p.isCompleted) > 0
+      ) {
+        acc += o.totalAmount;
+      }
+      return acc;
+    }, 0);
     return Get(res, {
       result: {
         categories,
         products,
         orders: orderWithAddress,
+        statistic: {
+          revenue,
+          totalProduct: products.length,
+          totalOrder: orders.length,
+        },
       },
     });
   } catch (error) {

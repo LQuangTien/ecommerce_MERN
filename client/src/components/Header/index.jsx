@@ -20,6 +20,7 @@ const Header = (props) => {
   const [signupModal, setSignupModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [search, setSearch] = useState("");
@@ -33,14 +34,16 @@ const Header = (props) => {
   }, [dispatch]);
   useEffect(() => {
     dispatch(getCart());
+    if (auth.authenticate) {
+      setSigninModal(false);
+      setSignupModal(false);
+    }
   }, [auth.authenticate, dispatch]);
   const handleLogin = () => {
     dispatch(login({ email, password }));
-    setSigninModal(false);
   };
   const handleSignUp = () => {
-    dispatch(signup({ email, password, firstName, lastName }));
-    setSignupModal(false);
+    dispatch(signup({ email, password, firstName, lastName, confirmPassword }));
   };
   const handleLogout = (e) => {
     e.preventDefault();
@@ -50,149 +53,181 @@ const Header = (props) => {
     history.push(`/search?q=${search}&page=1`);
   };
   const handleKeyDown = (e) => {
-    console.log(e.key);
     if (e.key === "Enter") {
       history.push(`/search?q=${search}&page=1`);
     }
   };
-  const renderSigninModal = () => (
-    <Modal
-      visible={signinModal}
-      onClose={() => setSigninModal(false)}
-      title="Sign in"
-    >
-      <div className="row">
-        <div className="col sm-12 md-12 lg-12">
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16">
-          <Input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16 text-align-right">
-          <Anchor title="Forgot password ?" />
-        </div>
+  const renderSigninModal = () => {
+    return (
+      <Modal
+        visible={signinModal}
+        onClose={() => {
+          setEmail("");
+          setPassword("");
+          setFirstName("");
+          setLastName("");
+          setConfirmPassword("");
+          setSigninModal(false);
+        }}
+        title="Sign in"
+      >
+        <div className="row">
+          <div className="col sm-12 md-12 lg-12">
+            {auth.error && (
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  color: "red",
+                  paddingLeft: "0.2rem",
+                }}
+              >
+                {auth.error}
+              </p>
+            )}
+          </div>
 
-        <div className="col sm-12 md-12 lg-12 mt-16 ">
-          <Button title="SIGN IN" onClick={handleLogin} />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16">
-          <Anchor title="No account? Create one here" />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
-          <p className="socials__label">Connect with Social Networks</p>
-          <div className="socials__icons mt-8">
-            <a
-              href="http://facebook.com"
-              target="_blank"
-              rel="noreferrer"
-              className="socials__icons--facebook"
-            >
-              <IoLogoFacebook />
-            </a>
-            <a
-              href="http://google.vn"
-              target="_blank"
-              rel="noreferrer"
-              className="socials__icons--google"
-            >
-              <IoLogoGoogle />
-            </a>
-            <a
-              href="http://instagram.com"
-              target="_blank"
-              rel="noreferrer"
-              className="socials__icons--instagram"
-            >
-              <IoLogoInstagram />
-            </a>
+          <div className="col sm-12 md-12 lg-12 mt-8">
+            <Input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 text-align-right">
+            <Anchor title="Forgot password ?" />
+          </div>
+
+          <div className="col sm-12 md-12 lg-12 mt-16 ">
+            <Button title="SIGN IN" onClick={handleLogin} />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Anchor
+              title="No account? Create one here"
+              onClick={() => {
+                setEmail("");
+                setPassword("");
+                setFirstName("");
+                setLastName("");
+                setConfirmPassword("");
+                setSigninModal(false);
+                setSignupModal(true);
+              }}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
+            <p className="socials__label">Hope you have fun with us</p>
+            <div className="mt-12">
+              <div className="logo">
+                <img src={kinzy} alt="" />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </Modal>
-  );
-  const renderSignupModal = () => (
-    <Modal
-      visible={signupModal}
-      onClose={() => setSignupModal(false)}
-      title="Sign up"
-    >
-      <div className="row">
-        <div className="col sm-12 md-12 lg-12">
-          <Input
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16">
-          <Input
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16">
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16">
-          <Input
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16 ">
-          <Button title="SIGN UP" onClick={handleSignUp} />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16">
-          <Anchor title="Already have an account? Login instead here" />
-        </div>
-        <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
-          <p className="socials__label">Connect with Social Networks</p>
-          <div className="socials__icons mt-8">
-            <a
-              href="http://facebook.com"
-              target="_blank"
-              rel="noreferrer"
-              className="socials__icons--facebook"
-            >
-              <IoLogoFacebook />
-            </a>
-            <a
-              href="http://google.vn"
-              target="_blank"
-              rel="noreferrer"
-              className="socials__icons--google"
-            >
-              <IoLogoGoogle />
-            </a>
-            <a
-              href="http://instagram.com"
-              target="_blank"
-              rel="noreferrer"
-              className="socials__icons--instagram"
-            >
-              <IoLogoInstagram />
-            </a>
+      </Modal>
+    );
+  };
+  const renderSignupModal = () => {
+    return (
+      <Modal
+        visible={signupModal}
+        onClose={() => {
+          setEmail("");
+          setPassword("");
+          setFirstName("");
+          setLastName("");
+          setConfirmPassword("");
+          setSignupModal(false);
+        }}
+        title="Sign up"
+      >
+        <div className="row">
+          <div className="col sm-12 md-12 lg-12">
+            {auth.signupError && (
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  color: "red",
+                  paddingLeft: "0.2rem",
+                }}
+              >
+                {auth.signupError}
+              </p>
+            )}
+          </div>
+          <div className="col sm-12 md-12 lg-12">
+            <Input
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Confirm password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 ">
+            <Button title="SIGN UP" onClick={handleSignUp} />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Anchor
+              title="Already have an account? Login instead here"
+              onClick={() => {
+                setEmail("");
+                setPassword("");
+                setFirstName("");
+                setLastName("");
+                setConfirmPassword("");
+                setSigninModal(true);
+                setSignupModal(false);
+              }}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
+            <p className="socials__label">Hope you have fun with us</p>
+            <div className="mt-12">
+              <div className="logo">
+                <img src={kinzy} alt="" />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </Modal>
-  );
+      </Modal>
+    );
+  };
   const renderSignedInHeader = () => (
     <>
       <span className="auth__span--not-hover">Hello, {auth.user.fullName}</span>

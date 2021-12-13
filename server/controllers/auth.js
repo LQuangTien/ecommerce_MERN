@@ -7,7 +7,7 @@ const { ServerError, Response, BadRequest } = require("../ulti/response");
 
 const ONE_SECCOND = 1000;
 const ONE_MiNUTE = ONE_SECCOND * 60;
-const ONE_HOUR = ONE_MiNUTE * 60 ;
+const ONE_HOUR = ONE_MiNUTE * 60;
 
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec(async (error, user) => {
@@ -28,8 +28,12 @@ exports.signup = (req, res) => {
         if (error) return ServerError(res, error.message);
         if (user) {
           const token = jwt.sign(
-            { _id: user._id, role: user.role, exp: Math.floor(Date.now() / 1000) + ONE_HOUR },
-            process.env.JWT_SECRET,   
+            {
+              _id: user._id,
+              role: user.role,
+              exp: Math.floor(Date.now()) + ONE_HOUR,
+            },
+            process.env.JWT_SECRET
           );
           const { firstName, lastName, email, fullName } = user;
           return Response(res, {
@@ -51,8 +55,12 @@ exports.signin = (req, res) => {
     if (!isAuthen) return BadRequest(res, "Wrong password");
 
     const token = jwt.sign(
-      { _id: user._id, role: user.role, exp: Math.floor(Date.now() / 1000) + ONE_HOUR*24  },
-      process.env.JWT_SECRET,
+      {
+        _id: user._id,
+        role: user.role,
+        exp: Math.floor(Date.now()) + ONE_HOUR,
+      },
+      process.env.JWT_SECRET
     );
     const { firstName, lastName, email, fullName } = user;
     return Response(res, {

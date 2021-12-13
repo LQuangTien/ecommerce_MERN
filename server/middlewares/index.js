@@ -13,12 +13,14 @@ const storage = multer.diskStorage({
 exports.upload = multer({ storage });
 
 exports.requireSignin = (req, res, next) => {
-  if (!req.headers.authorization) return Unauthenticated(res, "Signin required");
+  if (!req.headers.authorization)
+    return Unauthenticated(res, "Signin required");
   const token = req.headers.authorization;
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
-    if (user.exp < Math.floor(Date.now() / 1000)) return Unauthenticated(res, "Token expired");
-    
+    if (user.exp < Math.floor(Date.now()))
+      return Unauthenticated(res, "Token expired");
+
     req.user = user;
     return next();
   } catch (error) {
@@ -30,4 +32,3 @@ exports.isAdmin = (req, res, next) => {
   if (req.user.role !== "admin") return Unauthorized(res);
   return next();
 };
-

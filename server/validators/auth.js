@@ -6,8 +6,15 @@ exports.validateSignup = [
   check("email").isEmail().withMessage("Valid email is required"),
   check("password")
     .isLength({ min: 3 })
-    .withMessage("Password must be at least 3 character long"),
-]; 
+    .withMessage("Password must be at least 3 character long")
+    .custom((_, { req }) => {
+      if (req.body.password !== req.body.confirmPassword) {
+        throw new Error("Passwords don't match");
+      } else {
+        return true;
+      }
+    }),
+];
 exports.validateSignin = [
   check("email").isEmail().withMessage("Valid email is required"),
   check("password")

@@ -69,7 +69,8 @@ exports.add = (req, res) => {
       });
       newCart.save((error, cart) => {
         if (error) return ServerError(res, error.message);
-        return Response(res, cart);
+        const cartItems = createCartItems(...cart);
+        return Response(res, { cartItems });
       });
     }
   });

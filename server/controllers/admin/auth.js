@@ -20,11 +20,12 @@ exports.signup = (req, res) => {
         if (error) return ServerError(res, error.message);
         if (user) {
           const token = jwt.sign(
-            { _id: user._id, role: user.role },
-            process.env.JWT_SECRET,
             {
-              expiresIn: ONE_HOUR,
-            }
+              _id: user._id,
+              role: user.role,
+              exp: Math.floor(Date.now()) + ONE_HOUR,
+            },
+            process.env.JWT_SECRET
           );
           const { firstName, lastName, email, fullName } = user;
           return Response(res, {

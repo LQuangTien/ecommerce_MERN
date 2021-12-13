@@ -4,14 +4,20 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { addCategory } from "../../actions/category.actions";
 import { useHistory } from "react-router-dom";
+import { ErrorMessage } from "@hookform/error-message";
 import "./style.css";
 function AddCategory(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { register, control, handleSubmit } = useForm({
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
-      normalField: [{ name: "", value: "" }],
-      filterField: [{ name: "", value: "", type: "" }],
+      normalField: [{ name: ""}],
+      filterField: [{ name: "", value: "" }],
     },
   });
   const {
@@ -38,23 +44,10 @@ function AddCategory(props) {
       acc[index].value.push(cur.value);
       return acc;
     }, []);
-    const mappedNormalField = data.normalField.reduce((acc, cur) => {
-      const index = acc.findIndex((field) => field.name === cur.name);
-      if (index < 0) {
-        acc.push({
-          ...cur,
-          value: [cur.value],
-        });
-        return acc;
-      }
-      acc[index].value.push(cur.value);
-      return acc;
-    }, []);
     dispatch(
       addCategory({
         ...data,
         filterField: mappedFilterField,
-        normalField: mappedNormalField,
       })
     );
     history.push("/categories");
@@ -65,9 +58,16 @@ function AddCategory(props) {
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <p className="form__title d-block">Category name:</p>
+          <ErrorMessage
+            errors={errors}
+            name="name"
+            render={({ message }) => (
+              <div style={{ color: "red" }}>{message}</div>
+            )}
+          />
           <input
             className="form__input "
-            {...register(`name`)}
+            {...register(`name`, { required: "This is required." })}
             placeholder="Category name"
           />
           <div className="mt-3">
@@ -76,7 +76,7 @@ function AddCategory(props) {
               className="form__button"
               type="button"
               onClick={() => {
-                normalAppend({ name: "", value: "" });
+                normalAppend({ name: "" });
               }}
             >
               +
@@ -85,9 +85,18 @@ function AddCategory(props) {
               {normalField.map((item, index) => {
                 return (
                   <li key={item.id} className="form__list-item">
+                    <ErrorMessage
+                      errors={errors}
+                      name={`normalField.${index}.name`}
+                      render={({ message }) => (
+                        <div style={{ color: "red" }}>{message}</div>
+                      )}
+                    />
                     <input
                       className="form__input"
-                      {...register(`normalField.${index}.name`)}
+                      {...register(`normalField.${index}.name`, {
+                        required: "This is required.",
+                      })}
                       placeholder="Additional infomation for product"
                     />
                     <Button
@@ -118,16 +127,38 @@ function AddCategory(props) {
               {filterField.map((item, index) => {
                 return (
                   <li key={item.id} className="form__list-item">
-                    <input
-                      className="form__input"
-                      {...register(`filterField.${index}.name`)}
-                      placeholder="Filter field"
-                    />
-                    <input
-                      className="form__input"
-                      {...register(`filterField.${index}.value`)}
-                      placeholder="Filter value "
-                    />
+                    <div className="d-inline-block w-25 mr-2">
+                      <ErrorMessage
+                        errors={errors}
+                        name={`filterField.${index}.name`}
+                        render={({ message }) => (
+                          <div style={{ color: "red" }}>{message}</div>
+                        )}
+                      />
+                      <input
+                        className="form__input w-100"
+                        {...register(`filterField.${index}.name`, {
+                          required: "This is required.",
+                        })}
+                        placeholder="Filter field"
+                      />
+                    </div>
+                    <div className="d-inline-block w-25 mr-2">
+                      <ErrorMessage
+                        errors={errors}
+                        name={`filterField.${index}.value`}
+                        render={({ message }) => (
+                          <div style={{ color: "red" }}>{message}</div>
+                        )}
+                      />
+                      <input
+                        className="form__input w-100"
+                        {...register(`filterField.${index}.value`, {
+                          required: "This is required.",
+                        })}
+                        placeholder="Filter value "
+                      />
+                    </div>
                     <Button
                       variant="outline-danger"
                       className="form__input--delete"

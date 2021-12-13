@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { addOrder, getAddress } from "../../actions";
 import Anchor from "../../components/UI/Anchor";
 import Button from "../../components/UI/Button";
@@ -46,6 +46,7 @@ function CheckoutPage() {
   const [cartItems, setCartItems] = useState(cart.cartItems);
   const [payment, setPayment] = useState("cod");
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     if (auth.authenticate) {
@@ -161,6 +162,10 @@ function CheckoutPage() {
     return <Redirect to="/" />;
   }
 
+  if (isCompleteOrder && payment === "cod") {
+    return <Redirect to="/" />;
+  }
+
   return (
     <div className="checkoutContainer">
       <div className="grid wide mt-16">
@@ -256,7 +261,9 @@ function CheckoutPage() {
               {summaryStep && (
                 <Card
                   className="continue-btn__container"
-                  leftHeader={`An email will be sent to ${auth.user.email}`}
+                  leftHeader={
+                    <p style={{ fontSize: "1.2rem" }}>You're almost done</p>
+                  }
                   rightHeader={
                     <Button
                       title="CONTINUE"
@@ -289,7 +296,6 @@ function CheckoutPage() {
                       ))}
                       <div className="info-wrapper__container">
                         <Button
-                          black
                           title="CONFIRM PAYMENT"
                           className="payment-btn"
                           onClick={handleConfirmPayment}

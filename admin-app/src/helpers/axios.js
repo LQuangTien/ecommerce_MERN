@@ -1,16 +1,14 @@
 import axios from "axios";
 import store from "../store";
 import { api } from "../urlConfig";
-// const token = localStorage.getItem('token');
+import { signout } from "../actions";
+
 const axiosInstance = axios.create({
   baseURL: api + "",
   headers: {
-    Authorization: localStorage.getItem("token")
-      ? localStorage.getItem("token")
-      : "",
+    Authorization: localStorage.getItem("token") || "",
   },
 });
-
 axiosInstance.interceptors.request.use((req) => {
   const { auth } = store.getState();
   if (auth.token) {
@@ -24,10 +22,11 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     const { status } = error.response;
-    // if(status === 500) {
-    //   localStorage.clear();
-    //   store.dispatch({type: authConstants.LOGOUT_SUCCESS})
-    // }
+    if (status === 401) {
+      axios.defaults.headers.common["Authorization"] = "";
+      store.dispatch(signout());
+      window.location.href = "/";
+    }
     return Promise.reject(error);
   }
 );

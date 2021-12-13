@@ -26,50 +26,51 @@ function Signup(props) {
     return <h1>LOADING ...</h1>;
   }
   return (
-    <Row className="m-5">
+    <div
+      style={{ height: "100vh" }}
+      className="d-flex justify-content-center align-items-center"
+    >
       {user.message ? user.message : ""}
-      <Col md={{ span: 6, offset: 3 }}>
-        <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col md={6}>
-              <Input
-                label="Frist name"
-                placeholder="Frist name"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFristName(e.target.value)}
-              />
-            </Col>
-            <Col md={6}>
-              <Input
-                label="Last name"
-                placeholder="Last name"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </Col>
-          </Row>
-          <Input
-            label="Email"
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            label="Password"
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-      </Col>
-    </Row>
+      <Form onSubmit={handleSubmit} className="w-25">
+        <Row>
+          <Col md={6}>
+            <Input
+              label="Frist name"
+              placeholder="Frist name"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFristName(e.target.value)}
+            />
+          </Col>
+          <Col md={6}>
+            <Input
+              label="Last name"
+              placeholder="Last name"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </Col>
+        </Row>
+        <Input
+          label="Email"
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          label="Password"
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { productConstants } from '../actions/constants';
+import { productConstants } from "../actions/constants";
 
 const initState = {
   products: [],
@@ -7,6 +7,7 @@ const initState = {
   isCreating: false,
   isUpdating: false,
   isDeleting: false,
+  isEnabling: false,
 };
 const productReducer = (state = initState, action) => {
   switch (action.type) {
@@ -66,7 +67,9 @@ const productReducer = (state = initState, action) => {
         product: action.payload.product,
         products: (() => {
           state.products.splice(
-            state.products.findIndex((product) => product._id === action.payload.product._id),
+            state.products.findIndex(
+              (product) => product._id === action.payload.product._id
+            ),
             1,
             action.payload.product
           );
@@ -93,11 +96,13 @@ const productReducer = (state = initState, action) => {
         ...state,
         product: {},
         products: (() => {
-          state.products.splice(
-            state.products.findIndex((product) => product._id === action.payload._id),
-            1
+          const index = state.products.findIndex(
+            (product) => product._id.toString() === action.payload.id.toString()
           );
-          return [...state.products];
+          console.log(index);
+          const products = [...state.products];
+          products[index].isAvailable = false;
+          return [...products];
         })(),
         isDeleting: false,
       };
@@ -107,6 +112,38 @@ const productReducer = (state = initState, action) => {
         ...state,
         product: {},
         isDeleting: false,
+      };
+      break;
+    case productConstants.ENABLE_PRODUCT_REQUEST:
+      state = {
+        ...state,
+        isEnabling: true,
+      };
+      break;
+    case productConstants.ENABLE_PRODUCT_SUCCESS:
+      state = {
+        ...state,
+        product: {
+          ...state.product,
+          isAvailable: true,
+        },
+        products: (() => {
+          const index = state.products.findIndex(
+            (product) => product._id.toString() === action.payload.id.toString()
+          );
+          console.log(index);
+          const products = [...state.products];
+          products[index].isAvailable = true;
+          return [...products];
+        })(),
+        isEnabling: false,
+      };
+      break;
+    case productConstants.ENABLE_PRODUCT_FAILURE:
+      state = {
+        ...state,
+        product: {},
+        isEnabling: false,
       };
       break;
     default:

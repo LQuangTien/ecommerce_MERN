@@ -22,29 +22,32 @@ function Signin(props) {
   };
 
   return (
-    <Row className="m-5">
-      <Col md={{ span: 6, offset: 3 }}>
-        <Form onSubmit={userLogin}>
-          <Input
-            label="Email"
-            placeholder="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            label="Password"
-            placeholder="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button variant="primary" type="submit">
-            Submitt
-          </Button>
-        </Form>
-      </Col>
-    </Row>
+    <div
+      style={{ height: "100vh" }}
+      className="d-flex justify-content-center align-items-center"
+    >
+      <Form onSubmit={userLogin} className="w-25">
+        {auth.error && <p style={{ color: "red" }}>Error: {auth.error}</p>}
+
+        <Input
+          label="Email"
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          label="Password"
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button variant="primary" type="submit">
+          Submitt
+        </Button>
+      </Form>
+    </div>
   );
 }
 

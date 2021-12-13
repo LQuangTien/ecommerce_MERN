@@ -26,6 +26,13 @@ const authReducer = (state = initState, action) => {
         authenticating: false,
       };
       break;
+    case authConstants.LOGIN_FAILURE:
+      state = {
+        ...state,
+        error: action.payload.error,
+        loading: false,
+      };
+      break;
     case authConstants.LOGOUT_REQUEST:
       state = {
         ...state,

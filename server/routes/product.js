@@ -13,6 +13,7 @@ const {
   remove,
   search,
   getAll,
+  enable,
 } = require("../controllers/product");
 
 const router = express.Router();
@@ -29,24 +30,20 @@ const upload = multer({ storage });
 
 router.post(
   "/product/create",
-  // requireSignin,
-  // isAdmin,
+  requireSignin,
+  isAdmin,
   upload.array("productPictures"),
   create
 );
 router.put(
   "/product/:id",
-  // requireSignin,
-  // isAdmin,
+  requireSignin,
+  isAdmin,
   upload.array("productPictures"),
   update
 );
-router.delete(
-  "/product/:id",
-  // requireSignin,
-  // isAdmin,
-  remove
-);
+router.put("/product/enable/:id", requireSignin, isAdmin, enable);
+router.delete("/product/:id", requireSignin, isAdmin, remove);
 router.get("/product/:id", getById);
 
 router.get("/products/search/:page/:perPage", getByQuery);

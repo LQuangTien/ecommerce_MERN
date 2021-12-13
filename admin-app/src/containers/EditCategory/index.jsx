@@ -3,6 +3,7 @@ import { Button, Container } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router";
+import { ErrorMessage } from "@hookform/error-message";
 import {
   deleteCategory,
   editCategory,
@@ -14,7 +15,13 @@ function EditCategory(props) {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
-  const { register, control, handleSubmit, reset } = useForm();
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
   const { category } = useSelector((state) => state.categories);
   useEffect(() => {
     dispatch(getCategory(id));
@@ -54,7 +61,8 @@ function EditCategory(props) {
       acc[index].value.push(cur.value);
       return acc;
     }, []);
-    dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
+    console.log({ id, ...data, filterField: mappedFilterField });
+    // dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
   };
   const onDelete = () => {
     history.push("/categories");
@@ -65,9 +73,16 @@ function EditCategory(props) {
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <p className="form__title d-block">Category name:</p>
+          <ErrorMessage
+            errors={errors}
+            name="name"
+            render={({ message }) => (
+              <div style={{ color: "red" }}>{message}</div>
+            )}
+          />
           <input
             className="form__input "
-            {...register(`name`)}
+            {...register(`name`, { required: "This is required." })}
             placeholder="Category name"
           />
           <div className="mt-3">
@@ -76,7 +91,7 @@ function EditCategory(props) {
               className="form__button"
               type="button"
               onClick={() => {
-                normalAppend({ name: "", value: "" });
+                normalAppend({ name: "" });
               }}
             >
               +
@@ -85,9 +100,18 @@ function EditCategory(props) {
               {normalField.map((item, index) => {
                 return (
                   <li key={item.id}>
+                    <ErrorMessage
+                      errors={errors}
+                      name={`normalField.${index}.name`}
+                      render={({ message }) => (
+                        <div style={{ color: "red" }}>{message}</div>
+                      )}
+                    />
                     <input
                       className="form__input"
-                      {...register(`normalField.${index}.name`)}
+                      {...register(`normalField.${index}.name`, {
+                        required: "This is required.",
+                      })}
                       placeholder="Product info name"
                     />
                     <Button
@@ -118,16 +142,38 @@ function EditCategory(props) {
               {filterField.map((item, index) => {
                 return (
                   <li key={`${item.id}_${item.value}`}>
-                    <input
-                      className="form__input"
-                      {...register(`filterField.${index}.name`)}
-                      placeholder="Product info name"
-                    />
-                    <input
-                      className="form__input"
-                      {...register(`filterField.${index}.value`)}
-                      placeholder="Product info "
-                    />
+                    <div className="d-inline-block w-25 mr-2">
+                      <ErrorMessage
+                        errors={errors}
+                        name={`filterField.${index}.name`}
+                        render={({ message }) => (
+                          <div style={{ color: "red" }}>{message}</div>
+                        )}
+                      />
+                      <input
+                        className="form__input w-100"
+                        {...register(`filterField.${index}.name`, {
+                          required: "This is required.",
+                        })}
+                        placeholder="Filter field"
+                      />
+                    </div>
+                    <div className="d-inline-block w-25 mr-2">
+                      <ErrorMessage
+                        errors={errors}
+                        name={`filterField.${index}.value`}
+                        render={({ message }) => (
+                          <div style={{ color: "red" }}>{message}</div>
+                        )}
+                      />
+                      <input
+                        className="form__input w-100"
+                        {...register(`filterField.${index}.value`, {
+                          required: "This is required.",
+                        })}
+                        placeholder="Filter value "
+                      />
+                    </div>
                     <Button
                       variant="outline-danger"
                       className="form__input--delete"

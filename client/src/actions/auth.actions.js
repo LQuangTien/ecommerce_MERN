@@ -1,11 +1,11 @@
 import axios from "../helpers/axios";
 import { authConstants, cartConstants, userConstants } from "./constants";
 
-export const login = (user) => {
+export const login = (data) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGIN_REQUEST });
-    const res = await axios.post("signin", { ...user });
-    if (res.status === 200) {
+    try {
+      const res = await axios.post("signin", { ...data });
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -13,10 +13,10 @@ export const login = (user) => {
         type: authConstants.LOGIN_SUCCESS,
         payload: { token, user },
       });
-    } else {
+    } catch (error) {
       dispatch({
         type: authConstants.LOGIN_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };
@@ -34,7 +34,7 @@ export const isUserLoggedIn = () => {
     } else {
       dispatch({
         type: authConstants.LOGIN_FAILURE,
-        payload: { error: "Fail to login" },
+        payload: { error: "" },
       });
       return;
     }
@@ -53,25 +53,25 @@ export const signout = () => {
   };
 };
 
-export const signup = (user) => {
+export const signup = (data) => {
   return async (dispatch) => {
     try {
       dispatch({ type: authConstants.SIGNUP_REQUEST });
-      const res = await axios.post("/signup", user);
-      if (res.status === 201) {
-        dispatch({ type: authConstants.SIGNUP_SUCCESS });
-        const { token, user } = res.data;
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-        dispatch({
-          type: authConstants.LOGIN_SUCCESS,
-          payload: { token, user },
-        });
-      } else {
-        dispatch({ type: authConstants.SIGNUP_FAILURE });
-      }
+      const res = await axios.post("/signup", data);
+      console.log(res);
+
+      const { token, user } = res.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      dispatch({
+        type: authConstants.SIGNUP_SUCCESS,
+        payload: { token, user },
+      });
     } catch (error) {
-      console.log(error);
+      dispatch({
+        type: authConstants.SIGNUP_FAILURE,
+        payload: { error: error.response.data.error },
+      });
     }
   };
 };

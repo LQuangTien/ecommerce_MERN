@@ -1,10 +1,10 @@
-import axios from '../helpers/axios';
-import { productConstants } from './constants';
+import axios from "../helpers/axios";
+import { productConstants } from "./constants";
 export const addProduct = (form) => {
   return async (dispatch) => {
     dispatch({ type: productConstants.CREATE_PRODUCT_REQUEST });
     try {
-      const res = await axios.post('product/create', form);
+      const res = await axios.post("product/create", form);
       const product = {
         ...res.data.data,
         price: res.data.data.salePrice,
@@ -76,6 +76,23 @@ export const getProductById = (id) => {
     } catch (error) {
       dispatch({
         type: productConstants.GET_PRODUCT_DETAIL_FAILURE,
+        payload: { error: error.response.data.error },
+      });
+    }
+  };
+};
+export const enableProduct = (id) => {
+  return async (dispatch) => {
+    dispatch({ type: productConstants.ENABLE_PRODUCT_REQUEST });
+    try {
+      await axios.put(`product/enable/${id}`);
+      dispatch({
+        type: productConstants.ENABLE_PRODUCT_SUCCESS,
+        payload: { id },
+      });
+    } catch (error) {
+      dispatch({
+        type: productConstants.ENABLE_PRODUCT_FAILURE,
         payload: { error: error.response.data.error },
       });
     }

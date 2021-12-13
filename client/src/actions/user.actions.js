@@ -94,14 +94,14 @@ export const getOrder = () => {
 };
 export const addOrder = (order) => {
   return async (dispatch) => {
-    dispatch({ type: userConstants.ADD_ORDER_REQUEST });
-    let res;
-    if (order.paymentOption === "cod") {
-      res = await axios.post("/user/order/add", order);
-    } else {
-      res = await axios.post("/user/order/zaloPayment", order);
-    }
-    if (res.status === 200) {
+    try {
+      dispatch({ type: userConstants.ADD_ORDER_REQUEST });
+      let res;
+      if (order.paymentOption === "cod") {
+        res = await axios.post("/user/order/add", order);
+      } else {
+        res = await axios.post("/user/order/zaloPayment", order);
+      }
       if (order.paymentOption === "cod") {
         const data = res.data.data;
         dispatch({
@@ -120,10 +120,10 @@ export const addOrder = (order) => {
         });
       }
       dispatch({ type: cartConstants.RESET_CART });
-    } else {
+    } catch (error) {
       dispatch({
         type: userConstants.ADD_ORDER_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };

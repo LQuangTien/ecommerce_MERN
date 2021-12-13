@@ -1,13 +1,15 @@
 import React from "react";
 import { Nav, Navbar, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useHistory } from "react-router-dom";
 import { signout } from "../../actions/auth.actions";
 function Header() {
+  const history = useHistory();
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleSignout = () => {
     dispatch(signout());
+    history.push("/signin");
   };
   const wasLoggedIn = () => {
     return (
