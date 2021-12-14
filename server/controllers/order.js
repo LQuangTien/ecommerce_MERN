@@ -206,17 +206,7 @@ createOrder = async (userId, orderInfo) => {
 
     await Cart.findOneAndDelete({ user: userId }, { useFindAndModify: false });
 
-    const promises = [];
-    orderInfo.items.forEach((product) => {
-      const promise = Product.findByIdAndUpdate(product.productId, {
-        $inc: {
-          quantity: Number(product.quantity) * -1,
-          quantitySold: Number(product.quantity),
-        },
-      });
-      promises.push(promise);
-    });
-    await Promise.all(promises);
+    
 
     const newOrder = await Order.populate(order, {
       path: "items",
@@ -265,6 +255,18 @@ updateOrderStatusToOrdered = async (orderId) => {
       },
       { new: true, useFindAndModify: false }
     ).populate("items.productId", "name productPictures");
+
+    const promises = [];
+    order.items.forEach((product) => {
+      const promise = Product.findByIdAndUpdate(product.productId, {
+        $inc: {
+          quantity: Number(product.quantity) * -1,
+          quantitySold: Number(product.quantity),
+        },
+      });
+      promises.push(promise);
+    });
+    await Promise.all(promises);
 
     const orderWithAddress = await populateAddress([order]);
 
