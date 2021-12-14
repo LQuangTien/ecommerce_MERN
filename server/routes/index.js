@@ -9,7 +9,7 @@ const pageRoutes = require("./admin/page");
 const adminRoutes = require("./admin/auth");
 const adminOrderRoutes = require("./admin/order");
 const initialDataRoutes = require("./admin/initialData");
-
+const statistic = require("./admin/statistic");
 module.exports = [
   cartRoutes,
   authRoutes,
@@ -21,4 +21,5 @@ module.exports = [
   adminRoutes,
   adminOrderRoutes,
   initialDataRoutes,
+  statistic,
 ];
