@@ -11,7 +11,6 @@ const {
   getByQuery,
   update,
   remove,
-  search,
   getAll,
   enable,
 } = require("../controllers/product");
@@ -35,6 +34,7 @@ router.post(
   upload.array("productPictures"),
   create
 );
+
 router.put(
   "/product/:id",
   requireSignin,

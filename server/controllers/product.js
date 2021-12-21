@@ -21,6 +21,7 @@ exports.create = async (req, res) => {
     const parseCate = categoryInfo.map((cate) => JSON.parse(cate));
     const pictures = req.files.map((file) => file.filename);
     const hasColor = parseCate.find((x) => x.name === "color");
+  
     const newProduct = new Product({
       name: hasColor ? name + " " + hasColor.value : name,
       categoryInfo: parseCate,

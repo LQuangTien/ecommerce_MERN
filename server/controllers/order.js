@@ -1,4 +1,5 @@
 const CryptoJS = require("crypto-js");
+const fs = require("fs");
 const { v1: uuid } = require("uuid");
 const moment = require("moment");
 const axios = require("axios").default;
@@ -202,11 +203,12 @@ createOrder = async (userId, orderInfo) => {
 
   try {
     const order = new Order(orderInfo);
+    console.log(orderInfo);
     order.save();
 
     await Cart.findOneAndDelete({ user: userId }, { useFindAndModify: false });
 
-    
+
 
     const newOrder = await Order.populate(order, {
       path: "items",
@@ -299,3 +301,4 @@ const populateAddress = async (orders) => {
     .catch((error) => error);
   // return newOrders;
 };
+
