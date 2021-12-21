@@ -10,6 +10,7 @@ const adminRoutes = require("./admin/auth");
 const adminOrderRoutes = require("./admin/order");
 const initialDataRoutes = require("./admin/initialData");
 const statistic = require("./admin/statistic");
+const seed = require("./admin/seedData");
 module.exports = [
   cartRoutes,
   authRoutes,
@@ -22,4 +23,5 @@ module.exports = [
   adminOrderRoutes,
   initialDataRoutes,
   statistic,
+  seed,
 ];

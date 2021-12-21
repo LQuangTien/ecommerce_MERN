@@ -8,6 +8,7 @@ const {
   zaloPayment,
   verifyZaloPayment,
   getOrderStatus,
+  seedData
 } = require("../controllers/order");
 
 const router = express.Router();
