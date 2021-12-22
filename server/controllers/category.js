@@ -11,6 +11,7 @@ const {
    Update,
    Delete,
    Create,
+   BadRequest,
 } = require("../ulti/response");
 const product = require("../models/product");
 
@@ -27,6 +28,7 @@ exports.create = async (req, res) => {
       const savedCategory = await newCategory.save();
       return Create(res, { savedCategory });
    } catch (error) {
+      if(error.code===11000) return BadRequest(res, "This category is exist");
       return ServerError(res, error.message);
    }
 };
