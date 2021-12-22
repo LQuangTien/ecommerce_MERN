@@ -5,7 +5,7 @@ export const login = (data) => {
   return async (dispatch) => {
     dispatch({ type: authConstants.LOGIN_REQUEST });
     try {
-      const res = await axios.post("signin", { ...data });
+      const res = await axios.post("/admin/signin", { ...data });
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -16,7 +16,9 @@ export const login = (data) => {
     } catch (error) {
       dispatch({
         type: authConstants.LOGIN_FAILURE,
-        payload: { error: error.response.data.error },
+        payload: {
+          error: error.response.data.error || error.response.data.message,
+        },
       });
     }
   };

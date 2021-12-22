@@ -4,7 +4,7 @@ const initState = {
   products: [],
   product: {},
   isGetProductLoading: false,
-  isCreating: false,
+  isAdding: false,
   isUpdating: false,
   isDeleting: false,
   isEnabling: false,
@@ -37,7 +37,7 @@ const productReducer = (state = initState, action) => {
     case productConstants.CREATE_PRODUCT_REQUEST:
       state = {
         ...state,
-        isCreating: true,
+        isAdding: true,
       };
       break;
     case productConstants.CREATE_PRODUCT_SUCCESS:
@@ -45,14 +45,14 @@ const productReducer = (state = initState, action) => {
         ...state,
         product: action.payload.product,
         products: [...state.products, action.payload.product],
-        isCreating: false,
+        isAdding: false,
       };
       break;
     case productConstants.CREATE_PRODUCT_FAILURE:
       state = {
         ...state,
         product: {},
-        isCreating: false,
+        isAdding: false,
       };
       break;
     case productConstants.UPDATE_PRODUCT_REQUEST:
@@ -88,7 +88,7 @@ const productReducer = (state = initState, action) => {
     case productConstants.DELETE_PRODUCT_REQUEST:
       state = {
         ...state,
-        isDeleting: true,
+        isEnabling: true,
       };
       break;
     case productConstants.DELETE_PRODUCT_SUCCESS:
@@ -104,14 +104,14 @@ const productReducer = (state = initState, action) => {
           products[index].isAvailable = false;
           return [...products];
         })(),
-        isDeleting: false,
+        isEnabling: false,
       };
       break;
     case productConstants.DELETE_PRODUCT_FAILURE:
       state = {
         ...state,
         product: {},
-        isDeleting: false,
+        isEnabling: false,
       };
       break;
     case productConstants.ENABLE_PRODUCT_REQUEST:

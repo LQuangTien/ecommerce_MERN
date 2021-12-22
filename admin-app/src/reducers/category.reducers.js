@@ -3,6 +3,9 @@ import { categoryConstants } from "../actions/constants";
 const initState = {
   categories: [],
   loading: false,
+  isUpdating: false,
+  isAdding: false,
+  isDeleting: false,
   error: null,
   category: {},
 };
@@ -85,7 +88,7 @@ const categoryReducer = (state = initState, action) => {
       state = {
         ...state,
 
-        loading: true,
+        isAdding: true,
       };
       break;
     case categoryConstants.ADD_CATEGORY_SUCCESS:
@@ -96,51 +99,51 @@ const categoryReducer = (state = initState, action) => {
       state = {
         ...state,
         categories: updatedCategories,
-        loading: false,
+        isAdding: false,
       };
       break;
     case categoryConstants.ADD_CATEGORY_FAILURE:
       state = {
         ...state,
-        loading: false,
+        isAdding: false,
         error: action.payload.error,
       };
       break;
     case categoryConstants.UPDATE_CATEGORY_REQUEST:
       state = {
         ...state,
-        loading: true,
+        isUpdating: true,
       };
       break;
     case categoryConstants.UPDATE_CATEGORY_SUCCESS:
       state = {
         ...state,
-        loading: false,
+        isUpdating: false,
       };
       break;
     case categoryConstants.UPDATE_CATEGORY_FAILURE:
       state = {
         ...state,
-        loading: false,
+        isUpdating: false,
         error: action.payload.error,
       };
       break;
     case categoryConstants.DELETE_CATEGORY_REQUEST:
       state = {
         ...state,
-        loading: true,
+        isDeleting: true,
       };
       break;
     case categoryConstants.DELETE_CATEGORY_SUCCESS:
       state = {
         ...state,
-        loading: false,
+        isDeleting: false,
       };
       break;
     case categoryConstants.DELETE_CATEGORY_FAILURE:
       state = {
         ...state,
-        loading: false,
+        isDeleting: false,
         error: action.payload.error,
       };
       break;

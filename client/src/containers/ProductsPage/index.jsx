@@ -166,9 +166,12 @@ function ProductPage(props) {
           value={price[0]}
           onChange={(event) => {
             setPrices([event.target.value, price[1]]);
+            const newQuery = { from: event.target.value, to: price[1] };
+            setQuery((prev) => ({ ...prev, ...newQuery }));
+            updateQueryString(newQuery);
           }}
           min={INIT_PRICE_STATE[0]}
-          max={INIT_PRICE_STATE[1]}
+          max={100000}
           step="500"
           type="number"
         />
@@ -177,9 +180,12 @@ function ProductPage(props) {
           value={price[1]}
           onChange={(event) => {
             setPrices([price[0], event.target.value]);
+            const newQuery = { from: price[0], to: event.target.value };
+            setQuery((prev) => ({ ...prev, ...newQuery }));
+            updateQueryString(newQuery);
           }}
           min={INIT_PRICE_STATE[0]}
-          max={INIT_PRICE_STATE[1]}
+          max={100000}
           step="500"
           type="number"
         />

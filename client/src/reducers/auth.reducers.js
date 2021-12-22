@@ -33,6 +33,7 @@ const authReducer = (state = initState, action) => {
         ...state,
         error: action.payload.error,
         loading: false,
+        authenticating: false,
       };
       break;
     case authConstants.SIGNUP_REQUEST:

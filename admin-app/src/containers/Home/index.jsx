@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import "./style.css";
 import { Container, Row, Col } from "react-bootstrap";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -18,6 +19,7 @@ import {
   LineElement,
 } from "chart.js";
 import { Bar, Pie, Line } from "react-chartjs-2";
+import { formatThousand } from "../../helpers/util";
 
 ChartJS.register(
   CategoryScale,
@@ -35,7 +37,7 @@ const chartOptions = {
   plugins: {
     title: {
       display: true,
-      text: "Chart.js Bar Chart",
+      text: "Revenue each month of the year",
     },
   },
 };
@@ -55,70 +57,66 @@ const chartLabels = [
   "December",
 ];
 
-const chartData = {
-  labels: chartLabels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: [100, 101, 93, 124, 54, 98, 69, 87, 103, 96, 120, 93],
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-  ],
-};
-
-const pieData = {
-  labels: ["Red", "Blue", "Yellow"],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [12, 19, 3],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-      ],
-      borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
-
 export const lineOptions = {
   responsive: true,
   plugins: {
     title: {
       display: true,
-      text: "Chart.js Line Chart",
+      text: "Revenue in the last 7 days",
     },
   },
 };
 
-const lineLabels = [
-  "19-11-2021",
-  "20-11-2021",
-  "21-11-2021",
-  "23-11-2021",
-  "24-11-2021",
-  "25-11-2021",
-  "26-11-2021",
-];
-
-const lineData = {
-  labels: lineLabels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: [1, 5, 9, 7, 2, 6, 10],
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-  ],
-};
 function Home(props) {
+  const statistic = useSelector((state) => state.statistic);
+
+  const pieData = {
+    labels: (statistic.top5 && statistic.top5.products) || [],
+    datasets: [
+      {
+        data: (statistic.top5 && statistic.top5.quantitySold) || [],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(255, 120, 0, 0.2)",
+          "rgba(255, 227, 0, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(255, 120, 0, 1)",
+          "rgba(255, 227, 0,1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const lineData = {
+    labels: (statistic.total7day && statistic.total7day.days) || [],
+    datasets: [
+      {
+        label: "Revenue each day",
+        data: (statistic.total7day && statistic.total7day.revenue) || [],
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
+
+  const chartData = {
+    labels: chartLabels,
+    datasets: [
+      {
+        label: "Revenue each month",
+        data:
+          (statistic.totalPerMonth && statistic.totalPerMonth.revenues) || [],
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
   /**
    * Tổng doanh thu, tổng số sản phẩm, tổng số đơn hàng
 Biểu đồ 12 cột thể hiện doanh thu từng tháng
@@ -147,7 +145,7 @@ Biểu đồ tròn xem top 3 category đem lại doanh thu cao nhất
                   className="m-0 statistic__number-value"
                   style={{ color: "var(--primary)" }}
                 >
-                  $10,000,000
+                  {`$${formatThousand(statistic.revenue)}`}
                 </p>
               </Col>
             </Row>
@@ -172,7 +170,8 @@ Biểu đồ tròn xem top 3 category đem lại doanh thu cao nhất
                   className="m-0 statistic__number-value"
                   style={{ color: "#00C6AB" }}
                 >
-                  478 <span style={{ fontSize: "0.8rem" }}>PRODUCTS</span>
+                  {statistic.totalProduct}{" "}
+                  <span style={{ fontSize: "0.8rem" }}>PRODUCTS</span>
                 </p>
               </Col>
             </Row>
@@ -197,34 +196,43 @@ Biểu đồ tròn xem top 3 category đem lại doanh thu cao nhất
                   className="m-0 statistic__number-value"
                   style={{ color: "#FDC60A" }}
                 >
-                  132 <span style={{ fontSize: "0.8rem" }}>ORDERS</span>
+                  {statistic.totalOrder}{" "}
+                  <span style={{ fontSize: "0.8rem" }}>ORDERS</span>
                 </p>
               </Col>
             </Row>
           </div>
         </Col>
       </Row>
-      <Row className="mt-2">
-        <Col className="mt-3" sm="8">
+      <Row className="mt-2 mb-2">
+        <Col className="mt-3" sm="12">
           <div className="statistic__chart">
-            <Bar options={chartOptions} data={chartData} />
+            <div style={{ height: "360px", width: "70%", margin: "auto" }}>
+              <Bar options={chartOptions} data={chartData} />
+            </div>
           </div>
         </Col>
-        <Col sm="4">
+        <Col sm="12" className="mt-2">
           <Row>
-            <Col sm="12" className="mt-3">
-              <div className="statistic__chart" style={{ height: "210px" }}>
+            <Col sm="6" className="mt-3">
+              <div className="statistic__chart" style={{ height: "360px" }}>
                 <Pie
                   data={pieData}
                   options={{
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: "Top 5 best selling products",
+                      },
+                    },
                   }}
                 />
               </div>
             </Col>
-            <Col sm="12" className="mt-3">
-              <div className="statistic__chart" style={{ height: "210px" }}>
+            <Col sm="6" className="mt-3">
+              <div className="statistic__chart" style={{ height: "360px" }}>
                 <Line options={lineOptions} data={lineData} />
               </div>
             </Col>

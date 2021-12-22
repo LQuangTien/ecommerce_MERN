@@ -58,6 +58,7 @@ const Header = (props) => {
     }
   };
   const renderSigninModal = () => {
+    console.log(auth.authenticating);
     return (
       <Modal
         visible={signinModal}
@@ -106,7 +107,11 @@ const Header = (props) => {
           </div>
 
           <div className="col sm-12 md-12 lg-12 mt-16 ">
-            <Button title="SIGN IN" onClick={handleLogin} />
+            <Button
+              loading={auth.authenticating}
+              title="SIGN IN"
+              onClick={handleLogin}
+            />
           </div>
           <div className="col sm-12 md-12 lg-12 mt-16">
             <Anchor
@@ -200,7 +205,11 @@ const Header = (props) => {
             />
           </div>
           <div className="col sm-12 md-12 lg-12 mt-16 ">
-            <Button title="SIGN UP" onClick={handleSignUp} />
+            <Button
+              title="SIGN UP"
+              onClick={handleSignUp}
+              loading={auth.signuping}
+            />
           </div>
           <div className="col sm-12 md-12 lg-12 mt-16">
             <Anchor

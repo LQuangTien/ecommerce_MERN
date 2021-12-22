@@ -47,7 +47,7 @@ function Products(props) {
   const renderProductsTable = () =>
     data && (
       <MUIDataTable
-        title={"ACME Employee list"}
+        title={"Products"}
         data={data}
         columns={columns}
         options={options}
@@ -59,7 +59,6 @@ function Products(props) {
         <Row>
           <Col md={12}>
             <div className="d-flex justify-content-between">
-              <h3>Products</h3>
               <Button
                 variant="primary"
                 onClick={() => {

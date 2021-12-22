@@ -41,18 +41,18 @@ export const getAllCategory = () => {
 export const addCategory = (form) => {
   return async (dispatch) => {
     dispatch({ type: categoryConstants.ADD_CATEGORY_REQUEST });
-    const res = await axios.post("category/create", form);
-    if (res.status === 201) {
+    try {
+      const res = await axios.post("category/create", form);
       const category = res.data.data;
       dispatch({
         type: categoryConstants.ADD_CATEGORY_SUCCESS,
         payload: { category },
       });
       dispatch(getAllCategory());
-    } else {
+    } catch (error) {
       dispatch({
         type: categoryConstants.ADD_CATEGORY_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };
@@ -75,14 +75,14 @@ export const editCategory = (form) => {
 export const deleteCategory = (id) => {
   return async (dispatch) => {
     dispatch({ type: categoryConstants.DELETE_CATEGORY_REQUEST });
-    const res = await axios.delete(`category/${id}`);
-    if (res.status === 200) {
+    try {
+      const res = await axios.delete(`category/${id}`);
       dispatch({ type: categoryConstants.DELETE_CATEGORY_SUCCESS });
       dispatch(getAllCategory());
-    } else {
+    } catch (error) {
       dispatch({
         type: categoryConstants.DELETE_CATEGORY_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };

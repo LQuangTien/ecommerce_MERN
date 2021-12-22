@@ -76,3 +76,7 @@ export const orderConstants = {
   GET_ORDER_DETAIL_SUCCESS: "GET_ORDER_DETAIL_SUCCESS",
   GET_ORDER_DETAIL_FAILURE: "GET_ORDER_DETAIL_FAILURE",
 };
+
+export const statisticConstants = {
+  GET_STATISTIC_SUCCESS: "GET_STATISTIC_SUCCESS",
+};

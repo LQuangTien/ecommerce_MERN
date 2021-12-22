@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Spinner } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addCategory } from "../../actions/category.actions";
 import { useHistory } from "react-router-dom";
 import { ErrorMessage } from "@hookform/error-message";
@@ -9,6 +9,7 @@ import "./style.css";
 function AddCategory(props) {
   const history = useHistory();
   const dispatch = useDispatch();
+  const { isAdding } = useSelector((state) => state.categories);
   const {
     register,
     control,
@@ -16,7 +17,7 @@ function AddCategory(props) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      normalField: [{ name: ""}],
+      normalField: [{ name: "" }],
       filterField: [{ name: "", value: "" }],
     },
   });
@@ -44,13 +45,18 @@ function AddCategory(props) {
       acc[index].value.push(cur.value);
       return acc;
     }, []);
+    console.log({
+      ...data,
+      filterField: mappedFilterField,
+    });
     dispatch(
       addCategory({
         ...data,
         filterField: mappedFilterField,
       })
-    );
-    history.push("/categories");
+    ).then(() => {
+      history.push("/categories");
+    });
   };
 
   return (
@@ -58,17 +64,17 @@ function AddCategory(props) {
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <p className="form__title d-block">Category name:</p>
-          <ErrorMessage
-            errors={errors}
-            name="name"
-            render={({ message }) => (
-              <div style={{ color: "red" }}>{message}</div>
-            )}
-          />
           <input
             className="form__input "
             {...register(`name`, { required: "This is required." })}
             placeholder="Category name"
+          />
+          <ErrorMessage
+            errors={errors}
+            name="name"
+            render={({ message }) => (
+              <div className="errorMessage">{message}</div>
+            )}
           />
           <div className="mt-3">
             <p className="form__title">Additional infomation for product</p>
@@ -85,13 +91,6 @@ function AddCategory(props) {
               {normalField.map((item, index) => {
                 return (
                   <li key={item.id} className="form__list-item">
-                    <ErrorMessage
-                      errors={errors}
-                      name={`normalField.${index}.name`}
-                      render={({ message }) => (
-                        <div style={{ color: "red" }}>{message}</div>
-                      )}
-                    />
                     <input
                       className="form__input"
                       {...register(`normalField.${index}.name`, {
@@ -107,6 +106,13 @@ function AddCategory(props) {
                     >
                       X
                     </Button>
+                    <ErrorMessage
+                      errors={errors}
+                      name={`normalField.${index}.name`}
+                      render={({ message }) => (
+                        <div className="errorMessage">{message}</div>
+                      )}
+                    />
                   </li>
                 );
               })}
@@ -126,15 +132,8 @@ function AddCategory(props) {
             <ul className="form__list">
               {filterField.map((item, index) => {
                 return (
-                  <li key={item.id} className="form__list-item">
+                  <li key={item.id} className="form__list-item d-flex">
                     <div className="d-inline-block w-25 mr-2">
-                      <ErrorMessage
-                        errors={errors}
-                        name={`filterField.${index}.name`}
-                        render={({ message }) => (
-                          <div style={{ color: "red" }}>{message}</div>
-                        )}
-                      />
                       <input
                         className="form__input w-100"
                         {...register(`filterField.${index}.name`, {
@@ -142,21 +141,28 @@ function AddCategory(props) {
                         })}
                         placeholder="Filter field"
                       />
-                    </div>
-                    <div className="d-inline-block w-25 mr-2">
                       <ErrorMessage
                         errors={errors}
-                        name={`filterField.${index}.value`}
+                        name={`filterField.${index}.name`}
                         render={({ message }) => (
-                          <div style={{ color: "red" }}>{message}</div>
+                          <div className="errorMessage">{message}</div>
                         )}
                       />
+                    </div>
+                    <div className="d-inline-block w-25 mr-2">
                       <input
                         className="form__input w-100"
                         {...register(`filterField.${index}.value`, {
                           required: "This is required.",
                         })}
                         placeholder="Filter value "
+                      />
+                      <ErrorMessage
+                        errors={errors}
+                        name={`filterField.${index}.value`}
+                        render={({ message }) => (
+                          <div className="errorMessage">{message}</div>
+                        )}
                       />
                     </div>
                     <Button
@@ -172,7 +178,23 @@ function AddCategory(props) {
               })}
             </ul>
           </div>
-          <input type="submit" className="btn btn-success w-25 mt-3" />
+          <Button
+            variant="success"
+            className="mt-3 mr-2"
+            type="submit"
+            disabled={isAdding}
+          >
+            {isAdding && (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            )}
+            Submit
+          </Button>
         </form>
       </div>
     </Container>

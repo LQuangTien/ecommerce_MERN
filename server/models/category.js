@@ -26,12 +26,12 @@ const categorySchema = mongoose.Schema(
         //   required: true,
         //   trim: true,
         // },
-        valueType: {
-          type: String,
-          enum: ["text", "number"],
-          required: true,
-          trim: true,
-        },
+        // valueType: {
+        //   type: String,
+        //   enum: ["text", "number"],
+        //   required: true,
+        //   trim: true,
+        // },
       },
     ],
     filterField: [
