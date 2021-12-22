@@ -3,7 +3,12 @@ const bcrypt = require("bcrypt");
 const statusCode = require("http-status-codes");
 
 const User = require("../models/user");
-const { ServerError, Response, BadRequest } = require("../ulti/response");
+const {
+  ServerError,
+  Response,
+  BadRequest,
+  Unauthorized,
+} = require("../ulti/response");
 
 const ONE_SECCOND = 1000;
 const ONE_MiNUTE = ONE_SECCOND * 60;
@@ -53,7 +58,7 @@ exports.signin = (req, res) => {
     if (!user) return BadRequest(res, "User does not exist");
     const isAuthen = await user.authenticate(req.body.password);
     if (!isAuthen) return BadRequest(res, "Wrong password");
-
+    if (user.role !== "admin") return Unauthorized(res);
     const token = jwt.sign(
       {
         _id: user._id,

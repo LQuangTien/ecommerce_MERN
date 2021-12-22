@@ -19,3 +19,9 @@
 .button--black {
   background-color: var(--black);
 }
+
+.button-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

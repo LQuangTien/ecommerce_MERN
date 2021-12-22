@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Spinner } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router";
@@ -22,7 +22,10 @@ function EditCategory(props) {
     reset,
     formState: { errors },
   } = useForm();
-  const { category } = useSelector((state) => state.categories);
+  const { category, isUpdating, isDeleting } = useSelector(
+    (state) => state.categories
+  );
+  console.log(isDeleting);
   useEffect(() => {
     dispatch(getCategory(id));
   }, [dispatch, id]);
@@ -61,29 +64,29 @@ function EditCategory(props) {
       acc[index].value.push(cur.value);
       return acc;
     }, []);
-    console.log({ id, ...data, filterField: mappedFilterField });
-    // dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
+    dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
   };
   const onDelete = () => {
-    history.push("/categories");
-    dispatch(deleteCategory(id));
+    dispatch(deleteCategory(id)).then(() => {
+      history.push("/categories");
+    });
   };
   return (
     <Container>
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <p className="form__title d-block">Category name:</p>
-          <ErrorMessage
-            errors={errors}
-            name="name"
-            render={({ message }) => (
-              <div style={{ color: "red" }}>{message}</div>
-            )}
-          />
           <input
             className="form__input "
             {...register(`name`, { required: "This is required." })}
             placeholder="Category name"
+          />
+          <ErrorMessage
+            errors={errors}
+            name="name"
+            render={({ message }) => (
+              <div className="errorMessage">{message}</div>
+            )}
           />
           <div className="mt-3">
             <p className="form__title">Additional infomation for product</p>
@@ -104,7 +107,7 @@ function EditCategory(props) {
                       errors={errors}
                       name={`normalField.${index}.name`}
                       render={({ message }) => (
-                        <div style={{ color: "red" }}>{message}</div>
+                        <div className="errorMessage">{message}</div>
                       )}
                     />
                     <input
@@ -147,7 +150,7 @@ function EditCategory(props) {
                         errors={errors}
                         name={`filterField.${index}.name`}
                         render={({ message }) => (
-                          <div style={{ color: "red" }}>{message}</div>
+                          <div className="errorMessage">{message}</div>
                         )}
                       />
                       <input
@@ -163,7 +166,7 @@ function EditCategory(props) {
                         errors={errors}
                         name={`filterField.${index}.value`}
                         render={({ message }) => (
-                          <div style={{ color: "red" }}>{message}</div>
+                          <div className="errorMessage">{message}</div>
                         )}
                       />
                       <input
@@ -189,10 +192,38 @@ function EditCategory(props) {
               })}
             </ul>
           </div>
-          <Button variant="success" className="mt-3 mr-2" type="submit">
+          <Button
+            variant="success"
+            className="mt-3 mr-2"
+            type="submit"
+            disabled={isUpdating || isDeleting}
+          >
+            {isUpdating && (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            )}
             Submit
           </Button>
-          <Button variant="danger" className="mt-3 mr-2" onClick={onDelete}>
+          <Button
+            variant="danger"
+            className="mt-3 mr-2"
+            onClick={onDelete}
+            disabled={isUpdating || isDeleting}
+          >
+            {isDeleting && (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            )}
             Delete this category
           </Button>
           <Button
@@ -201,6 +232,7 @@ function EditCategory(props) {
             onClick={() => {
               history.push("/categories");
             }}
+            disabled={isUpdating || isDeleting}
           >
             Back
           </Button>

@@ -7,6 +7,7 @@ import {
   FormControl,
   InputGroup,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
 import ImageUploading from "react-images-uploading";
@@ -29,7 +30,9 @@ function EditProduct(props) {
   const [isReplace, setReplace] = useState(false);
   const maxNumber = 5;
   const { categories } = useSelector((state) => state.categories);
-  const { product } = useSelector((state) => state.products);
+  const { product, isUpdating, isEnabling } = useSelector(
+    (state) => state.products
+  );
   const { register, control, handleSubmit, setValue, getValues, reset } =
     useForm();
 
@@ -84,16 +87,22 @@ function EditProduct(props) {
         form.append("productPictures", pic.file);
       }
     }
+    for (var pair of form.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
     dispatch(updateProduct(id, form));
   };
 
   const onDelete = () => {
-    dispatch(deleteProduct(id));
-    history.push("/products");
+    dispatch(deleteProduct(id)).then(() => {
+      dispatch(getProductById(id));
+    });
   };
 
   const onEnable = () => {
-    dispatch(enableProduct(id));
+    dispatch(enableProduct(id)).then(() => {
+      dispatch(getProductById(id));
+    });
   };
 
   return (
@@ -305,15 +314,55 @@ function EditProduct(props) {
             </ImageUploading>
           )}
           <div className="mt-2">
-            <Button type="submit" variant="success" className="mr-2">
+            <Button
+              type="submit"
+              variant="success"
+              className="mr-2"
+              disabled={isUpdating || isEnabling}
+            >
+              {isUpdating && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
               Submit
             </Button>
             {product && product.isAvailable ? (
-              <Button variant="danger" onClick={onDelete}>
+              <Button
+                variant="danger"
+                onClick={onDelete}
+                disabled={isUpdating || isEnabling}
+              >
+                {isEnabling && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}
                 Delete product
               </Button>
             ) : (
-              <Button variant="info" onClick={onEnable}>
+              <Button
+                variant="info"
+                onClick={onEnable}
+                disabled={isUpdating || isEnabling}
+              >
+                {isEnabling && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}
                 Enable product
               </Button>
             )}

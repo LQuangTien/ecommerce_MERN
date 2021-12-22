@@ -7,6 +7,7 @@ import {
   FormControl,
   InputGroup,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
 import ImageUploading from "react-images-uploading";
@@ -22,24 +23,20 @@ function AddProduct(props) {
   const [images, setImages] = useState([]);
   const maxNumber = 5;
   const { categories } = useSelector((state) => state.categories);
+  const { isAdding } = useSelector((state) => state.products);
+  const [cateError, setCateError] = useState("");
 
   const onChange = (imageList, addUpdateIndex) => {
-    // data for submit
-    console.log(...imageList.map((img) => img.file), addUpdateIndex);
     setImages(imageList);
   };
-  const { register, control, handleSubmit, setValue, getValues } = useForm({
-    defaultValues: {
-      name: "",
-      regularPrice: "",
-      sale: "",
-      salePrice: "",
-      quantity: "",
-      description: "",
-      productPictures: "",
-      category: "",
-    },
-  });
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm();
   const { fields: categoryInfo } = useFieldArray({
     control,
     name: "categoryInfo",
@@ -47,6 +44,11 @@ function AddProduct(props) {
 
   const onSubmit = (data) => {
     console.log(data);
+    console.log(!category);
+    if (!category) {
+      setCateError("Error");
+      return;
+    }
     const form = new FormData();
     Object.keys(data).forEach((key, index) => {
       if (!["category", "categoryInfo", "productPictures"].includes(key)) {
@@ -55,7 +57,7 @@ function AddProduct(props) {
     });
     form.append("category", category.name);
     for (let field of data.categoryInfo) {
-      if (field.value !== "" || field.name !== "") {
+      if (field.value !== "" && field.name !== "") {
         form.append(
           "categoryInfo",
           JSON.stringify({ name: field.name, value: field.value })
@@ -65,8 +67,12 @@ function AddProduct(props) {
     for (let pic of images) {
       form.append("productPictures", pic.file);
     }
-    dispatch(addProduct(form));
-    history.push("/products");
+    for (var pair of form.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+    dispatch(addProduct(form)).then(() => {
+      history.push("/products");
+    });
   };
 
   return (
@@ -76,9 +82,12 @@ function AddProduct(props) {
           <Form.Label className="form__title d-block">Product name:</Form.Label>
           <Form.Control
             className="form__input w-100"
-            {...register(`name`)}
+            {...register(`name`, { required: true })}
             placeholder="Category name"
           />
+          {errors.name && (
+            <span className="errorMessage">This field is required</span>
+          )}
           <Row>
             <Col lg={4}>
               <Form.Label className="form__title d-block">
@@ -86,16 +95,21 @@ function AddProduct(props) {
               </Form.Label>
               <Form.Control
                 className="form__input w-100"
-                {...register(`regularPrice`)}
+                {...register(`regularPrice`, { required: true })}
                 placeholder="0"
+                type="number"
                 onChange={(e) => {
                   const salePrice = getValues("salePrice");
-                  const result = Math.round(
+                  let result = Math.round(
                     (1 - Number(salePrice) / Number(e.target.value)) * 100
                   );
+                  if (result < 0) result = 0;
                   setValue("sale", result.toString());
                 }}
               />
+              {errors.regularPrice && (
+                <span className="errorMessage">This field is required</span>
+              )}
             </Col>
             <Col lg={4}>
               <Form.Label className="form__title d-block">
@@ -103,16 +117,21 @@ function AddProduct(props) {
               </Form.Label>
               <Form.Control
                 className="form__input w-100"
-                {...register(`salePrice`)}
+                {...register(`salePrice`, { required: true })}
                 placeholder="0"
+                type="number"
                 onChange={(e) => {
                   const regularPrice = getValues("regularPrice");
-                  const result = Math.round(
+                  let result = Math.round(
                     (1 - Number(e.target.value) / Number(regularPrice)) * 100
                   );
+                  if (result < 0) result = 0;
                   setValue("sale", result.toString());
                 }}
               />
+              {errors.salePrice && (
+                <span className="errorMessage">This field is required</span>
+              )}
             </Col>
             <Col lg={4}>
               <Form.Label className="form__title d-block">Sale:</Form.Label>
@@ -130,24 +149,29 @@ function AddProduct(props) {
           <Form.Label className="form__title d-block">Quantity:</Form.Label>
           <Form.Control
             className="form__input w-100"
-            {...register(`quantity`)}
+            {...register(`quantity`, { required: true })}
             placeholder="0"
+            type="number"
           />
+          {errors.salePrice && (
+            <span className="errorMessage">This field is required</span>
+          )}
           <Form.Label className="form__title d-block">Description:</Form.Label>
           <Form.Control
             as="textarea"
             className="form__input w-100"
-            {...register(`description`)}
+            {...register(`description`, { required: true })}
             placeholder="Description"
           />
+          {errors.salePrice && (
+            <span className="errorMessage">This field is required</span>
+          )}
           <Form.Label className="form__title d-block">Category:</Form.Label>
           {categories.length > 0 && (
             <Form.Control
               as="select"
               value={(category && category.name) || -1}
               onChange={(e) => {
-                console.log(getValues());
-
                 if (category) {
                   const prevFieldCount =
                     category.filterField.length + category.normalField.length;
@@ -185,6 +209,9 @@ function AddProduct(props) {
               ))}
             </Form.Control>
           )}
+          {!category && cateError && (
+            <span className="errorMessage">This field is required</span>
+          )}
           {category &&
             category.filterField.map((field, index) => (
               <div>
@@ -196,13 +223,15 @@ function AddProduct(props) {
                   hidden
                   value={field.name}
                   {...register(`categoryInfo.${index}.name`)}
-                  placeholder="Description"
                 />
                 <Form.Control
                   as="select"
+                  defaultValue={""}
                   {...register(`categoryInfo.${index}.value`)}
                 >
-                  <option value={null}>Choose your option</option>
+                  <option value={""} disabled>
+                    Choose your option
+                  </option>
                   {field.value.map((value) => (
                     <option value={value} key={value}>
                       {value}
@@ -211,6 +240,7 @@ function AddProduct(props) {
                 </Form.Control>
               </div>
             ))}
+
           {category &&
             category.normalField.map((field, index) => (
               <div>
@@ -291,7 +321,24 @@ function AddProduct(props) {
               </>
             )}
           </ImageUploading>
-          <input type="submit" className="btn btn-success w-25 mt-3" />
+          {/* <input type="submit" className="btn btn-success w-25 mt-3" /> */}
+          <Button
+            variant="success"
+            className="mt-3 mr-2"
+            type="submit"
+            disabled={isAdding}
+          >
+            {isAdding && (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            )}
+            Submit
+          </Button>
         </Form>
       </div>
     </Container>

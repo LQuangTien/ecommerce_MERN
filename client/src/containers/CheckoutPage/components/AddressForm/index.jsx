@@ -200,7 +200,7 @@ function AddressForm(props) {
         {props.withoutHeader && (
           <Button
             title="Delete"
-            className="address__btn address__btn--delete "
+            className="address__btn address__btn--delete"
             onClick={onDelete}
           />
         )}

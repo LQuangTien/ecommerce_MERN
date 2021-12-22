@@ -36,11 +36,14 @@
   width: 30rem;
   margin-top: 1.6rem;
 }
+.address__btn:not(:last-child) {
+  margin-right: 1.6rem;
+}
 
 .address__btn--delete {
-  background-color: rgb(252, 60, 60);
+  background-color: rgb(252, 60, 60) !important;
 }
 
 .address__btn--delete:hover {
-  background-color: rgb(252, 20, 20);
+  background-color: rgb(252, 20, 20) !important;
 }

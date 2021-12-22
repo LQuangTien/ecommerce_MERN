@@ -60,7 +60,7 @@ function Category(props) {
     data && (
       <MuiThemeProvider theme={getMuiTheme()}>
         <MUIDataTable
-          title={"ACME Employee list"}
+          title={"Categories"}
           data={data}
           columns={columns}
           options={options}
@@ -76,7 +76,6 @@ function Category(props) {
         <Row>
           <Col md={12}>
             <div className="d-flex justify-content-between">
-              <h3>Products</h3>
               <Button variant="primary" onClick={nagivateToAddPage}>
                 Add
               </Button>
