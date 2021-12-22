@@ -4,7 +4,7 @@ const { isAdmin, requireSignin } = require("../../middlewares");
 const { initialData } = require("../../controllers/admin/initialData");
 
 const router = express.Router();
-
-router.get("/admin/initialdata", requireSignin, isAdmin, initialData);
+//requireSignin, isAdmin,
+router.get("/admin/initialdata",  initialData);
 
 module.exports = router;
