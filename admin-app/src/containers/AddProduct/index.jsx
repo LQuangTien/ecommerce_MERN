@@ -41,10 +41,7 @@ function AddProduct(props) {
     control,
     name: "categoryInfo",
   });
-
   const onSubmit = (data) => {
-    console.log(data);
-    console.log(!category);
     if (!category) {
       setCateError("Error");
       return;
@@ -74,7 +71,6 @@ function AddProduct(props) {
       history.push("/products");
     });
   };
-
   return (
     <Container>
       <div>
@@ -227,7 +223,9 @@ function AddProduct(props) {
                 <Form.Control
                   as="select"
                   defaultValue={""}
-                  {...register(`categoryInfo.${index}.value`)}
+                  {...register(`categoryInfo.${index}.value`, {
+                    required: true,
+                  })}
                 >
                   <option value={""} disabled>
                     Choose your option
@@ -238,6 +236,11 @@ function AddProduct(props) {
                     </option>
                   ))}
                 </Form.Control>
+                {errors.categoryInfo &&
+                  errors.categoryInfo[index] &&
+                  errors.categoryInfo[index].value && (
+                    <span className="errorMessage">This field is required</span>
+                  )}
               </div>
             ))}
 

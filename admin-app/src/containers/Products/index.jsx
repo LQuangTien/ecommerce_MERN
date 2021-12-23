@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { IoCheckmarkCircleSharp, IoCloseCircleOutline } from "react-icons/io5";
 import "./style.css";
 function Products(props) {
   const history = useHistory();
@@ -22,7 +23,17 @@ function Products(props) {
     "Sale",
     "Quantity",
     "Quantity sold",
-    "Available",
+    {
+      name: "Available",
+      options: {
+        customBodyRender: (value, tableMeta, updateValue) =>
+          value === true ? (
+            <IoCheckmarkCircleSharp class="available-icon available-icon--check" />
+          ) : (
+            <IoCloseCircleOutline class="available-icon available-icon--close" />
+          ),
+      },
+    },
   ];
   const options = {
     filter: true,
@@ -42,7 +53,7 @@ function Products(props) {
     product.sale,
     product.quantity,
     product.quantitySold,
-    product.isAvailable ? "Yes" : "No",
+    product.isAvailable,
   ]);
   const renderProductsTable = () =>
     data && (

@@ -5,6 +5,8 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { IoCheckmarkCircleSharp, IoCloseCircleOutline } from "react-icons/io5";
+import "./style.css";
 function Category(props) {
   const columns = [
     {
@@ -18,6 +20,17 @@ function Category(props) {
     "Name",
     "Created At",
     "Updated At",
+    {
+      name: "Available",
+      options: {
+        customBodyRender: (value, tableMeta, updateValue) =>
+          value === true ? (
+            <IoCheckmarkCircleSharp class="available-icon available-icon--check" />
+          ) : (
+            <IoCloseCircleOutline class="available-icon available-icon--close" />
+          ),
+      },
+    },
   ];
   const history = useHistory();
   const { categories } = useSelector((state) => state.categories);
@@ -55,6 +68,7 @@ function Category(props) {
     category.name,
     new Date(category.createdAt).toLocaleDateString(),
     new Date(category.updatedAt).toLocaleDateString(),
+    category.isAvailable,
   ]);
   const renderProductsTable = () =>
     data && (
