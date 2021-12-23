@@ -123,7 +123,6 @@ exports.getById = async (req, res) => {
  */
 //http://localhost:8000/api/products/filter/1/3?price=8000..10000&category=Iphone+Xiaomi
 exports.getByQuery = async (req, res) => {
-  const { page, perPage } = req.params;
   const { q, sortBy, sortOrder, ...filters } = req.query;
 
   const listQuery = [
@@ -131,7 +130,7 @@ exports.getByQuery = async (req, res) => {
       $match: { isAvailable: true },
     },
   ];
-
+  
   if (q === "all") {
     const searchQuery = {
       $match: { name: { $exists: true } },
@@ -141,6 +140,7 @@ exports.getByQuery = async (req, res) => {
     const searchName = q;
     const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
     const searchNameRgx = rgx(searchName);
+
 
     const searchQuery = {
       $match: { name: { $regex: searchNameRgx, $options: "i" } },
@@ -155,7 +155,7 @@ exports.getByQuery = async (req, res) => {
   }
 
   const rangeFilter = "..";
-  const collectionFilter = " ";
+  const collectionFilter = ",";
   for (const filter in filters) {
     const element = filters[filter];
 
@@ -237,7 +237,6 @@ exports.getByQuery = async (req, res) => {
       } else {
         //Filter các trường hợp riêng lẻ còn lại
         //vd: category: điện thoại , thương hiệu: asus
-
         //Tương tự ý tưởng của ###1
         const singeQuery = {
           $match: {
