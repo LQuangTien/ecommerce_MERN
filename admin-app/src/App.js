@@ -45,7 +45,7 @@ function App() {
             component={EditCategory}
           />
           <PrivateRoute exact path="/product/:id" component={EditProduct} />
-          <Route path="/signup" component={Signup} />
+          <PrivateRoute path="/signup" component={Signup} />
           <Route path="/signin" component={Signin} />
         </Switch>
       </Layout>

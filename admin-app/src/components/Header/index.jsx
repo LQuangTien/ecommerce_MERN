@@ -15,6 +15,11 @@ function Header() {
     return (
       <Nav>
         <li className="nav-item">
+          <NavLink to="/signup" className="nav-link">
+            Sign up
+          </NavLink>
+        </li>
+        <li className="nav-item">
           <span role="button" className="nav-link" onClick={handleSignout}>
             Sign out
           </span>
@@ -28,11 +33,6 @@ function Header() {
         <li className="nav-item">
           <NavLink to="/signin" className="nav-link">
             Sign in
-          </NavLink>
-        </li>
-        <li className="nav-item">
-          <NavLink to="/signup" className="nav-link">
-            Sign up
           </NavLink>
         </li>
       </Nav>

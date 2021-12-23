@@ -260,8 +260,9 @@ exports.getByQuery = async (req, res) => {
   try {
     const productsFilter = await Product.aggregate(listQuery).exec();
 
-    const filterAvailableProduct =
-      getProductHasCategoryAvailable(productsFilter);
+    const filterAvailableProduct = await getProductHasCategoryAvailable(
+      productsFilter
+    );
 
     if (filterAvailableProduct) {
       const { page, perPage } = req.params;

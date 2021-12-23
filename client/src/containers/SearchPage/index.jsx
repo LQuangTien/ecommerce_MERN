@@ -10,6 +10,7 @@ import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
 import "./style.css";
 import { getByQuery, getBySearch } from "../../actions";
+import { isNew } from "../../utils/isNew";
 const ORDER_OPTIONS = [
   {
     value: "newest",
@@ -90,6 +91,18 @@ function SearchPage(props) {
               {Object.keys(products).map((key, index) => (
                 <div className="product__card col lg-3" key={products[key]._id}>
                   <Link to={"/product/" + products[key]._id} className="">
+                    <div className="product__badge">
+                      {Number(products[key].sale) > 5 && (
+                        <span className="product__badge-item product__badge-item--sale">
+                          SALE {products[key].sale}%
+                        </span>
+                      )}
+                      {isNew(products[key].createdAt) && (
+                        <span className="product__badge-item product__badge-item--new">
+                          NEW
+                        </span>
+                      )}
+                    </div>
                     <div className="product__image">
                       <img
                         src={generatePictureUrl(
@@ -103,19 +116,12 @@ function SearchPage(props) {
                         {products[key].name}
                       </div>
                       <div className="product__info-price">
-                        <span className="product__info-price--current">
-                          ${formatThousand(products[key].price)}
-                        </span>
-                        <span className="product__info-price--old">
+                        <p className="product__info-price--old">
                           ${formatThousand(12000)}
-                        </span>
-                      </div>
-                      <div className="product__rating">
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
+                        </p>
+                        <p className="product__info-price--current">
+                          ${formatThousand(products[key].price)}
+                        </p>
                       </div>
                     </div>
                   </Link>

@@ -19,12 +19,12 @@ function Signup(props) {
     const user = { firstName, lastName, email, password };
     dispatch(signup(user));
   };
-  if (auth.authenticate) {
-    return <Redirect to="/" />;
-  }
-  if (user.loading) {
-    return <h1>LOADING ...</h1>;
-  }
+  // if (auth.authenticate) {
+  //   return <Redirect to="/" />;
+  // }
+  // if (user.loading) {
+  //   return <h1>LOADING ...</h1>;
+  // }
   return (
     <div
       style={{ height: "100vh" }}

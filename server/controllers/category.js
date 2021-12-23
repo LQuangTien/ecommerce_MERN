@@ -43,7 +43,7 @@ exports.getAll = async (req, res) => {
 };
 exports.get = async (req, res) => {
   try {
-    const foundCategory = await Category.findOne({ _id: req.params.id, isAvailable: true });
+    const foundCategory = await Category.findById(req.params.id);
     if (foundCategory) return Get(res, { foundCategory });
     return NotFound(res, "Category");
   } catch (error) {
@@ -270,8 +270,6 @@ findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
         oldItem = getIdAndNameFromOld[oldIndex];
       } while (oldItem.id.equals(newItem.id) === false);
     }
-
   }
   return result;
 };
-

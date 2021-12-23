@@ -57,11 +57,11 @@
 }
 .tab__item {
   width: 100%;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 .tab__item:hover {
-  filter: brightness(1.2);
-  transition: all 0.3s;
+  /* filter: brightness(1.2);
+  transition: all 0.3s; */
 }
 .tab__item--black {
   background-color: #121212;
@@ -142,7 +142,7 @@
 }
 .product__info-price--current {
   color: var(--primary);
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-right: 0.4rem;
   font-weight: 500;
 }
