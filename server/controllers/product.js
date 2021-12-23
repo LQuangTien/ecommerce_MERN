@@ -149,7 +149,7 @@ exports.getByQuery = async (req, res) => {
   }
 
   const rangeFilter = "..";
-  const collectionFilter = " ";
+  const collectionFilter = ",";
   for (const filter in filters) {
     const element = filters[filter];
 
