@@ -138,6 +138,10 @@ const categoryReducer = (state = initState, action) => {
     case categoryConstants.DELETE_CATEGORY_SUCCESS:
       state = {
         ...state,
+        category: {
+          ...state.category,
+          isAvailable: false,
+        },
         isDeleting: false,
       };
       break;

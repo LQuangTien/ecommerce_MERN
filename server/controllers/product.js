@@ -104,8 +104,14 @@ exports.enable = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    const categoryOfProduct = await Category.findOne({ name: product.category });
-    if (product.isAvailable === false || categoryOfProduct.isAvailable === false) return NotFound(res, "Product");
+    const categoryOfProduct = await Category.findOne({
+      name: product.category,
+    });
+    if (
+      product.isAvailable === false ||
+      categoryOfProduct.isAvailable === false
+    )
+      return NotFound(res, "Product");
     return Get(res, { product });
   } catch (error) {
     return ServerError(res, error.message);
@@ -254,7 +260,8 @@ exports.getByQuery = async (req, res) => {
   try {
     const productsFilter = await Product.aggregate(listQuery).exec();
 
-    const filterAvailableProduct = getProductHasCategoryAvailable(productsFilter);
+    const filterAvailableProduct =
+      getProductHasCategoryAvailable(productsFilter);
 
     if (filterAvailableProduct) {
       const { page, perPage } = req.params;
@@ -272,9 +279,11 @@ exports.getAll = async (req, res) => {
   try {
     const products = await Product.find({ isAvailable: true });
     // console.log(products)
-    const filterAvailableProduct = await getProductHasCategoryAvailable(products);
+    const filterAvailableProduct = await getProductHasCategoryAvailable(
+      products
+    );
     if (!filterAvailableProduct) return NotFound(res, "Products");
-    return Get(res, { result: { filterAvailableProduct } });
+    return Get(res, { result: { products: filterAvailableProduct } });
   } catch (error) {
     return ServerError(res, error.messages);
   }
@@ -294,13 +303,16 @@ function pagination(products, page = 1, perPage = 8) {
 }
 
 async function getProductHasCategoryAvailable(products) {
- 
-   await Promise.all(products.map(async (product) => {
-    const categoryOfProduct = await Category.findOne({ name: product.category });
-    product.isAvailable = categoryOfProduct.isAvailable;
-  }));
+  await Promise.all(
+    products.map(async (product) => {
+      const categoryOfProduct = await Category.findOne({
+        name: product.category,
+      });
+      product.isAvailable = categoryOfProduct.isAvailable;
+    })
+  );
 
-  return products.filter( product => product.isAvailable);
+  return products.filter((product) => product.isAvailable);
 }
 
 async function deleteOldProductImg(id) {

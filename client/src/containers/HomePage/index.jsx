@@ -18,13 +18,25 @@ function HomePage() {
   }, [dispatch]);
   useEffect(() => {
     if (products) {
-      setTabProducts(
-        [...products]
-          .sort((p1, p2) => new Date(p2.createdAt) - new Date(p1.createdAt))
-          .slice(0, 8)
-      );
+      const a = [...products]
+        .sort((p1, p2) => new Date(p2.createdAt) - new Date(p1.createdAt))
+        .slice(0, 8);
+      setTabProducts(a);
     }
   }, [products]);
+  const isNew = (date) => {
+    // To set two dates to two variables
+    const date1 = new Date(date);
+    const date2 = new Date();
+
+    // To calculate the time difference of two dates
+    const Difference_In_Time = date2.getTime() - date1.getTime();
+
+    // To calculate the no. of days between two dates
+    const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+    console.log(Difference_In_Days);
+    return Difference_In_Days < 7;
+  };
   const renderTabItems = () => {
     const items = [
       {
@@ -190,6 +202,18 @@ function HomePage() {
               product.category === "Mobile" && (
                 <div className="col lg-3 product__card" key={product._id}>
                   <Link to={"/product/" + product._id} className="">
+                    <div className="product__badge">
+                      {Number(product.sale) > 10 && (
+                        <span className="product__badge-item product__badge-item--sale">
+                          SALE {product.sale}%
+                        </span>
+                      )}
+                      {isNew(product.createdAt) && (
+                        <span className="product__badge-item product__badge-item--new">
+                          NEW
+                        </span>
+                      )}
+                    </div>
                     <div className="product__image">
                       <img
                         src={generatePictureUrl(product.productPictures[0])}
@@ -205,13 +229,6 @@ function HomePage() {
                         <span className="product__info-price--old">
                           ${formatThousand(12000)}
                         </span>
-                      </div>
-                      <div className="product__rating">
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
-                        <IoStar />
                       </div>
                     </div>
                   </Link>

@@ -151,13 +151,13 @@
   font-size: 1.4rem;
   text-decoration: line-through;
 }
-.product__rating {
+/* .product__rating {
   color: var(--star);
   font-size: 1.3rem;
 }
 .product__rating svg {
   margin: 0 0.2rem;
-}
+} */
 
 .small-product {
   display: flex;
@@ -234,4 +234,29 @@
   width: 10%;
   height: 100%;
   border-bottom: 3px solid var(--primary);
+}
+
+.product__badge {
+  height: 30.8px;
+}
+.product__badge-item {
+  display: inline-block;
+  padding: 0.4rem;
+  color: var(--primary);
+  border: 1px solid currentColor;
+  border-left: transparent;
+  border-right: transparent;
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+.product__badge-item:not(:last-child) {
+  margin-right: 0.8rem;
+}
+.product__badge-item--sale {
+  color: var(--green);
+}
+.product__badge-item--new {
+  color: var(--orange);
 }

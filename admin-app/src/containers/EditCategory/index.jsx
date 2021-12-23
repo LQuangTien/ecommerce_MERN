@@ -218,9 +218,9 @@ function EditCategory(props) {
               variant="danger"
               className="mt-3 mr-2"
               onClick={onDelete}
-              disabled={isUpdating || isEnabling}
+              disabled={isDeleting || isEnabling}
             >
-              {isEnabling && (
+              {isDeleting && (
                 <Spinner
                   as="span"
                   animation="border"
@@ -236,7 +236,7 @@ function EditCategory(props) {
               variant="info"
               className="mt-3 mr-2"
               onClick={onEnable}
-              disabled={isUpdating || isEnabling}
+              disabled={isDeleting || isEnabling}
             >
               {isEnabling && (
                 <Spinner
