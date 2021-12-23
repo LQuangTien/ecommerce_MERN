@@ -13,6 +13,9 @@ const {
 } = require("../services/ZaloPay/getStatusOrderByOrderId");
 const { ServerError, BadRequest, Create, Get } = require("../ulti/response");
 exports.add = (req, res) => {
+  const checkInvalidBuyAmount = checkBuyAmountLTEProductAmount(req.user._id);
+  if (checkInvalidBuyAmount) return BadRequest(res, "Out of stock");
+  
   req.body.user = req.user._id;
   req.body.process = [
     {
@@ -111,32 +114,12 @@ exports.getById = (req, res) => {
     });
 };
 
+
 //http://localhost:8000/api/user/order/zaloPayment
-// exports.zaloPayment = async (req, res) => {
-//   const newOrder = await createOrder(req.user._id, req.body);
-//   const orderStatus = await zaloWorkFlow(newOrder._id.toString(), newOrder.items, newOrder.totalAmount);
-
-//   if (typeof orderStatus === 'string') return ServerError(res, orderStatus);
-//   const updatedOrder = await updateOrderStatus(newOrder._id);
-
-//   if (typeof updatedOrder === 'string') return ServerError(res, updatedOrder);
-//   return Get({ order: updatedOrder });
-// };
-
-// getOrderStatus = async (req, res) =>{
-
-// }
-// zaloWorkFlow = async (orderId, orderItem, orderTotalPrice) => {
-//   const dataZaloOrder = await zaloCreateOrder(orderId, orderItem, orderTotalPrice);
-//   if (typeof dataZaloOrder === 'string') return dataZaloOrder;
-//   open(dataZaloOrder.orderurl);
-//   const orderStatus = await zaloGetStatusOrderByOrderId(dataZaloOrder.apptransid);
-
-//   if (orderStatus.hasOwnProperty('error')) return orderStatus.error;
-//   return orderStatus.data.returncode;
-// }
-
 exports.zaloPayment = async (req, res) => {
+  const checkInvalidBuyAmount = checkBuyAmountLTEProductAmount(req.user._id);
+  if (checkInvalidBuyAmount) return BadRequest(res, "Out of stock");
+
   const newOrder = await createOrder(req.user._id, req.body);
 
   if (newOrder instanceof Error) return ServerError(res, newOrder);
@@ -226,7 +209,7 @@ createOrder = async (userId, orderInfo) => {
   }
 };
 
-updateOrderStatusToOrdered = async (orderId) => {
+const updateOrderStatusToOrdered = async (orderId) => {
   try {
     const order = await Order.findOneAndUpdate(
       { _id: orderId },
@@ -302,3 +285,8 @@ const populateAddress = async (orders) => {
   // return newOrders;
 };
 
+async function checkBuyAmountLTEProductAmount(userId) {
+  const CartPopulateProductQuantity = await Cart.findOne({ user: userId }).populate('cartItems.product', 'quantity').exec();
+  console.log(CartPopulateProductQuantity.cartItems);
+  return CartPopulateProductQuantity.cartItems.some(cartItem => cartItem.quantity > cartItem.product.quantity);
+}
