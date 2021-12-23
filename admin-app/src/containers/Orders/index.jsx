@@ -53,16 +53,20 @@ function Orders(props) {
     },
     selectableRowsHideCheckboxes: true,
   };
-  const data = orders.map((order) => [
-    new Date(order.createdAt).toLocaleDateString(),
-    order._id,
-    order.address.name,
-    order.address.phone,
-    `$${formatThousand(order.totalAmount)}`,
-    capitalizeFirstLetter(
-      order.process.reverse().find((x) => x.isCompleted === true).type
-    ),
-  ]);
+  const data = orders.map((order) => {
+    const orderReversed = [...order.process].reverse();
+    console.log(orderReversed);
+    return [
+      new Date(order.createdAt).toLocaleDateString(),
+      order._id,
+      order.address.name,
+      order.address.phone,
+      `$${formatThousand(order.totalAmount)}`,
+      capitalizeFirstLetter(
+        orderReversed.find((x) => x.isCompleted === true).type
+      ),
+    ];
+  });
   const renderProductsTable = () =>
     data && (
       <MuiThemeProvider theme={getMuiTheme()}>

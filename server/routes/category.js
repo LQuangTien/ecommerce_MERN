@@ -41,6 +41,7 @@ const {
   remove,
   getAll,
   findDiffFromTwoObj,
+  enable,
 } = require("../controllers/category");
 
 const router = express.Router();
@@ -72,5 +73,6 @@ router.put(
   upload.single("categoryImage"),
   update
 );
+router.put("/category/enable/:id", requireSignin, isAdmin, enable);
 
 module.exports = router;

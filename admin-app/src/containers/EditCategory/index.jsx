@@ -8,6 +8,7 @@ import {
   deleteCategory,
   editCategory,
   getCategory,
+  enableCategory,
 } from "../../actions/category.actions";
 import "./style.css";
 
@@ -22,10 +23,9 @@ function EditCategory(props) {
     reset,
     formState: { errors },
   } = useForm();
-  const { category, isUpdating, isDeleting } = useSelector(
+  const { category, isUpdating, isDeleting, isEnabling } = useSelector(
     (state) => state.categories
   );
-  console.log(isDeleting);
   useEffect(() => {
     dispatch(getCategory(id));
   }, [dispatch, id]);
@@ -67,10 +67,14 @@ function EditCategory(props) {
     dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
   };
   const onDelete = () => {
-    dispatch(deleteCategory(id)).then(() => {
-      history.push("/categories");
+    dispatch(deleteCategory(id));
+  };
+  const onEnable = () => {
+    dispatch(enableCategory(id)).then(() => {
+      dispatch(getCategory(id));
     });
   };
+
   return (
     <Container>
       <div>
@@ -209,23 +213,43 @@ function EditCategory(props) {
             )}
             Submit
           </Button>
-          <Button
-            variant="danger"
-            className="mt-3 mr-2"
-            onClick={onDelete}
-            disabled={isUpdating || isDeleting}
-          >
-            {isDeleting && (
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-            )}
-            Delete this category
-          </Button>
+          {category && category.isAvailable ? (
+            <Button
+              variant="danger"
+              className="mt-3 mr-2"
+              onClick={onDelete}
+              disabled={isUpdating || isEnabling}
+            >
+              {isEnabling && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              Delete Category
+            </Button>
+          ) : (
+            <Button
+              variant="info"
+              className="mt-3 mr-2"
+              onClick={onEnable}
+              disabled={isUpdating || isEnabling}
+            >
+              {isEnabling && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              Enable Category
+            </Button>
+          )}
           <Button
             variant="secondary"
             className="mt-3"

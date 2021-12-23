@@ -6,6 +6,7 @@ const initState = {
   isUpdating: false,
   isAdding: false,
   isDeleting: false,
+  isEnabling: false,
   error: null,
   category: {},
 };
@@ -144,6 +145,38 @@ const categoryReducer = (state = initState, action) => {
       state = {
         ...state,
         isDeleting: false,
+        error: action.payload.error,
+      };
+      break;
+    case categoryConstants.ENABLE_CATEGORY_REQUEST:
+      state = {
+        ...state,
+        isEnabling: true,
+      };
+      break;
+    case categoryConstants.ENABLE_CATEGORY_SUCCESS:
+      state = {
+        ...state,
+        category: {
+          ...state.category,
+          isAvailable: true,
+        },
+        categories: (() => {
+          const index = state.categories.findIndex(
+            (product) => product._id.toString() === action.payload.id.toString()
+          );
+          console.log(index);
+          const categories = [...state.categories];
+          categories[index].isAvailable = true;
+          return [...categories];
+        })(),
+        isEnabling: false,
+      };
+      break;
+    case categoryConstants.ENABLE_CATEGORY_FAILURE:
+      state = {
+        ...state,
+        isEnabling: false,
         error: action.payload.error,
       };
       break;

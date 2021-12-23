@@ -87,3 +87,20 @@ export const deleteCategory = (id) => {
     }
   };
 };
+export const enableCategory = (id) => {
+  return async (dispatch) => {
+    dispatch({ type: categoryConstants.ENABLE_CATEGORY_REQUEST });
+    try {
+      await axios.put(`category/enable/${id}`);
+      dispatch({
+        type: categoryConstants.ENABLE_CATEGORY_SUCCESS,
+        payload: { id },
+      });
+    } catch (error) {
+      dispatch({
+        type: categoryConstants.ENABLE_CATEGORY_FAILURE,
+        payload: { error: error.response.data.error },
+      });
+    }
+  };
+};

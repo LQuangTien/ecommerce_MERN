@@ -13,6 +13,10 @@ const categorySchema = mongoose.Schema(
       required: true,
     },
     categoryImage: { type: String },
+    isAvailable: {
+      type: Boolean,
+      required: true,
+    },
     normalField: [
       {
         name: {
