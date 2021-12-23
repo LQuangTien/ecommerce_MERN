@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
     const parseCate = categoryInfo.map((cate) => JSON.parse(cate));
     const pictures = req.files.map((file) => file.filename);
     const hasColor = parseCate.find((x) => x.name === "color");
-  
+
     const newProduct = new Product({
       name: hasColor ? name + " " + hasColor.value : name,
       categoryInfo: parseCate,
@@ -104,8 +104,9 @@ exports.enable = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (product) return Get(res, { product });
-    return NotFound(res, "Product");
+    const categoryOfProduct = await Category.findOne({ name: product.category });
+    if (product.isAvailable === false || categoryOfProduct.isAvailable === false) return NotFound(res, "Product");
+    return Get(res, { product });
   } catch (error) {
     return ServerError(res, error.message);
   }
@@ -253,9 +254,11 @@ exports.getByQuery = async (req, res) => {
   try {
     const productsFilter = await Product.aggregate(listQuery).exec();
 
-    if (productsFilter) {
+    const filterAvailableProduct = getProductHasCategoryAvailable(productsFilter);
+
+    if (filterAvailableProduct) {
       const { page, perPage } = req.params;
-      const result = pagination(productsFilter, page, perPage);
+      const result = pagination(filterAvailableProduct, page, perPage);
       return Get(res, result);
     }
 
@@ -268,8 +271,10 @@ exports.getByQuery = async (req, res) => {
 exports.getAll = async (req, res) => {
   try {
     const products = await Product.find({ isAvailable: true });
-    if (!products) return NotFound(res, "Products");
-    return Get(res, { result: { products } });
+    // console.log(products)
+    const filterAvailableProduct = await getProductHasCategoryAvailable(products);
+    if (!filterAvailableProduct) return NotFound(res, "Products");
+    return Get(res, { result: { filterAvailableProduct } });
   } catch (error) {
     return ServerError(res, error.messages);
   }
@@ -286,6 +291,16 @@ function pagination(products, page = 1, perPage = 8) {
       totalProduct: products.length,
     },
   };
+}
+
+async function getProductHasCategoryAvailable(products) {
+ 
+   await Promise.all(products.map(async (product) => {
+    const categoryOfProduct = await Category.findOne({ name: product.category });
+    product.isAvailable = categoryOfProduct.isAvailable;
+  }));
+
+  return products.filter( product => product.isAvailable);
 }
 
 async function deleteOldProductImg(id) {
