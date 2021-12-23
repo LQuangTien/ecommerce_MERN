@@ -1,9 +1,12 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const shortId = require('shortid');
 const statusCode = require("http-status-codes");
 
 const User = require("../models/user");
 const {
+  Get,
   ServerError,
   Response,
   BadRequest,
@@ -77,3 +80,58 @@ exports.signin = (req, res) => {
 exports.signout = (req, res) => {
   return Response(res, { message: "Signout successfully ...!" });
 };
+
+exports.forgetPassword = async (req, res) => {
+  try {
+
+    const newPassword = await updateNewPasswordForForgetPassword(req.body.userEmail)
+    const mailInfo = await sendEmail(req.body.userEmail, newPassword)
+
+    return Get(res, { sent: mailInfo });
+  } catch (error) {
+    return ServerError(res, { error: error.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const newHashPassword = await bcrypt.hash(req.body.newPassword, 10);
+    const oldHashPassword = await bcrypt.hash(req.body.newPassword, 10);
+    const updatedUser = await User.findOneAndUpdate({ email: req.body.email, hash_password: oldHashPassword }, { $set: { hash_password: newHashPassword } }, { new: true, useFindAndModify: false });
+
+
+    return Get(res, { sent: updatedUser });
+  } catch (error) {
+    return ServerError(res, { error: error.message });
+  }
+};
+
+async function updateNewPasswordForForgetPassword(userEmail) {
+  console.log(userEmail)
+  const randomPassword = shortId.generate();
+  const hashPassword = await bcrypt.hash(randomPassword, 10);
+  await User.findOneAndUpdate({ email: userEmail }, { $set: { hash_password: hashPassword } }, { new: true, useFindAndModify: false });
+  console.log(hashPassword)
+  return randomPassword;
+}
+
+async function sendEmail(userEmail, newPwd) {
+  console.log(userEmail)
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    auth: {
+      user: 'nightmarelod9@gmail.com',
+      pass: 'an07042000'
+    }
+  });
+
+  // send mail with defined transport object
+  return await transporter.sendMail({
+    from: 'nightmarelod9@gmail.com', // sender address
+    to: userEmail, // list of receivers
+    subject: "Change password success ✔", // Subject line
+    text: "This is your new Password: " + newPwd, // plain text body
+    html: "<b>" + "This is your new Password: " + newPwd + "</b>", // html body
+  });
+}
