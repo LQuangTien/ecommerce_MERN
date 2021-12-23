@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
 };
 exports.getAll = async (req, res) => {
   try {
-    const foundCategory = await Category.find();
+    const foundCategory = await Category.find({ isAvailable: true });
     if (foundCategory) return Get(res, { foundCategory });
     return NotFound(res, "Category");
   } catch (error) {
@@ -43,7 +43,7 @@ exports.getAll = async (req, res) => {
 };
 exports.get = async (req, res) => {
   try {
-    const foundCategory = await Category.findById(req.params.id);
+    const foundCategory = await Category.findOne({ _id: req.params.id, isAvailable: true });
     if (foundCategory) return Get(res, { foundCategory });
     return NotFound(res, "Category");
   } catch (error) {
@@ -124,10 +124,6 @@ deleteOldCategoryImg = async (id) => {
       .match({ _id: mongoose.Types.ObjectId(id) })
       .project({ _id: 0, categoryImage: 1 })
       .exec();
-    // const imgBeforeUpdate = await Product.aggregate([{$match:{_id: mongoose.Types.ObjectId(req.params.id)}},
-    //{$project:{productPictures: 1}}])
-    // .exec();
-    // oldImg.forEach(async item => await fs.unlink('/upload/' + item));
 
     oldImg.forEach(
       async (item) => await fs.unlink("./uploads/" + item.categoryImage)
@@ -234,88 +230,6 @@ findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
     idAndName.name = field.name;
     return idAndName;
   });
-  // const getIdAndNameFromNew = newFieldCategory.map((field) => (
-  //    // let idAndName = {};
-  //     {id:field._id.toString(),name:field.name}
-  //    // idAndName.id = field._id.toString();
-  //    // idAndName.name = field.name;
-  //    // return idAndName;
-  // ));
-  // console.log(getIdAndNameFromOld,getIdAndNameFromNew)
-  //1,2,3,4
-  //5,2,3,4,6,8
-  // const result = { added: [], updated: [], deleted: [] }
-  // getIdAndNameFromOld.forEach((oldItem) => {
-  //    const isIdExist = getIdAndNameFromNew.every((newItem) => {
-  //       return oldItem.id !== newItem.id;
-  //    });
-  //    if (isIdExist) {
-  //       if (oldItem.name !== newItem.name) {
-  //          result.updated.push = newItem;
-  //       }
-  //    } else {
-  //       result.deleted.push = oldItem;
-  //    }
-  // });
-
-  // let noAddedField = 0;
-  // for (let newIndex = getIdAndNameFromNew.length; newIndex >= 0; newIndex--) {
-  //    const newItem = getIdAndNameFromNew[newIndex];
-
-  //    for (let oldIndex = getIdAndNameFromOld.length; oldIndex >= 0; oldIndex--) {
-  //       const oldItem = getIdAndNameFromOld[oldIndex];
-  //       if (newItem.id !== oldItem.id) {
-  //          result.added.push = newItem;
-  //          break;
-  //       } else {
-  //          noAddedField = 1;
-  //          break;
-  //       }
-  //    }
-
-  //    if (noAddedField) break;
-  // }
-
-  // const result = {added:[],deleted:[],updated:[]};
-  // let oldIndex = 0;
-  // let newIndex = 0;
-  // while (oldIndex < getIdAndNameFromOld.length) {
-  //    const oldItem = getIdAndNameFromOld[oldIndex];
-  //    const newItem = getIdAndNameFromNew[newIndex];
-
-  //    //trường hợp cate cũ nhiều hơn cate mới do cate mới đã bị xóa field nào đó,
-  //    //khi đó new sẽ duyệt hết mảng trước còn old thì vẫn còn item chưa duyệt nên phải xử lí không sẽ OutOfIndex
-  //    //VD: old =[1,2,3,4,5], new=[1,2,3]
-  //    if (newIndex === getIdAndNameFromNew.length - 1 && oldIndex !== getIdAndNameFromOld.length - 1) {
-  //       //đẩy tất cả oldItem còn lại vào deleted vì duyệt hết new rồi mà old vẫn còn thì đây là những thằng bị xóa
-  //       while (oldIndex < getIdAndNameFromOld.length) {
-  //          result.deleted.push(getIdAndNameFromOld[oldIndex]);
-  //          oldIndex++;
-  //       }
-  //       break;
-  //    } //trường hợp này thì ngược vs trường hợp bên trên là cate cũ ít hơn cate mới do cate mới đã thêm field
-  //    else if (newIndex !== getIdAndNameFromNew.length - 1 && oldIndex === getIdAndNameFromOld.length - 1) {
-  //       // VD: old = [1,2] new = [1,2,3,4]
-  //       while (newIndex < getIdAndNameFromNew.length) {
-  //          newIndex++;
-  //          result.added.push(getIdAndNameFromNew[newIndex]);
-  //       }
-  //       break;
-  //    }
-
-  //    if (oldItem.id.equals(newItem.id)) {
-  //       //trường hợp giống id mà khác tên thì là updated
-  //       if (oldItem.name !== newItem.name) {
-  //          result.updated.push(newItem);
-  //       }
-  //       oldIndex++;
-  //       newIndex++;
-  //    } else {
-  //       //trường hợp khác id thì là deleted
-  //       result.deleted.push(oldItem);
-  //       oldIndex++;
-  //    }
-  // }
 
   const result = { deleted: [], updated: [] };
   let oldIndex = 0;
@@ -338,15 +252,6 @@ findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
       }
       break;
     }
-    //trường hợp này thì ngược vs trường hợp bên trên là cate cũ ít hơn cate mới do cate mới đã thêm field
-    // VD: old = [1,2] new = [1,2,3,4]
-    // if (oldIndex === getIdAndNameFromOld.length && newIndex < getIdAndNameFromNew.length) {
-    //    while (newIndex < getIdAndNameFromNew.length) {
-    //       result.added.push(getIdAndNameFromNew[newIndex]);
-    //       newIndex++;
-    //    }
-    //    break;
-    // }
 
     if (oldItem.id.equals(newItem.id)) {
       //trường hợp giống id mà khác tên thì là updated
@@ -356,10 +261,6 @@ findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
       oldIndex++;
       newIndex++;
     } else {
-      //trường hợp khác id thì là deleted
-      //tăng index của old lên cho tới khi tìm dc id khớp vs id hiện tại của new
-      //VD: old=[1,2,3,4,5], new=[1,5]
-
       do {
         result.deleted.push(oldItem.name);
         if (oldIndex === getIdAndNameFromOld.length) {
@@ -370,80 +271,7 @@ findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
       } while (oldItem.id.equals(newItem.id) === false);
     }
 
-    //trường hợp chạy hết index của old mà new vẫn còn thì đó là những field mới dc add vào new
-    // if (oldIndex === getIdAndNameFromOld.length && newIndex < getIdAndNameFromNew.length) {
-    //    // VD: old = [1,2] new = [1,2,3,4]
-
-    //    //đẩy tất cả field còn lại của new vào add
-    //    // do {
-    //    //    newIndex++;
-    //    //    result.added.push(getIdAndNameFromNew[newIndex]);
-    //    // } while (newIndex !== getIdAndNameFromNew.length-1);
-    //    while (newIndex < getIdAndNameFromNew.length) {
-    //       result.added.push(getIdAndNameFromNew[newIndex]);
-    //       newIndex++;
-    //    }
-    //    break;
-    // }
   }
   return result;
 };
 
-// updateProductBaseOnCategoryUpdate = (oldCategoryName, newCategory) => {
-//    Product.find({ category: oldCategoryName }).exec((err, products) => {
-//       const normalFieldNames = newCategory.normalField.map((field) => { field._id, field.name });
-//       const filterFieldNames = newCategory.filterField.map((field) => { field._id, field.name });
-
-//       const updateCategoryFieldNames = [...normalFieldNames, ...filterFieldNames];
-
-//       products.forEach((product) => {
-//          let cloneCategoryInfo = [...product.categoryInfo];
-
-//          product.categoryInfo.forEach((info) => {
-//             const index = updatedCategoryNames.findIndex(
-//                (name) => name === info.name
-//             )
-
-//             if (index === -1) {
-//                cloneCategoryInfo = cloneCategoryInfo.filter(
-//                   (inf) => inf.name !== info.name
-//                )
-//             }
-//          });
-//          product.categoryInfo = cloneCategoryInfo;
-//       })
-//    })
-// }
-
-// delHandler = function () {
-
-//    // const old = [1,9,3,4,8]
-//    // const news = [1,2,6,4,5]
-
-//    const arrOld = objOld.normalField;
-//    const arrNew = objNew.normalField;
-//    // console.log(arrOld,arrNew)
-//    const del = { normalField: [] }
-
-//    const re = arrOld.filter((oldValue) => {
-//       // find field has been deleted
-//       const isObjBeDeleted = arrNew.every((newValue) => {
-//          // find field has id never exist because it has been deleted
-//          const idNoExist = newValue._id['$oid'] !== oldValue._id['$oid'];
-//          // console.log({sameID:isSameId});
-//          return idNoExist;
-//       })
-//       if (!isObjBeDeleted) {
-//          del.normalField.push(oldValue);
-//       };
-//       return isObjBeDeleted;
-//    })
-
-//    console.log(re, del)
-
-//    //   const resultDiff = detailedDiff(objOld,objNew);
-//    //   // const resultDiff = detailedDiff(old,news);
-
-//    // console.log(resultDiff)
-
-// }
