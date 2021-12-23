@@ -188,4 +188,12 @@ const productSchema = mongoose.Schema(
   { timestamps: true }
 );
 
+productSchema.post('save', function(error, doc, next) {
+  if (error.name==='MongoError'&&error.code === 11000) {
+    next(new Error('The product existed'));
+  } else {
+    next();
+  }
+});
+
 module.exports = mongoose.model("Product", productSchema);

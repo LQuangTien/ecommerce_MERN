@@ -32,7 +32,6 @@ exports.create = async (req, res) => {
     const savedProduct = await newProduct.save();
     return Create(res, { savedProduct });
   } catch (error) {
-    if(error.code===11000) return BadRequest(res, "This product is exist");
     return ServerError(res, error.message);
   }
 };
