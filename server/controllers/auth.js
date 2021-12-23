@@ -96,27 +96,24 @@ exports.forgetPassword = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const newHashPassword = await bcrypt.hash(req.body.newPassword, 10);
-    const oldHashPassword = await bcrypt.hash(req.body.newPassword, 10);
-    const updatedUser = await User.findOneAndUpdate({ email: req.body.email, hash_password: oldHashPassword }, { $set: { hash_password: newHashPassword } }, { new: true, useFindAndModify: false });
 
+    const updatedUser = await User.findOneAndUpdate({ email: req.body.email }, { $set: { hash_password: newHashPassword } }, { new: true, useFindAndModify: false });
 
-    return Get(res, { sent: updatedUser });
+    return Get(res, updatedUser);
   } catch (error) {
-    return ServerError(res, { error: error.message });
+    return ServerError(res, error.message);
   }
 };
 
 async function updateNewPasswordForForgetPassword(userEmail) {
-  console.log(userEmail)
   const randomPassword = shortId.generate();
   const hashPassword = await bcrypt.hash(randomPassword, 10);
   await User.findOneAndUpdate({ email: userEmail }, { $set: { hash_password: hashPassword } }, { new: true, useFindAndModify: false });
-  console.log(hashPassword)
+
   return randomPassword;
 }
 
 async function sendEmail(userEmail, newPwd) {
-  console.log(userEmail)
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',

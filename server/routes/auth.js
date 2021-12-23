@@ -13,7 +13,7 @@ const router = express.Router();
 router.post("/signin", validateSignin, isAuthValidated, signin);
 router.post("/signup", validateSignup, isAuthValidated, signup);
 router.post("/signout", requireSignin, signout);
-router.get("/forget-password", requireSignin, forgetPassword);
-router.post("/change-password", requireSignin, changePassword);
+router.post("/forget-password", requireSignin, forgetPassword);
+router.get("/change-password", changePassword);
 
 module.exports = router;
