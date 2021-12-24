@@ -15,7 +15,7 @@ const categorySchema = mongoose.Schema(
     categoryImage: { type: String },
     isAvailable: {
       type: Boolean,
-      required: true,
+      default: true,
     },
     normalField: [
       {
@@ -77,9 +77,9 @@ const categorySchema = mongoose.Schema(
 //   next();
 // });
 
-categorySchema.post('save', function(error, doc, next) {
-  if (error.name==='MongoError'&&error.code === 11000) {
-    next(new Error('The category existed'));
+categorySchema.post("save", function (error, doc, next) {
+  if (error.name === "MongoError" && error.code === 11000) {
+    next(new Error("The category existed"));
   } else {
     next();
   }

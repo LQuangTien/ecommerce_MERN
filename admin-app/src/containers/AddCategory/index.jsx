@@ -195,6 +195,16 @@ function AddCategory(props) {
             )}
             Submit
           </Button>
+          <Button
+            variant="secondary"
+            className="mt-3"
+            onClick={() => {
+              history.push("/categories");
+            }}
+            disabled={isAdding}
+          >
+            Back
+          </Button>
         </form>
       </div>
     </Container>

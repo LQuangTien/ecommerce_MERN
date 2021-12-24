@@ -18,6 +18,7 @@ function Products(props) {
       },
     },
     "Name",
+    "Category",
     "Regular Price",
     "Price",
     "Sale",
@@ -48,6 +49,7 @@ function Products(props) {
   const data = products.map((product) => [
     product._id,
     product.name,
+    product.category,
     product.regularPrice,
     product.salePrice,
     product.sale,

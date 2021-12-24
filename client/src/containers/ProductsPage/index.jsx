@@ -40,7 +40,7 @@ function ProductPage(props) {
   const [query, setQuery] = useState(() => {
     const paramFromURL = { ...otherSearchParam };
     Object.keys(paramFromURL).forEach((key) => {
-      paramFromURL[key] = paramFromURL[key].split(" ");
+      paramFromURL[key] = paramFromURL[key].split(",");
     });
     return { from, to, page, ...paramFromURL };
   });
@@ -91,7 +91,7 @@ function ProductPage(props) {
     const filterFieldNames = currentCate.filterField.map((field) => field.name);
     filterFieldNames.forEach((key) => {
       if (cloneSearch[key] && cloneSearch[key].length > 0) {
-        cloneSearch[key] = cloneSearch[key].join(" ");
+        cloneSearch[key] = cloneSearch[key].join(",");
       }
     });
     return cloneSearch;

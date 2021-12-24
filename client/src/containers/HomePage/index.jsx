@@ -274,19 +274,24 @@ function HomePage() {
                       {product.name}
                     </div>
                     <div className="small-product__info-price">
-                      <p className="small-product__info-price--old">
-                        ${formatThousand(12000)}
-                      </p>
-                      <p className="small-product__info-price--current">
+                      <span className="small-product__info-price--current">
                         ${formatThousand(product.price)}
-                      </p>
+                      </span>
+                      <span className="small-product__info-price--old">
+                        ${formatThousand(12000)}
+                      </span>
                     </div>
-                    <div className="small-product__rating">
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
+                    <div className="product__badge">
+                      {Number(product.sale) > 5 && (
+                        <span className="product__badge-item product__badge-item--sale">
+                          SALE {product.sale}%
+                        </span>
+                      )}
+                      {isNew(product.createdAt) && (
+                        <span className="product__badge-item product__badge-item--new">
+                          NEW
+                        </span>
+                      )}
                     </div>
                   </div>
                 </Link>

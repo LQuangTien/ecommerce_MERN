@@ -40,7 +40,6 @@ exports.update = async (req, res) => {
   try {
     const { name, categoryInfo, ...other } = req.body;
     const parseCate = categoryInfo.map((cate) => JSON.parse(cate));
-    console.log(parseCate);
     let pictures;
     const updateOption = {
       name,
@@ -130,7 +129,7 @@ exports.getByQuery = async (req, res) => {
       $match: { isAvailable: true },
     },
   ];
-  
+
   if (q === "all") {
     const searchQuery = {
       $match: { name: { $exists: true } },
@@ -140,7 +139,6 @@ exports.getByQuery = async (req, res) => {
     const searchName = q;
     const rgx = (pattern) => new RegExp(`.*${pattern}.*`);
     const searchNameRgx = rgx(searchName);
-
 
     const searchQuery = {
       $match: { name: { $regex: searchNameRgx, $options: "i" } },
@@ -303,14 +301,21 @@ function pagination(products, page = 1, perPage = 8) {
 }
 
 async function getProductHasCategoryAvailable(products) {
-  await Promise.all(
-    products.map(async (product) => {
-      const categoryOfProduct = await Category.findOne({
-        name: product.category,
-      });
-      product.isAvailable = categoryOfProduct.isAvailable;
-    })
-  );
+  try {
+    await Promise.all(
+      products.map(async (product, index) => {
+        const categoryOfProduct = await Category.findOne({
+          name: product.category,
+        });
+        if (categoryOfProduct === null) {
+          console.log(product.category);
+        }
+        product.isAvailable = categoryOfProduct.isAvailable;
+      })
+    );
+  } catch (error) {
+    console.log(error);
+  }
 
   return products.filter((product) => product.isAvailable);
 }

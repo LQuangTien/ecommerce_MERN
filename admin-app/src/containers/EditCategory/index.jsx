@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Spinner } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +29,7 @@ function EditCategory(props) {
   useEffect(() => {
     dispatch(getCategory(id));
   }, [dispatch, id]);
+
   useEffect(() => {
     if (category && Object.keys(category).length > 0) {
       const mapperFilterField = category.filterField.reduce((result, field) => {
@@ -64,7 +65,11 @@ function EditCategory(props) {
       acc[index].value.push(cur.value);
       return acc;
     }, []);
-    dispatch(editCategory({ id, ...data, filterField: mappedFilterField }));
+    dispatch(
+      editCategory({ id, ...data, filterField: mappedFilterField })
+    ).then(() => {
+      dispatch(getCategory(id));
+    });
   };
   const onDelete = () => {
     dispatch(deleteCategory(id));
@@ -72,6 +77,67 @@ function EditCategory(props) {
   const onEnable = () => {
     dispatch(enableCategory(id)).then(() => {
       dispatch(getCategory(id));
+    });
+  };
+
+  const renderFilterFields = () => {
+    if (filterField.length <= 0) return;
+    let fname = filterField[0].name;
+    return filterField.map((item, index) => {
+      let s = false;
+      if (fname !== item.name) {
+        s = true;
+        fname = item.name;
+      }
+      return (
+        <li
+          key={`${item.id}_${item.value}`}
+          className={s ? "mt-3 mb-1" : "mb-1"}
+        >
+          <div className="d-inline-block w-25 mr-2">
+            <ErrorMessage
+              errors={errors}
+              name={`filterField.${index}.name`}
+              render={({ message }) => (
+                <div className="errorMessage">{message}</div>
+              )}
+            />
+            <input
+              className="form__input w-100"
+              {...register(`filterField.${index}.name`, {
+                required: "This is required.",
+              })}
+              placeholder="Filter field"
+            />
+          </div>
+          <div className="d-inline-block w-25 mr-2">
+            <ErrorMessage
+              errors={errors}
+              name={`filterField.${index}.value`}
+              render={({ message }) => (
+                <div className="errorMessage">{message}</div>
+              )}
+            />
+            <input
+              className="form__input w-100"
+              {...register(`filterField.${index}.value`, {
+                required: "This is required.",
+              })}
+              placeholder="Filter value "
+            />
+          </div>
+          <Button
+            variant="outline-danger"
+            className="form__input--delete"
+            type="button"
+            onClick={() => {
+              filterRemove(index);
+            }}
+          >
+            X
+          </Button>
+        </li>
+      );
     });
   };
 
@@ -145,56 +211,7 @@ function EditCategory(props) {
             >
               +
             </Button>
-            <ul className="form__list">
-              {filterField.map((item, index) => {
-                return (
-                  <li key={`${item.id}_${item.value}`}>
-                    <div className="d-inline-block w-25 mr-2">
-                      <ErrorMessage
-                        errors={errors}
-                        name={`filterField.${index}.name`}
-                        render={({ message }) => (
-                          <div className="errorMessage">{message}</div>
-                        )}
-                      />
-                      <input
-                        className="form__input w-100"
-                        {...register(`filterField.${index}.name`, {
-                          required: "This is required.",
-                        })}
-                        placeholder="Filter field"
-                      />
-                    </div>
-                    <div className="d-inline-block w-25 mr-2">
-                      <ErrorMessage
-                        errors={errors}
-                        name={`filterField.${index}.value`}
-                        render={({ message }) => (
-                          <div className="errorMessage">{message}</div>
-                        )}
-                      />
-                      <input
-                        className="form__input w-100"
-                        {...register(`filterField.${index}.value`, {
-                          required: "This is required.",
-                        })}
-                        placeholder="Filter value "
-                      />
-                    </div>
-                    <Button
-                      variant="outline-danger"
-                      className="form__input--delete"
-                      type="button"
-                      onClick={() => {
-                        filterRemove(index);
-                      }}
-                    >
-                      X
-                    </Button>
-                  </li>
-                );
-              })}
-            </ul>
+            <ul className="form__list">{renderFilterFields()}</ul>
           </div>
           <Button
             variant="success"

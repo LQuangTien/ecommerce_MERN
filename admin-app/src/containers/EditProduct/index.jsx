@@ -334,6 +334,7 @@ function EditProduct(props) {
             {product && product.isAvailable ? (
               <Button
                 variant="danger"
+                className="mr-2"
                 onClick={onDelete}
                 disabled={isUpdating || isEnabling}
               >
@@ -351,6 +352,7 @@ function EditProduct(props) {
             ) : (
               <Button
                 variant="info"
+                className="mr-2"
                 onClick={onEnable}
                 disabled={isUpdating || isEnabling}
               >
@@ -366,6 +368,15 @@ function EditProduct(props) {
                 Enable product
               </Button>
             )}
+            <Button
+              variant="secondary"
+              onClick={() => {
+                history.push("/products");
+              }}
+              disabled={isUpdating || isEnabling}
+            >
+              Back
+            </Button>
           </div>
         </Form>
       </div>

@@ -118,7 +118,7 @@ function ProductPage(props) {
       <div
         {...getTrackProps({
           style: {
-            height: "5px",
+            height: "4px",
             background: "#ddd",
             boxShadow: "inset 0 1px 2px rgba(0,0,0,.6)",
             borderRadius: "2px",

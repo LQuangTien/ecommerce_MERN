@@ -342,6 +342,16 @@ function AddProduct(props) {
             )}
             Submit
           </Button>
+          <Button
+            variant="secondary"
+            className="mt-3"
+            onClick={() => {
+              history.push("/products");
+            }}
+            disabled={isAdding}
+          >
+            Back
+          </Button>
         </Form>
       </div>
     </Container>

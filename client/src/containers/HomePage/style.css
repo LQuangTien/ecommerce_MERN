@@ -172,8 +172,10 @@
   transition: all 0.2s;
 }
 .small-product__image {
-  width: 100%;
+  width: 8rem;
   height: 8rem;
+  margin: 0 1.2rem;
+  flex-shrink: 0;
 }
 .small-product__image img {
   width: 100%;
@@ -181,7 +183,7 @@
   object-fit: contain;
 }
 .small-product__info {
-  padding-right: 1.2rem;
+  margin-right: 0.4rem;
 }
 .small-product__info-name {
   --fontSize: 1.5rem;
