@@ -20,7 +20,7 @@ router.post("/user/order/add", requireSignin, add);
 router.post("/user/order/zaloPayment", requireSignin, zaloPayment);
 router.post("/user/order/getOrderStatus", requireSignin, getOrderStatus);
 
-router.get("/user/order/getOrderStatus", getOrderStatus);
+// router.get("/user/order/getOrderStatus", getOrderStatus);
 
 router.get("/user/order/:_id", requireSignin, getById);
 

@@ -144,6 +144,7 @@ exports.zaloPayment = async (req, res) => {
 };
 
 exports.getOrderStatus = async (req, res) => {
+  console.log(1);
   try {
     const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
     if (orderStatus.returncode === 1) {
