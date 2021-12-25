@@ -61,7 +61,7 @@ exports.signin = (req, res) => {
     if (!user) return BadRequest(res, "User does not exist");
     const isAuthen = await user.authenticate(req.body.password);
     if (!isAuthen) return BadRequest(res, "Wrong password");
-    if (user.role !== "admin") return Unauthorized(res);
+    // if (user.role !== "admin") return Unauthorized(res);
     const token = jwt.sign(
       {
         _id: user._id,
