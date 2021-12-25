@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const shortId = require('shortid');
+const shortId = require("shortid");
 const statusCode = require("http-status-codes");
 
 const User = require("../models/user");
@@ -61,7 +61,6 @@ exports.signin = (req, res) => {
     if (!user) return BadRequest(res, "User does not exist");
     const isAuthen = await user.authenticate(req.body.password);
     if (!isAuthen) return BadRequest(res, "Wrong password");
-    // if (user.role !== "admin") return Unauthorized(res);
     const token = jwt.sign(
       {
         _id: user._id,
@@ -83,9 +82,10 @@ exports.signout = (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
   try {
-
-    const newPassword = await updateNewPasswordForForgetPassword(req.body.userEmail)
-    const mailInfo = await sendEmail(req.body.userEmail, newPassword)
+    const newPassword = await updateNewPasswordForForgetPassword(
+      req.body.userEmail
+    );
+    const mailInfo = await sendEmail(req.body.userEmail, newPassword);
 
     return Get(res, { sent: mailInfo });
   } catch (error) {
@@ -97,7 +97,11 @@ exports.changePassword = async (req, res) => {
   try {
     const newHashPassword = await bcrypt.hash(req.body.newPassword, 10);
 
-    const updatedUser = await User.findOneAndUpdate({ email: req.body.email }, { $set: { hash_password: newHashPassword } }, { new: true, useFindAndModify: false });
+    const updatedUser = await User.findOneAndUpdate(
+      { email: req.body.email },
+      { $set: { hash_password: newHashPassword } },
+      { new: true, useFindAndModify: false }
+    );
 
     return Get(res, updatedUser);
   } catch (error) {
@@ -108,24 +112,28 @@ exports.changePassword = async (req, res) => {
 async function updateNewPasswordForForgetPassword(userEmail) {
   const randomPassword = shortId.generate();
   const hashPassword = await bcrypt.hash(randomPassword, 10);
-  await User.findOneAndUpdate({ email: userEmail }, { $set: { hash_password: hashPassword } }, { new: true, useFindAndModify: false });
+  await User.findOneAndUpdate(
+    { email: userEmail },
+    { $set: { hash_password: hashPassword } },
+    { new: true, useFindAndModify: false }
+  );
 
   return randomPassword;
 }
 
 async function sendEmail(userEmail, newPwd) {
   let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
+    service: "gmail",
+    host: "smtp.gmail.com",
     auth: {
-      user: 'nightmarelod9@gmail.com',
-      pass: 'an07042000'
-    }
+      user: "nightmarelod9@gmail.com",
+      pass: "an07042000",
+    },
   });
 
   // send mail with defined transport object
   return await transporter.sendMail({
-    from: 'nightmarelod9@gmail.com', // sender address
+    from: "nightmarelod9@gmail.com", // sender address
     to: userEmail, // list of receivers
     subject: "Change password success ✔", // Subject line
     text: "This is your new Password: " + newPwd, // plain text body

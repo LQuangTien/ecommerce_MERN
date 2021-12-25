@@ -158,7 +158,7 @@ function CheckoutPage() {
   );
 
   if (isCompleteOrder && user.redirectUrl !== "" && user.apptransid !== "") {
-    window.location.href = user.redirectUrl;
+    window.open(user.redirectUrl);
     return <Redirect to="/" />;
   }
 
