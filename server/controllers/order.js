@@ -15,7 +15,7 @@ const { ServerError, BadRequest, Create, Get } = require("../ulti/response");
 exports.add = (req, res) => {
   const checkInvalidBuyAmount = checkBuyAmountLTEProductAmount(req.user._id);
   if (checkInvalidBuyAmount) return BadRequest(res, "Out of stock");
-  
+
   req.body.user = req.user._id;
   req.body.process = [
     {
@@ -117,14 +117,14 @@ exports.getById = (req, res) => {
 
 //http://localhost:8000/api/user/order/zaloPayment
 exports.zaloPayment = async (req, res) => {
-  const checkInvalidBuyAmount = checkBuyAmountLTEProductAmount(req.user._id);
+  const checkInvalidBuyAmount = await checkBuyAmountLTEProductAmount(req.user._id);
   if (checkInvalidBuyAmount) return BadRequest(res, "Out of stock");
 
   const newOrder = await createOrder(req.user._id, req.body);
 
   if (newOrder instanceof Error) return ServerError(res, newOrder);
 
-  // console.log(newOrder)
+  console.log(newOrder);
   const dataZaloOrder = await zaloCreateOrder(
     newOrder._doc._id.toString(),
     newOrder._doc.items,
@@ -145,7 +145,7 @@ exports.getOrderStatus = async (req, res) => {
   try {
     const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
 
-    console.log({ main: orderStatus });
+    console.log(orderStatus);
     if (orderStatus.returncode === 1) {
       const updatedOrder = await updateOrderStatusToOrdered(req.body.orderId);
       if (typeof updatedOrder === "string")
@@ -186,7 +186,6 @@ createOrder = async (userId, orderInfo) => {
 
   try {
     const order = new Order(orderInfo);
-    console.log(orderInfo);
     order.save();
 
     await Cart.findOneAndDelete({ user: userId }, { useFindAndModify: false });
@@ -204,13 +203,15 @@ createOrder = async (userId, orderInfo) => {
     });
     return newOrder;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
 
 const updateOrderStatusToOrdered = async (orderId) => {
+  console.log(orderId)
   try {
+    const oldOrder = await Order.findOne({ _id: orderId })
+
     const order = await Order.findOneAndUpdate(
       { _id: orderId },
       {
@@ -219,7 +220,7 @@ const updateOrderStatusToOrdered = async (orderId) => {
           process: [
             {
               type: "in progress",
-              date: new Date(),
+              date: oldOrder.process[0].date,
               isCompleted: true,
             },
             {
@@ -240,6 +241,9 @@ const updateOrderStatusToOrdered = async (orderId) => {
       },
       { new: true, useFindAndModify: false }
     ).populate("items.productId", "name productPictures");
+
+
+
 
     const promises = [];
     order.items.forEach((product) => {
@@ -287,6 +291,6 @@ const populateAddress = async (orders) => {
 
 async function checkBuyAmountLTEProductAmount(userId) {
   const CartPopulateProductQuantity = await Cart.findOne({ user: userId }).populate('cartItems.product', 'quantity').exec();
-  console.log(CartPopulateProductQuantity.cartItems);
+  if (CartPopulateProductQuantity.hasOwnProperty('cartItems') === false) return false;
   return CartPopulateProductQuantity.cartItems.some(cartItem => cartItem.quantity > cartItem.product.quantity);
 }

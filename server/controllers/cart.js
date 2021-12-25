@@ -69,6 +69,7 @@ exports.add = (req, res) => {
       });
       newCart.save((error, cart) => {
         if (error) return ServerError(res, error.message);
+        console.log(error, cart)
         const cartItems = createCartItems(...cart);
         return Response(res, { cartItems });
       });
