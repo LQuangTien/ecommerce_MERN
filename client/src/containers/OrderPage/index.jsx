@@ -48,7 +48,11 @@ function OrderPage() {
                   {order.paymentOption}
                 </td>
                 <td className="uppercase-first-letter">
-                  {order.process.find((pro) => pro.isCompleted === true).type}
+                  {
+                    [...order.process]
+                      .reverse()
+                      .find((pro) => pro.isCompleted === true).type
+                  }
                 </td>
                 <td className="history-table-link">
                   <Link to={`/account/order/${order._id}`}>View detail</Link>
