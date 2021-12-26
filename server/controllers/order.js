@@ -133,25 +133,32 @@ exports.zaloPayment = async (req, res) => {
     newOrder._doc.totalAmount
   );
 
+  console.log('dataZaloOrder', dataZaloOrder);
+
   if (typeof dataZaloOrder === "string") return ServerError(res, dataZaloOrder);
   return Get(res, {
     order: {
       ...newOrder,
-      redirectUrl: dataZaloOrder.orderurl,
+      redirectUrl: dataZaloOrder.order_url,
       apptransid: dataZaloOrder.apptransid,
     },
   });
 };
 
 exports.getOrderStatus = async (req, res) => {
-  console.log(1);
+
   try {
     const orderStatus = await zaloGetStatusOrderByOrderId(req.body.apptransid);
-    if (orderStatus.returncode === 1) {
+    console.log('dataZaloOrder', orderStatus);
+    if (isNaN(orderStatus) === false && orderStatus === -1) {
+      await Order.deleteOne({ _id: req.body.orderId });
+      return Get(res, { info: "Đơn hàng zalo chưa thanh toán đã bị hủy" });
+    }
+    if (orderStatus.return_code === 1) {
       const updatedOrder = await updateOrderStatusToOrdered(req.body.orderId);
       if (typeof updatedOrder === "string")
         return ServerError(res, updatedOrder);
-      return Get({ order: updatedOrder });
+      return Get(res, { order: updatedOrder });
     } else {
       return ServerError(
         res,
@@ -163,7 +170,7 @@ exports.getOrderStatus = async (req, res) => {
   }
 };
 
-createOrder = async (userId, orderInfo) => {
+const createOrder = async (userId, orderInfo) => {
   orderInfo.user = userId;
   orderInfo.process = [
     {
@@ -240,6 +247,7 @@ const updateOrderStatusToOrdered = async (orderId) => {
       { new: true, useFindAndModify: false }
     ).populate("items.productId", "name productPictures");
 
+    console.log("order", order)
     const promises = [];
     order.items.forEach((product) => {
       const promise = Product.findByIdAndUpdate(product.productId, {

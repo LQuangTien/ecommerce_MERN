@@ -20,7 +20,7 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
     data,
     process.env.ZALO_KEY_FOR_SERVER_REQUEST
   ).toString();
-  
+
   let postConfig = {
     method: "post",
     url: process.env.ZALO_GET_ORDER_STATUS_API,
@@ -34,15 +34,40 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
     new Promise((resolve) => {
       setTimeout(resolve, timeout);
     });
-  console.log(postConfig, data)
+
+  let counter = 0;
+
+  const MAX_AMOUNT_CALL_BEFORE_FAIL_PAYMENT = 45;
+  // const polling = () => {
+  //   return axios(postConfig)
+  //     .then(function (res) {
+  //       counter++;
+  //       if (res.data.return_code === 1) {
+  //         return res.data;
+  //       } else {
+  //         console.log(JSON.stringify(res.data));
+  //         return setTimeoutPromise(20000).then(() => {
+  //           return polling();
+  //         });
+  //       }
+  //       // return Get(res,JSON.stringify(res.data));
+  //     })
+  //     .catch(function (error) {
+  //       return error;
+  //       // return ServerError(error.messages);
+  //     });
+  // };
 
   const polling = () => {
     return axios(postConfig)
       .then(function (res) {
-        if (res.data.returncode === 1) {
-          console.log(res.data);
+        counter++;
+        if (res.data.return_code === 1) {
           return res.data;
+        } else if (counter === MAX_AMOUNT_CALL_BEFORE_FAIL_PAYMENT) {
+          return -1;
         } else {
+          console.log(JSON.stringify(res.data));
           return setTimeoutPromise(20000).then(() => {
             return polling();
           });
@@ -59,4 +84,6 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
   return setTimeoutPromise(20000).then(() => {
     return polling();
   });
+
+
 };
