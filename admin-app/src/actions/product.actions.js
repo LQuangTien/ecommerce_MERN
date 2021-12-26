@@ -1,3 +1,4 @@
+import { getInitialData } from ".";
 import axios from "../helpers/axios";
 import { productConstants } from "./constants";
 export const addProduct = (form) => {
@@ -13,6 +14,7 @@ export const addProduct = (form) => {
         type: productConstants.CREATE_PRODUCT_SUCCESS,
         payload: { product },
       });
+      dispatch(getInitialData());
     } catch (error) {
       dispatch({
         type: productConstants.CREATE_PRODUCT_FAILURE,
@@ -34,6 +36,7 @@ export const updateProduct = (id, form) => {
         type: productConstants.UPDATE_PRODUCT_SUCCESS,
         payload: { product },
       });
+      dispatch(getInitialData());
     } catch (error) {
       dispatch({
         type: productConstants.UPDATE_PRODUCT_FAILURE,
@@ -51,6 +54,7 @@ export const deleteProduct = (id) => {
         type: productConstants.DELETE_PRODUCT_SUCCESS,
         payload: { id },
       });
+      dispatch(getInitialData());
     } catch (error) {
       dispatch({
         type: productConstants.DELETE_PRODUCT_FAILURE,

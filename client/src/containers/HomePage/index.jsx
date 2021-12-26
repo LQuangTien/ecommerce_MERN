@@ -214,7 +214,7 @@ function HomePage() {
                       ${formatThousand(product.price)}
                     </span>
                     <span className="product__info-price--old">
-                      ${formatThousand(12000)}
+                      ${formatThousand(product.regularPrice)}
                     </span>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ function HomePage() {
                         ${formatThousand(product.price)}
                       </span>
                       <span className="small-product__info-price--old">
-                        ${formatThousand(12000)}
+                        ${formatThousand(product.regularPrice)}
                       </span>
                     </div>
                     <div className="product__badge">
@@ -324,15 +324,20 @@ function HomePage() {
                         ${formatThousand(product.price)}
                       </span>
                       <span className="small-product__info-price--old">
-                        ${formatThousand(12000)}
+                        ${formatThousand(product.regularPrice)}
                       </span>
                     </div>
-                    <div className="small-product__rating">
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
+                    <div className="product__badge">
+                      {Number(product.sale) > 5 && (
+                        <span className="product__badge-item product__badge-item--sale">
+                          SALE {product.sale}%
+                        </span>
+                      )}
+                      {isNew(product.createdAt) && (
+                        <span className="product__badge-item product__badge-item--new">
+                          NEW
+                        </span>
+                      )}
                     </div>
                   </div>
                 </Link>

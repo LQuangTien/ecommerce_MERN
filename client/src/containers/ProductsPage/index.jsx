@@ -368,7 +368,7 @@ function ProductPage(props) {
                             </div>
                             <div className="product__info-price">
                               <p className="product__info-price--old">
-                                ${formatThousand(12000)}
+                                ${formatThousand(products[key].regularPrice)}
                               </p>
                               <p className="product__info-price--current">
                                 ${formatThousand(products[key].price)}

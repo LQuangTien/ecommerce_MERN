@@ -12,17 +12,17 @@ const Footer = (props) => {
             <ul className="footer__list">
               <li>
                 <Link className="footer__link" to="/Samsung">
-                  Samsung
+                  Laptop
                 </Link>
               </li>
               <li>
                 <Link className="footer__link" to="/Iphone">
-                  Iphone
+                  Cell phone
                 </Link>
               </li>
               <li>
                 <Link className="footer__link" to="/Oppo">
-                  Oppo
+                  Headphone
                 </Link>
               </li>
             </ul>
