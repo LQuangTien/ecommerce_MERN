@@ -49,7 +49,7 @@ exports.zaloCreateOrder = (orderIdFromServer, orderItemFromServer, orderPriceFro
       // console.log(order.appid,order.appuser,order.apptime,order.amount,order.apptransid,order.embeddata,
       //   order.item,order.mac,order.bankcode);
       // console.log(res.data);
-      res.data.apptransid = order.apptransid;
+      res.data.apptransid = order.app_trans_id;
       // console.log(res.data);
       return res.data;
     })
