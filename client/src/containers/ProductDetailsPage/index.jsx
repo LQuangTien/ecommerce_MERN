@@ -9,6 +9,7 @@ import Banner from "../../components/UI/Banner";
 import Button from "../../components/UI/Button";
 import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
+import { isNew } from "../../utils/isNew";
 import "./style.css";
 
 /**
@@ -45,9 +46,9 @@ const ProductDetailsPage = (props) => {
   }
 
   const handleAddToCart = () => {
-    const { _id, name, price } = product.productDetails;
-    const img = product.productDetails.productPictures[0].img;
-    dispatch(addToCart({ _id, name, price, img }));
+    const { _id, name, price, quantity } = product.productDetails;
+    const img = product.productDetails.productPictures[0];
+    dispatch(addToCart({ _id, name, price, img, stock: quantity }));
   };
   return (
     <>
@@ -76,7 +77,7 @@ const ProductDetailsPage = (props) => {
             </div>
             <div className="col lg-7 md-7 sm-12 detail">
               <h1 className="detail__name">{product.productDetails.name}</h1>
-              <div className="detail__rating">
+              {/* <div className="detail__rating">
                 <div className="detail__star">
                   <IoStar />
                   <IoStar />
@@ -87,7 +88,7 @@ const ProductDetailsPage = (props) => {
                 <div className="detail__review">
                   <IoChatbubblesOutline /> Reviews (1)
                 </div>
-              </div>
+              </div> */}
               <p className="detail__price">
                 <span className="detail__price--current">
                   ${formatThousand(product.productDetails.price)}
@@ -158,6 +159,18 @@ const ProductDetailsPage = (props) => {
                 .map((product, index) => (
                   <div className="product__card col lg-3" key={product._id}>
                     <Link to={"/product/" + product._id}>
+                      <div className="product__badge">
+                        {Number(product.sale) > 5 && (
+                          <span className="product__badge-item product__badge-item--sale">
+                            SALE {product.sale}%
+                          </span>
+                        )}
+                        {isNew(product.createdAt) && (
+                          <span className="product__badge-item product__badge-item--new">
+                            NEW
+                          </span>
+                        )}
+                      </div>
                       <div className="product__image">
                         <img
                           src={generatePictureUrl(product.productPictures[0])}
@@ -174,13 +187,13 @@ const ProductDetailsPage = (props) => {
                             ${formatThousand(12000)}
                           </span>
                         </div>
-                        <div className="product__rating">
+                        {/* <div className="product__rating">
                           <IoStar />
                           <IoStar />
                           <IoStar />
                           <IoStar />
                           <IoStar />
-                        </div>
+                        </div> */}
                       </div>
                     </Link>
                   </div>
@@ -211,6 +224,18 @@ const ProductDetailsPage = (props) => {
                 .map((product, index) => (
                   <div className="product__card col lg-3" key={product._id}>
                     <Link to={"/product/" + product._id}>
+                      <div className="product__badge">
+                        {Number(product.sale) > 5 && (
+                          <span className="product__badge-item product__badge-item--sale">
+                            SALE {product.sale}%
+                          </span>
+                        )}
+                        {isNew(product.createdAt) && (
+                          <span className="product__badge-item product__badge-item--new">
+                            NEW
+                          </span>
+                        )}
+                      </div>
                       <div className="product__image">
                         <img
                           src={generatePictureUrl(product.productPictures[0])}
@@ -227,13 +252,13 @@ const ProductDetailsPage = (props) => {
                             ${formatThousand(12000)}
                           </span>
                         </div>
-                        <div className="product__rating">
+                        {/* <div className="product__rating">
                           <IoStar />
                           <IoStar />
                           <IoStar />
                           <IoStar />
                           <IoStar />
-                        </div>
+                        </div> */}
                       </div>
                     </Link>
                   </div>

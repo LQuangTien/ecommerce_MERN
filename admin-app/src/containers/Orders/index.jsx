@@ -17,6 +17,7 @@ function Orders(props) {
         display: false,
       },
     },
+    "Type",
     "Client",
     "Phone",
     "Total",
@@ -59,6 +60,7 @@ function Orders(props) {
     return [
       new Date(order.createdAt).toLocaleDateString(),
       order._id,
+      order.paymentOption.toUpperCase(),
       order.address.name,
       order.address.phone,
       `$${formatThousand(order.totalAmount)}`,

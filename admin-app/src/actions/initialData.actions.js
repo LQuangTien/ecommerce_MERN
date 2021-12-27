@@ -7,10 +7,10 @@ import {
 } from "./constants";
 import axios from "../helpers/axios";
 
-export const getInitialData = () => {
+export const getInitialData = (year = new Date().getFullYear()) => {
   return async (dispatch) => {
     dispatch({ type: initialDataConstants.GET_INITIALDATA_REQUEST });
-    const res = await axios.get("admin/initialdata");
+    const res = await axios.get(`admin/initialdata?year=${year}`);
     if (res.status === 200) {
       const { categories, products, orders, statistic } = res.data.data;
       dispatch({
@@ -29,6 +29,25 @@ export const getInitialData = () => {
         type: statisticConstants.GET_STATISTIC_SUCCESS,
         payload: { statistic },
       });
+      dispatch({ type: initialDataConstants.GET_INITIALDATA_SUCCESS });
+    }
+  };
+};
+export const getTotalOrderPricePerMonthByYear = (
+  year = new Date().getFullYear()
+) => {
+  return async (dispatch) => {
+    dispatch({ type: initialDataConstants.GET_INITIALDATA_REQUEST });
+    const res = await axios.get(
+      `/admin/totalOrderPricePerMonthByYear?year=${year}`
+    );
+    if (res.status === 200) {
+      const { statistic } = res.data.data;
+      dispatch({
+        type: statisticConstants.GET_getTotalOrderPricePerMonthByYear_SUCCESS,
+        payload: { statistic },
+      });
+      dispatch({ type: initialDataConstants.GET_INITIALDATA_SUCCESS });
     }
   };
 };

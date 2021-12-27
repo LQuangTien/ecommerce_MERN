@@ -82,4 +82,6 @@ export const orderConstants = {
 
 export const statisticConstants = {
   GET_STATISTIC_SUCCESS: "GET_STATISTIC_SUCCESS",
+  GET_getTotalOrderPricePerMonthByYear_SUCCESS:
+    "GET_getTotalOrderPricePerMonthByYear_SUCCESS",
 };

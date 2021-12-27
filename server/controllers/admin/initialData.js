@@ -31,7 +31,7 @@ const populateCategory = (categories, parentId = null) => {
 };
 exports.initialData = async (req, res) => {
   try {
-    const year = Number(req.query.year) || new Date().getFullYear();
+    const year = new Date().getFullYear();
 
     const [categories, products, orders, total7day, totalPerMonth, top5] =
       await Promise.all([
@@ -66,6 +66,23 @@ exports.initialData = async (req, res) => {
           total7day,
           totalPerMonth,
           top5,
+        },
+      },
+    });
+  } catch (error) {
+    return ServerError(res, error.message);
+  }
+};
+exports.totalOrderPricePerMonthByYear = async (req, res) => {
+  try {
+    const year = Number(req.query.year) || new Date().getFullYear();
+
+    const totalPerMonth = await totalOrderPricePerMonthByYear(year);
+
+    return Get(res, {
+      result: {
+        statistic: {
+          totalPerMonth,
         },
       },
     });

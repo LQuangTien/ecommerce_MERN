@@ -30,6 +30,7 @@ function CartPage(props) {
   const handleRemoveItem = (productId) => {
     dispatch(removeCartItem(productId));
   };
+  console.log(cartItems);
   const renderCartItems = () => {
     return (
       <div className="cart__content">
@@ -65,8 +66,13 @@ function CartPage(props) {
                   readOnly
                 />
                 <button
-                  className="cart__item-quantity-button"
-                  onClick={() => handleIncreaseQuantity(cartItems[key]._id)}
+                  className={`cart__item-quantity-button ${
+                    cartItems[key].quantity >= cartItems[key].stock &&
+                    "cart__item-quantity-button--disabled"
+                  }`}
+                  onClick={() => {
+                    handleIncreaseQuantity(cartItems[key]._id);
+                  }}
                 >
                   +
                 </button>
@@ -113,10 +119,10 @@ function CartPage(props) {
           ${formatThousand(getTotalPrice())}
         </p>
       </div>
-      <div className="cart__price-row mt-8">
+      {/* <div className="cart__price-row mt-8">
         <p className="cart__price-row-label">Ship</p>
         <p className="cart__price-row-value">$0</p>
-      </div>
+      </div> */}
       <div className="cart__price-row mt-32">
         <p className="cart__price-row-key">Total</p>
         <p>${formatThousand(getTotalPrice())}</p>

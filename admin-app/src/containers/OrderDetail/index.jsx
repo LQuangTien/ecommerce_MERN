@@ -91,7 +91,12 @@ function OrderDetail(props) {
                   Back
                 </Button>
                 <Button
-                  disabled={activeStep + 1 === steps.length}
+                  disabled={
+                    activeStep + 1 === steps.length ||
+                    (activeStep === 0 &&
+                      order.paymentOption &&
+                      order.paymentOption.toLowerCase() === "zalo")
+                  }
                   onClick={handleNext}
                   className="process-next"
                 >
@@ -100,6 +105,9 @@ function OrderDetail(props) {
               </Stepper>
             </Box>
           )}
+          <p style={{ color: "#888" }}>
+            Payment: {order.paymentOption.toUpperCase()}
+          </p>
           {order.address && (
             <div className="order-detail-card p-1 pl-3">
               <p className="my-2">

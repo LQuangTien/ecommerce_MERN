@@ -37,7 +37,7 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
 
   let counter = 0;
 
-  const MAX_AMOUNT_CALL_BEFORE_FAIL_PAYMENT = 45;
+  const MAX_AMOUNT_CALL_BEFORE_FAIL_PAYMENT = 47;
   // const polling = () => {
   //   return axios(postConfig)
   //     .then(function (res) {
@@ -84,6 +84,4 @@ exports.zaloGetStatusOrderByOrderId = async (zaloOrderId) => {
   return setTimeoutPromise(20000).then(() => {
     return polling();
   });
-
-
 };

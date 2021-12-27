@@ -106,6 +106,7 @@ exports.getById = async (req, res) => {
     const categoryOfProduct = await Category.findOne({
       name: product.category,
     });
+
     if (
       product.isAvailable === false ||
       categoryOfProduct.isAvailable === false

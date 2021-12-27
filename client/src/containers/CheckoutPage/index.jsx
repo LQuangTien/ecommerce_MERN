@@ -158,7 +158,7 @@ function CheckoutPage() {
   );
 
   if (isCompleteOrder && user.redirectUrl !== "" && user.apptransid !== "") {
-    window.open(user.redirectUrl);
+    window.location.href = user.redirectUrl;
     return <Redirect to="/" />;
   }
 
@@ -180,7 +180,7 @@ function CheckoutPage() {
                   auth.authenticate && (
                     <div className="info-wrapper">
                       <div className="info-wrapper__container--inline">
-                        <span className="info-wrapper__title">Username:</span>
+                        <span className="info-wrapper__title">Name:</span>
                         {auth.user.fullName}
                       </div>
                       <div className="info-wrapper__container--inline">

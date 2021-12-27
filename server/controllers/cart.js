@@ -11,7 +11,10 @@ const {
 const runUpdate = (condition, update) => {
   return new Promise((resolve, reject) => {
     Cart.findOneAndUpdate(condition, update, { upsert: true, new: true })
-      .populate("cartItems.product", "_id name salePrice productPictures")
+      .populate(
+        "cartItems.product",
+        "_id name salePrice productPictures quantity"
+      )
       .then((res) => resolve(res))
       .catch((err) => reject(err));
   });
@@ -27,6 +30,7 @@ const createCartItems = (cart) => {
       price: salePrice,
       quantity,
       img: productPictures[0],
+      stock: product.quantity,
     };
   });
   return cartItems;
@@ -67,17 +71,25 @@ exports.add = (req, res) => {
         user: req.user._id,
         cartItems: req.body.cartItems,
       });
-      newCart.save((error, cart) => {
+      newCart.save(async (error, cart) => {
         if (error) return ServerError(res, error.message);
-        const cartItems = createCartItems(cart);
-        return Response(res, { cartItems });
+        const cartPopulated = await Cart.findById({ _id: cart._id }).populate(
+          "cartItems.product",
+          "_id name salePrice productPictures quantity"
+        );
+        const cartItems = createCartItems(cartPopulated);
+
+        return Get(res, { cartItems });
       });
     }
   });
 };
 exports.get = (req, res) => {
   Cart.findOne({ user: req.user._id })
-    .populate("cartItems.product", "_id name salePrice productPictures")
+    .populate(
+      "cartItems.product",
+      "_id name salePrice productPictures quantity"
+    )
     .exec((error, cart) => {
       if (error) return ServerError(res, error.message);
       if (cart) {
@@ -102,7 +114,10 @@ exports.removeItem = (req, res) => {
     },
     { new: true }
   )
-    .populate("cartItems.product", "_id name salePrice productPictures")
+    .populate(
+      "cartItems.product",
+      "_id name salePrice productPictures quantity"
+    )
     .exec((error, cart) => {
       if (error) return ServerError(res, error.message);
       if (cart) {

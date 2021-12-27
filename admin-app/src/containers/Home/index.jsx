@@ -1,7 +1,7 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./style.css";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
@@ -20,6 +20,7 @@ import {
 } from "chart.js";
 import { Bar, Pie, Line } from "react-chartjs-2";
 import { formatThousand } from "../../helpers/util";
+import { getTotalOrderPricePerMonthByYear } from "../../actions";
 
 ChartJS.register(
   CategoryScale,
@@ -68,7 +69,20 @@ export const lineOptions = {
 };
 
 function Home(props) {
+  const dispatch = useDispatch();
   const statistic = useSelector((state) => state.statistic);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const { isIniting } = useSelector((state) => state.init);
+
+  const hanleNextYear = () => {
+    if (year >= new Date().getFullYear()) return;
+    setYear((prev) => prev + 1);
+    dispatch(getTotalOrderPricePerMonthByYear(year + 1));
+  };
+  const hanlePrevYear = () => {
+    setYear((prev) => prev - 1);
+    dispatch(getTotalOrderPricePerMonthByYear(year - 1));
+  };
 
   const pieData = {
     labels: (statistic.top5 && statistic.top5.products) || [],
@@ -145,7 +159,7 @@ Biểu đồ tròn xem top 3 category đem lại doanh thu cao nhất
                   className="m-0 statistic__number-value"
                   style={{ color: "var(--primary)" }}
                 >
-                  {`$${formatThousand(statistic.revenue)}`}
+                  {statistic.revenue && `$${formatThousand(statistic.revenue)}`}
                 </p>
               </Col>
             </Row>
@@ -209,6 +223,36 @@ Biểu đồ tròn xem top 3 category đem lại doanh thu cao nhất
           <div className="statistic__chart">
             <div style={{ height: "360px", width: "70%", margin: "auto" }}>
               <Bar options={chartOptions} data={chartData} />
+            </div>
+            <div className="d-flex justify-content-center align-items-center">
+              <Button disabled={isIniting} onClick={hanlePrevYear}>
+                {isIniting && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}{" "}
+                Back
+              </Button>
+              <p className=" mx-3 my-auto">{year}</p>
+              <Button
+                disabled={isIniting || year === new Date().getFullYear()}
+                onClick={hanleNextYear}
+              >
+                {isIniting && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}{" "}
+                Next
+              </Button>
             </div>
           </div>
         </Col>

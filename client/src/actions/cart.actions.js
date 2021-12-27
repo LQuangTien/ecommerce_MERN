@@ -43,6 +43,11 @@ export const addToCart = (product, amount = 1) => {
       ? parseInt(cartItems[product._id].quantity) + amount
       : 1;
     if (!auth.authenticate) {
+      if (cartItems[product._id]) {
+        if (quantity > cartItems[product._id].stock) {
+          return;
+        }
+      }
       cartItems[product._id] = {
         ...product,
         quantity,
@@ -57,7 +62,7 @@ export const addToCart = (product, amount = 1) => {
     dispatch({ type: cartConstants.ADD_TO_CART_REQUEST });
     const items = [
       {
-        product: product._id,
+        product: cartItems[product._id] || product._id,
         quantity,
       },
     ];

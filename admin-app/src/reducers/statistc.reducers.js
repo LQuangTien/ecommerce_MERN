@@ -36,6 +36,12 @@ const statisticReducer = (state = initState, action) => {
         isGettingStatistic: false,
       };
       break;
+    case statisticConstants.GET_getTotalOrderPricePerMonthByYear_SUCCESS:
+      state = {
+        ...state,
+        totalPerMonth: action.payload.statistic.totalPerMonth,
+      };
+      break;
     default:
       break;
   }
