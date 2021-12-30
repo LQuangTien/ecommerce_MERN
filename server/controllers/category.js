@@ -146,7 +146,7 @@ excludeNewInFieldCategory = (fieldCategory) => {
   return removeAddedFieldCategory;
 };
 
-updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
+const updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
   const diffInNormalField = findDiffInCategoryField(
     oldCategory.normalField,
     newCategory.normalField
@@ -216,7 +216,7 @@ updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
   }
 };
 
-findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
+const findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
   const getIdAndNameFromOld = oldFieldCategory.map((field) => {
     let idAndName = {};
     idAndName.id = field._id;
