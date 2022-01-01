@@ -8,7 +8,10 @@ import { useHistory } from "react-router";
 import { capitalizeFirstLetter, formatThousand } from "../../helpers/util";
 function Orders(props) {
   const columns = [
-    "Date",
+    {
+      name: "Date",
+      options: { sortDirection: "asc" },
+    },
     {
       name: "id",
       options: {
@@ -56,7 +59,6 @@ function Orders(props) {
   };
   const data = orders.map((order) => {
     const orderReversed = [...order.process].reverse();
-    console.log(orderReversed);
     return [
       new Date(order.createdAt).toLocaleDateString(),
       order._id,
@@ -73,7 +75,7 @@ function Orders(props) {
     data && (
       <MuiThemeProvider theme={getMuiTheme()}>
         <MUIDataTable
-          title={"ACME Employee list"}
+          title={"Order"}
           data={data}
           columns={columns}
           options={options}

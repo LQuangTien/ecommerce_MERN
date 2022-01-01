@@ -26,7 +26,7 @@ function Input(props) {
       break;
     default:
       input = (
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-1">
           {props.label && <Form.Label>{props.label}</Form.Label>}
           <Form.Control
             type={props.type}

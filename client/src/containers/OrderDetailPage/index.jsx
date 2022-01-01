@@ -131,14 +131,14 @@ function OrderDetailPage(props) {
                       </td>
                     </tr>
                   ))}
-                <tr className="text-align-right">
+                {/* <tr className="text-align-right">
                   <td colSpan="4">Subtotal</td>
                   <td>${formatThousand(getTotal())}</td>
                 </tr>
                 <tr className="text-align-right">
                   <td colSpan="4">Shipping</td>
                   <td>0</td>
-                </tr>
+                </tr> */}
                 <tr className="text-align-right">
                   <td colSpan="4">Total</td>
                   <td>${formatThousand(getTotal())}</td>

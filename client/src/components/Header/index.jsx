@@ -8,7 +8,15 @@ import {
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { getAllCategory, getCart, login, signout, signup } from "../../actions";
+import {
+  getAllCategory,
+  getCart,
+  login,
+  signout,
+  signup,
+  forgotPassword,
+  changePassword,
+} from "../../actions";
 import kinzy from "../../images/logo/kinzy.jpg";
 import Anchor from "../UI/Anchor";
 import Button from "../UI/Button";
@@ -18,16 +26,20 @@ import "./style.css";
 const Header = (props) => {
   const [signinModal, setSigninModal] = useState(false);
   const [signupModal, setSignupModal] = useState(false);
+  const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
+  const [changePasswordModal, setChangePaswordModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [search, setSearch] = useState("");
+  const [error, setError] = useState("");
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const history = useHistory();
   const categoryState = useSelector((state) => state.categories);
+  const authState = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   useEffect(() => {
     dispatch(getAllCategory());
@@ -43,8 +55,28 @@ const Header = (props) => {
     dispatch(login({ email, password }));
   };
   const handleSignUp = () => {
+    if (password !== confirmPassword) {
+      setError("Password not match");
+      return;
+    }
     dispatch(signup({ email, password, firstName, lastName, confirmPassword }));
   };
+  const handleForgotPassword = () => {
+    dispatch(forgotPassword({ email }));
+  };
+
+  const handleChangePassword = () => {
+    if (password !== confirmPassword) {
+      setError("Password not match");
+      return;
+    }
+    dispatch(changePassword({ email: authState.user.email, password })).then(
+      () => {
+        setChangePaswordModal(false);
+      }
+    );
+  };
+
   const handleLogout = (e) => {
     e.preventDefault();
     dispatch(signout());
@@ -63,12 +95,8 @@ const Header = (props) => {
       <Modal
         visible={signinModal}
         onClose={() => {
-          setEmail("");
-          setPassword("");
-          setFirstName("");
-          setLastName("");
-          setConfirmPassword("");
-          setSigninModal(false);
+          resetForm();
+          closeModals();
         }}
         title="Sign in"
       >
@@ -103,7 +131,14 @@ const Header = (props) => {
             />
           </div>
           <div className="col sm-12 md-12 lg-12 mt-16 text-align-right">
-            <Anchor title="Forgot password ?" />
+            <Anchor
+              title="Forgot password ?"
+              onClick={() => {
+                resetForm();
+                closeModals();
+                setForgotPasswordModal(true);
+              }}
+            />
           </div>
 
           <div className="col sm-12 md-12 lg-12 mt-16 ">
@@ -117,12 +152,8 @@ const Header = (props) => {
             <Anchor
               title="No account? Create one here"
               onClick={() => {
-                setEmail("");
-                setPassword("");
-                setFirstName("");
-                setLastName("");
-                setConfirmPassword("");
-                setSigninModal(false);
+                resetForm();
+                closeModals();
                 setSignupModal(true);
               }}
             />
@@ -144,17 +175,24 @@ const Header = (props) => {
       <Modal
         visible={signupModal}
         onClose={() => {
-          setEmail("");
-          setPassword("");
-          setFirstName("");
-          setLastName("");
-          setConfirmPassword("");
-          setSignupModal(false);
+          resetForm();
+          closeModals();
         }}
         title="Sign up"
       >
         <div className="row">
           <div className="col sm-12 md-12 lg-12">
+            {error !== "" && (
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  color: "red",
+                  paddingLeft: "0.2rem",
+                }}
+              >
+                {error}
+              </p>
+            )}
             {auth.signupError && (
               <p
                 style={{
@@ -215,14 +253,140 @@ const Header = (props) => {
             <Anchor
               title="Already have an account? Login instead here"
               onClick={() => {
-                setEmail("");
-                setPassword("");
-                setFirstName("");
-                setLastName("");
-                setConfirmPassword("");
+                resetForm();
+                closeModals();
                 setSigninModal(true);
-                setSignupModal(false);
               }}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
+            <p className="socials__label">Hope you have fun with us</p>
+            <div className="mt-12">
+              <div className="logo">
+                <img src={kinzy} alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+  const renderForgotPasswordModal = () => {
+    return (
+      <Modal
+        visible={forgotPasswordModal}
+        onClose={() => {
+          resetForm();
+          closeModals();
+        }}
+        title="Forgot password"
+      >
+        <div className="row">
+          <div className="col sm-12 md-12 lg-12">
+            {auth.forgotPasswordError && (
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  color: "red",
+                  paddingLeft: "0.2rem",
+                }}
+              >
+                {auth.forgotPasswordError}
+              </p>
+            )}
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 ">
+            <Button
+              title="Reset password"
+              onClick={handleForgotPassword}
+              loading={auth.isForgotPassword}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Anchor
+              title="Go to login"
+              onClick={() => {
+                resetForm();
+                closeModals();
+                setSigninModal(true);
+              }}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
+            <p className="socials__label">Hope you have fun with us</p>
+            <div className="mt-12">
+              <div className="logo">
+                <img src={kinzy} alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+  const renderChangePasswordModal = () => {
+    return (
+      <Modal
+        visible={changePasswordModal}
+        onClose={() => {
+          resetForm();
+          closeModals();
+        }}
+        title="Change password"
+      >
+        <div className="row">
+          <div className="col sm-12 md-12 lg-12">
+            {auth.chanagePasswordError && (
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  color: "red",
+                  paddingLeft: "0.2rem",
+                }}
+              >
+                {auth.chanagePasswordError}
+              </p>
+            )}
+            {error !== "" && (
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  color: "red",
+                  paddingLeft: "0.2rem",
+                }}
+              >
+                {error}
+              </p>
+            )}
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16">
+            <Input
+              placeholder="Confirm password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <div className="col sm-12 md-12 lg-12 mt-16 ">
+            <Button
+              title="Change password"
+              onClick={handleChangePassword}
+              loading={auth.isChangePassword}
             />
           </div>
           <div className="col sm-12 md-12 lg-12 mt-16 socials flex-center">
@@ -243,6 +407,9 @@ const Header = (props) => {
       <Link className="auth__span" to="/account/order">
         Your orders
       </Link>
+      <span className="auth__span" onClick={() => setChangePaswordModal(true)}>
+        Change password
+      </span>
       <span className="auth__span" onClick={handleLogout}>
         Log out
       </span>
@@ -258,6 +425,21 @@ const Header = (props) => {
       </span>
     </>
   );
+  const resetForm = () => {
+    setEmail("");
+    setPassword("");
+    setFirstName("");
+    setLastName("");
+    setConfirmPassword("");
+    setError("");
+  };
+  const closeModals = () => {
+    setSigninModal(false);
+    setSignupModal(false);
+    setForgotPasswordModal(false);
+    setChangePaswordModal(false);
+    resetForm();
+  };
   const getItemQuantity = () => {
     let sum = 0;
     if (!cartItems) return 0;
@@ -335,6 +517,8 @@ const Header = (props) => {
       </header>
       {renderSigninModal()}
       {renderSignupModal()}
+      {renderForgotPasswordModal()}
+      {renderChangePasswordModal()}
     </>
   );
 };
