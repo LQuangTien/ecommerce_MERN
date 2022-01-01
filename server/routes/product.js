@@ -3,7 +3,7 @@ const express = require("express");
 const slugify = require("slugify");
 const shortid = require("shortid");
 
-const { requireSignin, isAdmin } = require("../middlewares");
+const { requireSignin, readUserInfo, isAdmin } = require("../middlewares");
 const {
   create,
   getBySlug,
@@ -44,9 +44,9 @@ router.put(
 );
 router.put("/product/enable/:id", requireSignin, isAdmin, enable);
 router.delete("/product/:id", requireSignin, isAdmin, remove);
-router.get("/product/:id", getById);
+router.get("/product/:id", readUserInfo, getById);
 
-router.get("/products/search/:page/:perPage", getByQuery);
-router.get("/products/", getAll);
+router.get("/products/search/:page/:perPage", readUserInfo, getByQuery);
+router.get("/products/", readUserInfo, getAll);
 
 module.exports = router;

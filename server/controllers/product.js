@@ -106,10 +106,10 @@ exports.getById = async (req, res) => {
     const categoryOfProduct = await Category.findOne({
       name: product.category,
     });
-
+    console.log(product.isAvailable, categoryOfProduct.isAvailable, req.user.role)
     if (
-      product.isAvailable === false ||
-      categoryOfProduct.isAvailable === false
+      (product.isAvailable === false ||
+        categoryOfProduct.isAvailable === false) && req.user.role !== 'admin'
     )
       return NotFound(res, "Product");
     return Get(res, { product });
