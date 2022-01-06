@@ -75,3 +75,37 @@ export const signup = (data) => {
     }
   };
 };
+
+export const forgotPassword = (data) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: authConstants.FORGOT_PASSWORD_REQUEST });
+      await axios.post("/forget-password", { userEmail: data.email });
+      dispatch({
+        type: authConstants.FORGOT_PASSWORD_SUCCESS,
+      });
+    } catch (error) {
+      dispatch({
+        type: authConstants.FORGOT_PASSWORD_FAILURE,
+        payload: { error: error.response.data.error },
+      });
+    }
+  };
+};
+
+export const changePassword = (data) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: authConstants.CHANGE_PASSWORD_REQUEST });
+      await axios.post("/change-password", data);
+      dispatch({
+        type: authConstants.CHANGE_PASSWORD_SUCCESS,
+      });
+    } catch (error) {
+      dispatch({
+        type: authConstants.CHANGE_PASSWORD_FAILURE,
+        payload: { error: error.response.data.error },
+      });
+    }
+  };
+};

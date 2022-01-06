@@ -3,27 +3,28 @@ import { userConstants } from "../actions/constants";
 const initState = {
   error: null,
   message: "",
-  loading: false,
+  isSignuping: false,
 };
 const userReducer = (state = initState, action) => {
   switch (action.type) {
     case userConstants.REGISTER_REQUEST:
       state = {
         ...state,
-        loading: true,
+        isSignuping: true,
+        error: null,
       };
       break;
     case userConstants.REGISTER_SUCCESS:
       state = {
         ...state,
-        loading: false,
+        isSignuping: false,
         message: action.payload.message,
       };
       break;
     case userConstants.REGISTER_FAILURE:
       state = {
         ...state,
-        loading: false,
+        isSignuping: false,
         error: action.payload.error,
       };
       break;

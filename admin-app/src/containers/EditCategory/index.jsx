@@ -72,7 +72,9 @@ function EditCategory(props) {
     });
   };
   const onDelete = () => {
-    dispatch(deleteCategory(id));
+    dispatch(deleteCategory(id)).then(() => {
+      dispatch(getCategory(id));
+    });
   };
   const onEnable = () => {
     dispatch(enableCategory(id)).then(() => {

@@ -10,6 +10,10 @@ const initState = {
   message: "",
   signuping: false,
   signupError: "",
+  isForgotPassword: false,
+  forgotPasswordError: null,
+  isChangePassword: false,
+  changePasswordError: null,
 };
 const authReducer = (state = initState, action) => {
   switch (action.type) {
@@ -74,6 +78,44 @@ const authReducer = (state = initState, action) => {
         ...state,
         error: action.payload.error,
         loading: false,
+      };
+      break;
+    case authConstants.FORGOT_PASSWORD_REQUEST:
+      state = {
+        ...state,
+        isForgotPassword: true,
+      };
+      break;
+    case authConstants.FORGOT_PASSWORD_SUCCESS:
+      state = {
+        ...state,
+        isForgotPassword: false,
+      };
+      break;
+    case authConstants.FORGOT_PASSWORD_FAILURE:
+      state = {
+        ...state,
+        isForgotPassword: false,
+        forgotPasswordError: action.payload.error,
+      };
+      break;
+    case authConstants.CHANGE_PASSWORD_REQUEST:
+      state = {
+        ...state,
+        isChangePassword: true,
+      };
+      break;
+    case authConstants.CHANGE_PASSWORD_SUCCESS:
+      state = {
+        ...state,
+        isChangePassword: false,
+      };
+      break;
+    case authConstants.CHANGE_PASSWORD_FAILURE:
+      state = {
+        ...state,
+        isChangePassword: false,
+        changePasswordError: action.payload.error,
       };
       break;
     default:

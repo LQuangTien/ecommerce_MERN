@@ -131,7 +131,7 @@ function HomePage() {
             <img
               className="advertisement__image"
               alt=""
-              src="https://res.cloudinary.com/quangtien/image/upload/v1632563479/hinh3_vk3jzp.jpg"
+              src="https://res.cloudinary.com/quangtien/image/upload/v1640960327/hinh3_vk3jzp_o23p4i.jpg"
             />
           </div>
           <div className="advertisement__wrapper">

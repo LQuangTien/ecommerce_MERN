@@ -27,7 +27,7 @@ function Signin(props) {
       className="d-flex justify-content-center align-items-center"
     >
       <Form onSubmit={userLogin} className="w-25">
-        {auth.error && <p style={{ color: "red" }}>Error: {auth.error}</p>}
+        {auth.error && <p className="errorMessage">{auth.error}</p>}
 
         <Input
           label="Email"

@@ -18,6 +18,7 @@ const ONE_MiNUTE = ONE_SECCOND * 60;
 const ONE_HOUR = ONE_MiNUTE * 60;
 
 exports.signup = (req, res) => {
+  console.log(req.body);
   User.findOne({ email: req.body.email }).exec(async (error, user) => {
     if (error) return ServerError(res, error);
     if (user) return BadRequest(res, "User already registered");
@@ -99,7 +100,7 @@ exports.forgetPassword = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
   try {
-    const newHashPassword = await bcrypt.hash(req.body.newPassword, 10);
+    const newHashPassword = await bcrypt.hash(req.body.password, 10);
 
     const updatedUser = await User.findOneAndUpdate(
       { email: req.body.email },
@@ -130,8 +131,8 @@ async function sendEmail(userEmail, newPwd) {
     service: "gmail",
     host: "smtp.gmail.com",
     auth: {
-      user: "nightmarelod9@gmail.com",
-      pass: "an07042000",
+      user: "quangtienclone@gmail.com",
+      pass: "tien123!",
     },
   });
 

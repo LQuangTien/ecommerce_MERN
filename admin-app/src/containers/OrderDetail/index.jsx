@@ -73,7 +73,7 @@ function OrderDetail(props) {
                   return (
                     <Step key={step._id}>
                       <StepLabel>
-                        <span>{step.type.toUpperCase()}</span>
+                        {step.type && <span>{step.type.toUpperCase()}</span>}
                         <p>
                           {step.date
                             ? new Date(step.date).toLocaleString()
@@ -105,9 +105,11 @@ function OrderDetail(props) {
               </Stepper>
             </Box>
           )}
-          <p style={{ color: "#888" }}>
-            Payment: {order.paymentOption.toUpperCase()}
-          </p>
+          {order.paymentOption && (
+            <p style={{ color: "#888" }}>
+              Payment: {order.paymentOption.toUpperCase()}
+            </p>
+          )}
           {order.address && (
             <div className="order-detail-card p-1 pl-3">
               <p className="my-2">
@@ -179,14 +181,14 @@ function OrderDetail(props) {
                       </td>
                     </tr>
                   ))}
-                <tr className="text-right">
+                {/* <tr className="text-right">
                   <td colSpan="4">Subtotal</td>
                   <td>${formatThousand(getTotal())}</td>
                 </tr>
                 <tr className="text-right">
                   <td colSpan="4">Shipping</td>
                   <td>0</td>
-                </tr>
+                </tr> */}
                 <tr className="text-right">
                   <td colSpan="4">Total</td>
                   <td>${formatThousand(getTotal())}</td>

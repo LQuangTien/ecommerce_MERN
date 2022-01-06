@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     const { status } = error.response;
-    if (status === 401) {
+    if (status === 401 || status === 403) {
       axios.defaults.headers.common["Authorization"] = "";
       store.dispatch(signout());
       window.location.href = "/";

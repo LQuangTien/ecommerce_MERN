@@ -4,17 +4,16 @@ import { userConstants } from "./constants";
 export const signup = (user) => {
   return async (dispatch) => {
     dispatch({ type: userConstants.REGISTER_REQUEST });
-    const res = await axios.post("/admin/signup", { ...user });
-    if (res.status === 201) {
-      const { email } = res.data;
+    try {
+      const res = await axios.post("/admin/signup", { ...user });
       dispatch({
         type: userConstants.REGISTER_SUCCESS,
-        payload: { message: email + " is registered completely!" },
+        payload: { message: user.email + " is registered completely!" },
       });
-    } else {
+    } catch (error) {
       dispatch({
         type: userConstants.REGISTER_FAILURE,
-        payload: { error: res.data.error },
+        payload: { error: error.response.data.error },
       });
     }
   };
