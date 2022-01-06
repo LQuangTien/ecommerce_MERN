@@ -5,6 +5,7 @@ const Cart = require("../../models/cart");
 const Order = require("../../models/order");
 const Address = require("../../models/address");
 const Product = require("../../models/product");
+const Category = require("../../models/category");
 const {
     ServerError,
     Create,
@@ -18,8 +19,8 @@ const {
 
 //http://localhost:8000/api/seed/product
 exports.seedDataProduct = async (req, res) => {
-    const productData = path.join(__dirname, '..', '..', 'data', 'product.json');
-
+    const productData = path.join(__dirname, '..', '..', 'data', 'mobile.json');
+    
     fs.readFile(productData, 'utf8', function (err, data) {
         if (err) throw err;
         obj = JSON.parse(data);
@@ -32,6 +33,8 @@ exports.seedDataProduct = async (req, res) => {
                 console.log(err)
             });
     });
+
+    // Product.deleteMany({category:"PC"}, function (err) { console.log(err) })
 
     return Get(res,{stop:1})
 }

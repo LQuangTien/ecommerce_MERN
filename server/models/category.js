@@ -68,14 +68,6 @@ const categorySchema = mongoose.Schema(
   { timestamps: true }
 );
 
-// categorySchema.pre('save',(next)=>{
-//   const category = this;
-
-//   category.normalField=JSON.parse(category.normalField);
-//   category.filterField=JSON.parse(category.filterField);
-
-//   next();
-// });
 
 categorySchema.post("save", function (error, doc, next) {
   if (error.name === "MongoError" && error.code === 11000) {

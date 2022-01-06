@@ -146,7 +146,7 @@ excludeNewInFieldCategory = (fieldCategory) => {
   return removeAddedFieldCategory;
 };
 
-updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
+const updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
   const diffInNormalField = findDiffInCategoryField(
     oldCategory.normalField,
     newCategory.normalField
@@ -209,14 +209,14 @@ updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
         }
 
         prod.category = newCategory.name;
-        console.log(products[0].categoryInfo);
-        prod.save((err) => console.log(err));
+        // console.log("category",products[0].categoryInfo);
+        prod.save();//(err) => console.log("err",err)
       });
     });
   }
 };
 
-findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
+const findDiffInCategoryField = (oldFieldCategory, newFieldCategory) => {
   const getIdAndNameFromOld = oldFieldCategory.map((field) => {
     let idAndName = {};
     idAndName.id = field._id;

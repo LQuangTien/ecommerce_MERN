@@ -83,6 +83,10 @@ exports.signout = (req, res) => {
 
 exports.forgetPassword = async (req, res) => {
   try {
+    const emailExist = User.findOne({ email: req.body.userEmail });
+
+    if (!emailExist) return BadRequest(res, "Email chưa được đăng ký");
+
     const newPassword = await updateNewPasswordForForgetPassword(
       req.body.userEmail
     );
