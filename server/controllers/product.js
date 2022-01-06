@@ -106,7 +106,7 @@ exports.getById = async (req, res) => {
     const categoryOfProduct = await Category.findOne({
       name: product.category,
     });
-    console.log(product.isAvailable, categoryOfProduct.isAvailable, req.user.role)
+    // console.log(product.isAvailable, categoryOfProduct.isAvailable, req.user.role)
     if (
       (product.isAvailable === false ||
         categoryOfProduct.isAvailable === false) && req.user.role !== 'admin'
@@ -309,13 +309,13 @@ async function getProductHasCategoryAvailable(products) {
           name: product.category,
         });
         if (categoryOfProduct === null) {
-          console.log(product.category);
+          // console.log(product.category);
         }
         product.isAvailable = categoryOfProduct.isAvailable;
       })
     );
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 
   return products.filter((product) => product.isAvailable);

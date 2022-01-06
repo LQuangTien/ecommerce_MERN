@@ -58,18 +58,6 @@ const productSchema = mongoose.Schema(
         },
       },
     ],
-    // createdBy: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: true,
-    // },
-    //   offer: { type: Number },
-    //   reviews: [
-    //     {
-    //       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    //       review: String,
-    //     },
-    //   ],
   },
   { timestamps: true }
 );
