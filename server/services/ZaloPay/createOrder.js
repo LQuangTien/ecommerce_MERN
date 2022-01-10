@@ -35,8 +35,6 @@ exports.zaloCreateOrder = (orderIdFromServer, orderItemFromServer, orderPriceFro
     bank_code: "zalopayapp",
   };
 
-
-
   // appid|apptransid|appuser|amount|apptime|embeddata|item
   const data = process.env.ZALO_APPID + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time +
     "|" + order.embed_data + "|" + order.item;
@@ -45,12 +43,7 @@ exports.zaloCreateOrder = (orderIdFromServer, orderItemFromServer, orderPriceFro
 
   return axios.post(process.env.ZALO_CREATE_ORDER_API, null, { params: order })
     .then(res => {
-      // return Get(res, res.data.orderurl);
-      // console.log(order.appid,order.appuser,order.apptime,order.amount,order.apptransid,order.embeddata,
-      //   order.item,order.mac,order.bankcode);
-      // console.log(res.data);
       res.data.apptransid = order.app_trans_id;
-      // console.log(res.data);
       return res.data;
     })
     .catch(err => err);

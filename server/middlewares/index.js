@@ -28,6 +28,16 @@ exports.requireSignin = (req, res, next) => {
   }
 };
 
+exports.readUserInfo = (req, res, next) => {
+  const token = req.headers.authorization;
+  const user = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (user.exp > Math.floor(Date.now())) req.user = user;
+
+  return next();
+};
+
+
 exports.isAdmin = (req, res, next) => {
   console.log(req.user.role);
   if (req.user.role !== "admin" && req.user.role !== "staff")

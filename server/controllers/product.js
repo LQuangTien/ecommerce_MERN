@@ -103,15 +103,18 @@ exports.enable = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    // const categoryOfProduct = await Category.findOne({
-    //   name: product.category,
-    // });
 
-    // if (
-    //   product.isAvailable === false ||
-    //   categoryOfProduct.isAvailable === false
-    // )
-    //   return NotFound(res, "Product");
+    const categoryOfProduct = await Category.findOne({
+      name: product.category,
+    });
+    // console.log(product.isAvailable, categoryOfProduct.isAvailable, req.user.role)
+    if (
+      (product.isAvailable === false ||
+        categoryOfProduct.isAvailable === false) &&
+      req.user.role !== "admin" &&
+      req.user.role !== "staff"
+    )
+      return NotFound(res, "Product");
     return Get(res, { product });
   } catch (error) {
     return ServerError(res, error.message);
@@ -309,13 +312,13 @@ async function getProductHasCategoryAvailable(products) {
           name: product.category,
         });
         if (categoryOfProduct === null) {
-          console.log(product.category);
+          // console.log(product.category);
         }
         product.isAvailable = categoryOfProduct.isAvailable;
       })
     );
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 
   return products.filter((product) => product.isAvailable);
