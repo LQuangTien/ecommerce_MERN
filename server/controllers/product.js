@@ -103,15 +103,15 @@ exports.enable = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    const categoryOfProduct = await Category.findOne({
-      name: product.category,
-    });
+    // const categoryOfProduct = await Category.findOne({
+    //   name: product.category,
+    // });
 
-    if (
-      product.isAvailable === false ||
-      categoryOfProduct.isAvailable === false
-    )
-      return NotFound(res, "Product");
+    // if (
+    //   product.isAvailable === false ||
+    //   categoryOfProduct.isAvailable === false
+    // )
+    //   return NotFound(res, "Product");
     return Get(res, { product });
   } catch (error) {
     return ServerError(res, error.message);

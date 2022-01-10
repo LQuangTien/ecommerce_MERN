@@ -15,11 +15,13 @@ function Layout(props) {
       <Row>
         <Col md={2} className="sidebar">
           <ul>
-            <li>
-              <NavLink exact to="/">
-                <DashboardIcon /> Home
-              </NavLink>
-            </li>
+            {auth && auth.user.role === "admin" && (
+              <li>
+                <NavLink exact to="/">
+                  <DashboardIcon /> Home
+                </NavLink>
+              </li>
+            )}
             <li>
               <NavLink to="/categories">
                 <CategoryIcon />

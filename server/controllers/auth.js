@@ -18,7 +18,6 @@ const ONE_MiNUTE = ONE_SECCOND * 60;
 const ONE_HOUR = ONE_MiNUTE * 60;
 
 exports.signup = (req, res) => {
-  console.log(req.body);
   User.findOne({ email: req.body.email }).exec(async (error, user) => {
     if (error) return ServerError(res, error);
     if (user) return BadRequest(res, "User already registered");
@@ -30,7 +29,7 @@ exports.signup = (req, res) => {
         lastName,
         email,
         hash_password,
-        username: Math.random().toString(),
+        username: `${firstName} ${lastName}`,
       });
       newUser.save((error, user) => {
         //test bỏ cái này thử

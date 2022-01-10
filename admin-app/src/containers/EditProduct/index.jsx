@@ -33,6 +33,7 @@ function EditProduct(props) {
   const { product, isUpdating, isEnabling } = useSelector(
     (state) => state.products
   );
+  const auth = useSelector((state) => state.auth);
   const { register, control, handleSubmit, setValue, getValues, reset } =
     useForm();
 
@@ -111,9 +112,10 @@ function EditProduct(props) {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Label className="form__title d-block">Product name:</Form.Label>
           <Form.Control
-            className="form__input w-100"
+            className="form__input w-100 bg-white"
             {...register(`name`)}
             placeholder="Category name"
+            readOnly={auth && auth.user.role !== "admin"}
           />
           <Row>
             <Col lg={4}>
@@ -121,7 +123,7 @@ function EditProduct(props) {
                 Regular Price:
               </Form.Label>
               <Form.Control
-                className="form__input w-100"
+                className="form__input w-100 bg-white"
                 {...register(`regularPrice`)}
                 placeholder="0"
                 onChange={(e) => {
@@ -131,6 +133,7 @@ function EditProduct(props) {
                   );
                   setValue("sale", result.toString());
                 }}
+                readOnly={auth && auth.user.role !== "admin"}
               />
             </Col>
             <Col lg={4}>
@@ -138,7 +141,7 @@ function EditProduct(props) {
                 Sale Price:
               </Form.Label>
               <Form.Control
-                className="form__input w-100"
+                className="form__input w-100 bg-white"
                 {...register(`salePrice`)}
                 placeholder="0"
                 onChange={(e) => {
@@ -148,6 +151,7 @@ function EditProduct(props) {
                   );
                   setValue("sale", result.toString());
                 }}
+                readOnly={auth && auth.user.role !== "admin"}
               />
             </Col>
             <Col lg={4}>
@@ -165,16 +169,18 @@ function EditProduct(props) {
           </Row>
           <Form.Label className="form__title d-block">Quantity:</Form.Label>
           <Form.Control
-            className="form__input w-100"
+            className="form__input w-100 bg-white"
             {...register(`quantity`)}
             placeholder="0"
+            readOnly={auth && auth.user.role !== "admin"}
           />
           <Form.Label className="form__title d-block">Description:</Form.Label>
           <Form.Control
             as="textarea"
-            className="form__input w-100"
+            className="form__input w-100 bg-white"
             {...register(`description`)}
             placeholder="Description"
+            readOnly={auth && auth.user.role !== "admin"}
           />
           {category &&
             category.filterField.map((field, index) => (
@@ -190,11 +196,17 @@ function EditProduct(props) {
                   placeholder="Description"
                 />
                 <Form.Control
+                  className="bg-white"
                   as="select"
                   {...register(`categoryInfo.${index}.value`)}
+                  readOnly={auth && auth.user.role !== "admin"}
                 >
                   {field.value.map((value) => (
-                    <option value={value} key={value}>
+                    <option
+                      value={value}
+                      key={value}
+                      disabled={auth && auth.user.role !== "admin"}
+                    >
                       {value}
                     </option>
                   ))}
@@ -216,24 +228,27 @@ function EditProduct(props) {
                   placeholder="Description"
                 />
                 <Form.Control
-                  className="form__input w-100"
+                  className="form__input w-100 bg-white"
                   {...register(
                     `categoryInfo.${category.filterField.length + index}.value`
                   )}
                   placeholder="Product infomation"
+                  readOnly={auth && auth.user.role !== "admin"}
                 />
               </div>
             ))}
           <>
             <Form.Label className="form__title">Product's pictures:</Form.Label>
-            <Button
-              variant="outline-primary"
-              onClick={() => {
-                setReplace((prev) => !prev);
-              }}
-            >
-              Toggle replace
-            </Button>
+            {auth && auth.user.role === "admin" && (
+              <Button
+                variant="outline-primary"
+                onClick={() => {
+                  setReplace((prev) => !prev);
+                }}
+              >
+                Toggle replace
+              </Button>
+            )}
             <div className="product__images">
               <div className="product__images-container">
                 {Object.keys(product).length > 0 &&
@@ -314,59 +329,69 @@ function EditProduct(props) {
             </ImageUploading>
           )}
           <div className="mt-2">
-            <Button
-              type="submit"
-              variant="success"
-              className="mr-2"
-              disabled={isUpdating || isEnabling}
-            >
-              {isUpdating && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              )}
-              Submit
-            </Button>
+            {auth && auth.user.role === "admin" && (
+              <Button
+                type="submit"
+                variant="success"
+                className="mr-2"
+                disabled={isUpdating || isEnabling}
+              >
+                {isUpdating && (
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                )}
+                Submit
+              </Button>
+            )}
             {product && product.isAvailable ? (
-              <Button
-                variant="danger"
-                className="mr-2"
-                onClick={onDelete}
-                disabled={isUpdating || isEnabling}
-              >
-                {isEnabling && (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
+              <>
+                {auth && auth.user.role === "admin" && (
+                  <Button
+                    variant="danger"
+                    className="mr-2"
+                    onClick={onDelete}
+                    disabled={isUpdating || isEnabling}
+                  >
+                    {isEnabling && (
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Delete product
+                  </Button>
                 )}
-                Delete product
-              </Button>
+              </>
             ) : (
-              <Button
-                variant="info"
-                className="mr-2"
-                onClick={onEnable}
-                disabled={isUpdating || isEnabling}
-              >
-                {isEnabling && (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
+              <>
+                {auth && auth.user.role === "admin" && (
+                  <Button
+                    variant="info"
+                    className="mr-2"
+                    onClick={onEnable}
+                    disabled={isUpdating || isEnabling}
+                  >
+                    {isEnabling && (
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Enable product
+                  </Button>
                 )}
-                Enable product
-              </Button>
+              </>
             )}
             <Button
               variant="secondary"

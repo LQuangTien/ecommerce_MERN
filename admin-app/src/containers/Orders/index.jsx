@@ -6,11 +6,18 @@ import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { capitalizeFirstLetter, formatThousand } from "../../helpers/util";
+import moment from "moment";
+
 function Orders(props) {
   const columns = [
     {
       name: "Date",
-      options: { sortDirection: "asc" },
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) =>
+          moment(new Date(value)).format("DD/MM/YYYY"),
+      },
     },
     {
       name: "id",
@@ -23,7 +30,14 @@ function Orders(props) {
     "Type",
     "Client",
     "Phone",
-    "Total",
+    {
+      name: "Total",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) => `$${formatThousand(value)}`,
+      },
+    },
     "Process",
   ];
   const history = useHistory();
@@ -60,12 +74,12 @@ function Orders(props) {
   const data = orders.map((order) => {
     const orderReversed = [...order.process].reverse();
     return [
-      new Date(order.createdAt).toLocaleDateString(),
+      moment(order.createdAt).toDate().getTime(),
       order._id,
       order.paymentOption.toUpperCase(),
       order.address.name,
       order.address.phone,
-      `$${formatThousand(order.totalAmount)}`,
+      Number(order.totalAmount),
       capitalizeFirstLetter(
         orderReversed.find((x) => x.isCompleted === true).type
       ),

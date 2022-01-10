@@ -39,7 +39,7 @@ function OrderPage() {
             </tr>
           </thead>
           <tbody className="history-table__body">
-            {orders.map((order) => (
+            {[...orders].reverse().map((order) => (
               <tr className="history-table__body-row">
                 <td>{order._id}</td>
                 <td>{new Date(order.createdAt).toLocaleString()}</td>

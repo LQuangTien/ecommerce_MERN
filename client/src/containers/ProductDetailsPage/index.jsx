@@ -50,6 +50,21 @@ const ProductDetailsPage = (props) => {
     const img = product.productDetails.productPictures[0];
     dispatch(addToCart({ _id, name, price, img, stock: quantity }));
   };
+
+  const hasSamebrand = () => {
+    const items = [...products].filter((p) => {
+      if (p.name === product.productDetails.name) return false;
+      const index = p.categoryInfo.findIndex((c) => {
+        if (c.name.toLowerCase() === "brand") {
+          return c.value.toLowerCase() === brand.toLowerCase();
+        }
+        return false;
+      });
+      if (index > -1) return true;
+      return false;
+    });
+    return items.length > 0;
+  };
   return (
     <>
       <Banner slug={product.productDetails.category} />
@@ -114,9 +129,11 @@ const ProductDetailsPage = (props) => {
                   <p className="system__title">
                     <strong>Description</strong>
                   </p>
-                  <p className="detail__description">
-                    {product.productDetails.description}
-                  </p>
+                  <ul className="detail__description">
+                    {product.productDetails.description.split("\n").map((a) => (
+                      <li>{a}</li>
+                    ))}
+                  </ul>
                 </div>
                 <p className="system__title">
                   <strong>System:</strong>
@@ -134,71 +151,75 @@ const ProductDetailsPage = (props) => {
               </div>
             </div>
           </div>
-          <div className="row">
-            <p className="col lg-12 product__additional-products-tittle">
-              From same brand
-            </p>
-            {products &&
-              product &&
-              [...products]
-                .filter((p) => {
-                  if (p.name === product.productDetails.name) return false;
-                  const index = p.categoryInfo.findIndex((c) => {
-                    if (c.name.toLowerCase() === "brand") {
-                      return c.value.toLowerCase() === brand.toLowerCase();
-                    }
+          {hasSamebrand() && (
+            <div className="row">
+              <p className="col lg-12 product__additional-products-tittle">
+                From same brand
+              </p>
+              {products &&
+                product &&
+                [...products]
+                  .filter((p) => {
+                    if (p.name === product.productDetails.name) return false;
+                    const index = p.categoryInfo.findIndex((c) => {
+                      if (c.name.toLowerCase() === "brand") {
+                        return c.value.toLowerCase() === brand.toLowerCase();
+                      }
+                      return false;
+                    });
+                    if (index > -1) return true;
                     return false;
-                  });
-                  if (index > -1) return true;
-                  return false;
-                })
-                .sort(
-                  (p1, p2) => new Date(p2.createdAt) - new Date(p1.createdAt)
-                )
-                .slice(0, 8)
-                .map((product, index) => (
-                  <div className="product__card col lg-3" key={product._id}>
-                    <Link to={"/product/" + product._id}>
-                      <div className="product__badge">
-                        {Number(product.sale) > 5 && (
-                          <span className="product__badge-item product__badge-item--sale">
-                            SALE {product.sale}%
-                          </span>
-                        )}
-                        {isNew(product.createdAt) && (
-                          <span className="product__badge-item product__badge-item--new">
-                            NEW
-                          </span>
-                        )}
-                      </div>
-                      <div className="product__image">
-                        <img
-                          src={generatePictureUrl(product.productPictures[0])}
-                          alt=""
-                        />
-                      </div>
-                      <div className="product__info">
-                        <div className="product__info-name">{product.name}</div>
-                        <div className="product__info-price">
-                          <span className="product__info-price--current">
-                            ${formatThousand(product.price)}
-                          </span>
-                          <span className="product__info-price--old">
-                            ${formatThousand(12000)}
-                          </span>
+                  })
+                  .sort(
+                    (p1, p2) => new Date(p2.createdAt) - new Date(p1.createdAt)
+                  )
+                  .slice(0, 8)
+                  .map((product, index) => (
+                    <div className="product__card col lg-3" key={product._id}>
+                      <Link to={"/product/" + product._id}>
+                        <div className="product__badge">
+                          {Number(product.sale) > 5 && (
+                            <span className="product__badge-item product__badge-item--sale">
+                              SALE {product.sale}%
+                            </span>
+                          )}
+                          {isNew(product.createdAt) && (
+                            <span className="product__badge-item product__badge-item--new">
+                              NEW
+                            </span>
+                          )}
                         </div>
-                        {/* <div className="product__rating">
+                        <div className="product__image">
+                          <img
+                            src={generatePictureUrl(product.productPictures[0])}
+                            alt=""
+                          />
+                        </div>
+                        <div className="product__info">
+                          <div className="product__info-name">
+                            {product.name}
+                          </div>
+                          <div className="product__info-price">
+                            <span className="product__info-price--current">
+                              ${formatThousand(product.price)}
+                            </span>
+                            <span className="product__info-price--old">
+                              ${formatThousand(12000)}
+                            </span>
+                          </div>
+                          {/* <div className="product__rating">
                           <IoStar />
                           <IoStar />
                           <IoStar />
                           <IoStar />
                           <IoStar />
                         </div> */}
-                      </div>
-                    </Link>
-                  </div>
-                ))}
-          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+            </div>
+          )}
           <div className="row">
             <p className="col lg-12 product__additional-products-tittle">
               close to the your viewed product's price

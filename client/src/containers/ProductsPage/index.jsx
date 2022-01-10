@@ -56,8 +56,8 @@ function ProductPage(props) {
 
   const { getTrackProps, segments, handles } = useRanger({
     min: 0,
-    max: 100000,
-    stepSize: 5000,
+    max: 5000,
+    stepSize: 100,
     values: price,
     onChange: (values) => {
       setPrices(values);
@@ -172,8 +172,8 @@ function ProductPage(props) {
             updateQueryString(newQuery);
           }}
           min={INIT_PRICE_STATE[0]}
-          max={100000}
-          step="500"
+          max={5000}
+          step="100"
           type="number"
         />
         <input
@@ -186,8 +186,8 @@ function ProductPage(props) {
             updateQueryString(newQuery);
           }}
           min={INIT_PRICE_STATE[0]}
-          max={100000}
-          step="500"
+          max={5000}
+          step="100"
           type="number"
         />
       </div>

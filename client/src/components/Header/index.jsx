@@ -49,16 +49,17 @@ const Header = (props) => {
     if (auth.authenticate) {
       setSigninModal(false);
       setSignupModal(false);
+      resetForm();
     }
   }, [auth.authenticate, dispatch]);
   const handleLogin = () => {
     dispatch(login({ email, password }));
   };
   const handleSignUp = () => {
-    if (password !== confirmPassword) {
-      setError("Password not match");
-      return;
-    }
+    // if (password !== confirmPassword) {
+    //   setError("Password not match");
+    //   return;
+    // }
     dispatch(signup({ email, password, firstName, lastName, confirmPassword }));
   };
   const handleForgotPassword = () => {
@@ -73,6 +74,7 @@ const Header = (props) => {
     dispatch(changePassword({ email: authState.user.email, password })).then(
       () => {
         setChangePaswordModal(false);
+        resetForm();
       }
     );
   };
@@ -506,8 +508,8 @@ const Header = (props) => {
         <div className="header__bottom">
           <div className="grid wide menuHeader">
             <div className="row menuHeader">
-              <div className="col lg-o-3 lg-9">
-                <ul>
+              <div className="col lg-12 ">
+                <ul style={{ justifyContent: "center" }}>
                   {categoryState.categories.length > 0 && renderCategories()}
                 </ul>
               </div>

@@ -29,6 +29,8 @@ exports.requireSignin = (req, res, next) => {
 };
 
 exports.isAdmin = (req, res, next) => {
-  if (req.user.role !== "admin") return Unauthorized(res);
+  console.log(req.user.role);
+  if (req.user.role !== "admin" && req.user.role !== "staff")
+    return Unauthorized(res);
   return next();
 };

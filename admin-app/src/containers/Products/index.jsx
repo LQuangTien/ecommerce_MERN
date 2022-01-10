@@ -8,6 +8,7 @@ import "./style.css";
 function Products(props) {
   const history = useHistory();
   const { products } = useSelector((state) => state.products);
+  const auth = useSelector((state) => state.auth);
   const columns = [
     {
       name: "id",
@@ -28,7 +29,7 @@ function Products(props) {
       name: "Available",
       options: {
         customBodyRender: (value, tableMeta, updateValue) =>
-          value === true ? (
+          value === "Yes" ? (
             <IoCheckmarkCircleSharp class="available-icon available-icon--check" />
           ) : (
             <IoCloseCircleOutline class="available-icon available-icon--close" />
@@ -50,12 +51,12 @@ function Products(props) {
     product._id,
     product.name,
     product.category,
-    product.regularPrice,
-    product.salePrice,
-    product.sale,
-    product.quantity,
-    product.quantitySold,
-    product.isAvailable,
+    Number(product.regularPrice),
+    Number(product.salePrice),
+    Number(product.sale),
+    Number(product.quantity),
+    Number(product.quantitySold),
+    product.isAvailable ? "Yes" : "No",
   ]);
   const renderProductsTable = () =>
     data && (
@@ -72,14 +73,16 @@ function Products(props) {
         <Row>
           <Col md={12}>
             <div className="d-flex justify-content-between">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  history.push("/product/add");
-                }}
-              >
-                Add
-              </Button>
+              {auth && auth.user.role === "admin" && (
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    history.push("/product/add");
+                  }}
+                >
+                  Add
+                </Button>
+              )}
             </div>
           </Col>
         </Row>

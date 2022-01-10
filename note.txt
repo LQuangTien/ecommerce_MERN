@@ -1,11 +1,26 @@
-Client
- + reset form after signin, signup 
- + Switch between signin and signup => Bỏ, tốn tgian
- + margin left right when mobile => Bỏ, tốn tgian
- + tìm kiếm trên thanh search
+Đăng ký
+ + Trùng email
+ + Sai password và confirm password
+Đăng nhập
+ + Sai email
+ + Sai mật khẩu
+Quên mật khẩu
+Thay đổi mật khẩu
+Trang chủ
+Tìm kiếm sản phẩm
+Sản phẩm theo thể loại
+Lọc
+Chi tiết sản phẩm
+Thêm giỏ hàng
+Thanh toán
+Kiểm tra lịch sử hóa đơn
+Chi tiết hóa đơn
 
-Server 
- + Tìm kiếm các sản phẩm với tên gần giống như input đưa vô 
- + Tìm kiếm chi tiết 1 hóa đơn, chỉ có user của hóa đơn đó mới xem được hóa đơn đó. 
-    User khác không đươc xem.
-    BE kiểm tra user có sỡ hữu hóa đơn đó không => nếu không phải thì return Unauthorize
+====
+Đăng nhập staff
+Cập nhập đơn hàng
+Đăng nhập admin
+Tạo category
+Thay đổi category
+Tạo sản phẩm
+Thay đổi sản phẩm

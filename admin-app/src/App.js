@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { getInitialData, isUserLoggedIn } from "./actions";
 import "./App.css";
 import PrivateRoute from "./components/HOC/PrivateRoute";
@@ -32,20 +32,32 @@ function App() {
     <div className="App">
       <Layout>
         <Switch>
-          <PrivateRoute exact path="/" component={Home} />
+          {auth && auth.user.role === "admin" && (
+            <PrivateRoute exact path="/" component={Home} />
+          )}
           <PrivateRoute exact path="/products" component={Products} />
           <PrivateRoute exact path="/orders" component={Orders} />
           <PrivateRoute exact path="/orders/:id" component={OrderDetail} />
-          <PrivateRoute exact path="/product/add" component={AddProduct} />
+          {auth && auth.user.role === "admin" && (
+            <PrivateRoute exact path="/product/add" component={AddProduct} />
+          )}
           <PrivateRoute exact path="/categories" component={Category} />
-          <PrivateRoute exact path="/category/add" component={AddCategory} />
+          {auth && auth.user.role === "admin" && (
+            <PrivateRoute exact path="/category/add" component={AddCategory} />
+          )}
+
           <PrivateRoute
             exact
             path="/category/edit/:id"
             component={EditCategory}
           />
+
           <PrivateRoute exact path="/product/:id" component={EditProduct} />
-          <PrivateRoute path="/signup" component={Signup} />
+
+          {auth && auth.user.role === "admin" && (
+            <PrivateRoute path="/signup" component={Signup} />
+          )}
+          {auth && auth.user.role === "staff" && <Redirect to="/products" />}
           <Route path="/signin" component={Signin} />
         </Switch>
       </Layout>

@@ -14,11 +14,13 @@ function Header() {
   const wasLoggedIn = () => {
     return (
       <Nav>
-        <li className="nav-item">
-          <NavLink to="/signup" className="nav-link">
-            Sign up
-          </NavLink>
-        </li>
+        {auth && auth.user.role === "admin" && (
+          <li className="nav-item">
+            <NavLink to="/signup" className="nav-link">
+              Sign up
+            </NavLink>
+          </li>
+        )}
         <li className="nav-item">
           <span role="button" className="nav-link" onClick={handleSignout}>
             Sign out

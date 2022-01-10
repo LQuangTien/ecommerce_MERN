@@ -21,7 +21,11 @@ function Signup(props) {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      role: "staff",
+    },
+  });
 
   const handleSignup = (data) => {
     if (data.password !== data.confirmPassword) {
@@ -109,6 +113,20 @@ function Signup(props) {
         {error !== "" && !errors.confirmPassword && (
           <span className="errorMessage">{error}</span>
         )}
+        <Form.Check
+          type="radio"
+          name="role"
+          {...register("role")}
+          value="admin"
+          label="Admin"
+        />
+        <Form.Check
+          type="radio"
+          name="role"
+          {...register("role")}
+          value="staff"
+          label="Staff"
+        />
         <br />
         <Button variant="primary" type="submit">
           Submit

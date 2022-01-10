@@ -6,6 +6,7 @@ import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { IoCheckmarkCircleSharp, IoCloseCircleOutline } from "react-icons/io5";
+import moment from "moment";
 import "./style.css";
 function Category(props) {
   const columns = [
@@ -18,13 +19,25 @@ function Category(props) {
       },
     },
     "Name",
-    "Created At",
-    "Updated At",
+    {
+      name: "Created At",
+      options: {
+        customBodyRender: (value) =>
+          moment(new Date(value)).format("DD/MM/YYYY"),
+      },
+    },
+    {
+      name: "Updated At",
+      options: {
+        customBodyRender: (value) =>
+          moment(new Date(value)).format("DD/MM/YYYY"),
+      },
+    },
     {
       name: "Available",
       options: {
         customBodyRender: (value, tableMeta, updateValue) =>
-          value === true ? (
+          value === "Yes" ? (
             <IoCheckmarkCircleSharp class="available-icon available-icon--check" />
           ) : (
             <IoCloseCircleOutline class="available-icon available-icon--close" />
@@ -34,6 +47,7 @@ function Category(props) {
   ];
   const history = useHistory();
   const { categories } = useSelector((state) => state.categories);
+  const auth = useSelector((state) => state.auth);
   const getMuiTheme = () =>
     createMuiTheme({
       overrides: {
@@ -66,9 +80,9 @@ function Category(props) {
   const data = categories.map((category) => [
     category._id,
     category.name,
-    new Date(category.createdAt).toLocaleDateString(),
-    new Date(category.updatedAt).toLocaleDateString(),
-    category.isAvailable,
+    moment(category.createdAt).toDate().getTime(),
+    moment(category.updatedAt).toDate().getTime(),
+    category.isAvailable ? "Yes" : "No",
   ]);
   const renderProductsTable = () =>
     data && (
@@ -90,9 +104,11 @@ function Category(props) {
         <Row>
           <Col md={12}>
             <div className="d-flex justify-content-between">
-              <Button variant="primary" onClick={nagivateToAddPage}>
-                Add
-              </Button>
+              {auth && auth.user.role === "admin" && (
+                <Button variant="primary" onClick={nagivateToAddPage}>
+                  Add
+                </Button>
+              )}
             </div>
           </Col>
         </Row>

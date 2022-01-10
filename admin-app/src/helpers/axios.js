@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(
     if (status === 401 || status === 403) {
       axios.defaults.headers.common["Authorization"] = "";
       store.dispatch(signout());
-      window.location.href = "/";
+      // window.location.href = "/";
     }
     return Promise.reject(error);
   }

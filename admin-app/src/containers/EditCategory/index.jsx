@@ -26,6 +26,7 @@ function EditCategory(props) {
   const { category, isUpdating, isDeleting, isEnabling } = useSelector(
     (state) => state.categories
   );
+  const auth = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(getCategory(id));
   }, [dispatch, id]);
@@ -110,6 +111,7 @@ function EditCategory(props) {
                 required: "This is required.",
               })}
               placeholder="Filter field"
+              readOnly={auth && auth.user.role !== "admin"}
             />
           </div>
           <div className="d-inline-block w-25 mr-2">
@@ -126,18 +128,25 @@ function EditCategory(props) {
                 required: "This is required.",
               })}
               placeholder="Filter value "
+              readOnly={auth && auth.user.role !== "admin"}
             />
           </div>
-          <Button
-            variant="outline-danger"
-            className="form__input--delete"
-            type="button"
-            onClick={() => {
-              filterRemove(index);
-            }}
-          >
-            X
-          </Button>
+          {filterField.length > 1 && (
+            <>
+              {auth && auth.user.role === "admin" && (
+                <Button
+                  variant="outline-danger"
+                  className="form__input--delete"
+                  type="button"
+                  onClick={() => {
+                    filterRemove(index);
+                  }}
+                >
+                  X
+                </Button>
+              )}
+            </>
+          )}
         </li>
       );
     });
@@ -152,6 +161,7 @@ function EditCategory(props) {
             className="form__input "
             {...register(`name`, { required: "This is required." })}
             placeholder="Category name"
+            readOnly={auth && auth.user.role !== "admin"}
           />
           <ErrorMessage
             errors={errors}
@@ -162,15 +172,17 @@ function EditCategory(props) {
           />
           <div className="mt-3">
             <p className="form__title">Additional infomation for product</p>
-            <Button
-              className="form__button"
-              type="button"
-              onClick={() => {
-                normalAppend({ name: "" });
-              }}
-            >
-              +
-            </Button>
+            {auth && auth.user.role === "admin" && (
+              <Button
+                className="form__button"
+                type="button"
+                onClick={() => {
+                  normalAppend({ name: "" });
+                }}
+              >
+                +
+              </Button>
+            )}
             <ul className="form__list">
               {normalField.map((item, index) => {
                 return (
@@ -188,15 +200,22 @@ function EditCategory(props) {
                         required: "This is required.",
                       })}
                       placeholder="Product info name"
+                      readOnly={auth && auth.user.role !== "admin"}
                     />
-                    <Button
-                      variant="outline-danger"
-                      className="form__input--delete"
-                      type="button"
-                      onClick={() => normalRemove(index)}
-                    >
-                      X
-                    </Button>
+                    {normalField.length > 1 && (
+                      <>
+                        {auth && auth.user.role === "admin" && (
+                          <Button
+                            variant="outline-danger"
+                            className="form__input--delete"
+                            type="button"
+                            onClick={() => normalRemove(index)}
+                          >
+                            X
+                          </Button>
+                        )}
+                      </>
+                    )}
                   </li>
                 );
               })}
@@ -204,70 +223,82 @@ function EditCategory(props) {
           </div>
           <div className="mt-3">
             <p className="form__title">Filterable Infomation </p>
-            <Button
-              className="form__button"
-              type="button"
-              onClick={() => {
-                filterAppend({ name: "", value: "", type: "" });
-              }}
-            >
-              +
-            </Button>
+            {auth && auth.user.role === "admin" && (
+              <Button
+                className="form__button"
+                type="button"
+                onClick={() => {
+                  filterAppend({ name: "", value: "", type: "" });
+                }}
+              >
+                +
+              </Button>
+            )}
             <ul className="form__list">{renderFilterFields()}</ul>
           </div>
-          <Button
-            variant="success"
-            className="mt-3 mr-2"
-            type="submit"
-            disabled={isUpdating || isDeleting}
-          >
-            {isUpdating && (
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-            )}
-            Submit
-          </Button>
+          {auth && auth.user.role === "admin" && (
+            <Button
+              variant="success"
+              className="mt-3 mr-2"
+              type="submit"
+              disabled={isUpdating || isDeleting}
+            >
+              {isUpdating && (
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              Submit
+            </Button>
+          )}
           {category && category.isAvailable ? (
-            <Button
-              variant="danger"
-              className="mt-3 mr-2"
-              onClick={onDelete}
-              disabled={isDeleting || isEnabling}
-            >
-              {isDeleting && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
+            <>
+              {auth && auth.user.role === "admin" && (
+                <Button
+                  variant="danger"
+                  className="mt-3 mr-2"
+                  onClick={onDelete}
+                  disabled={isDeleting || isEnabling}
+                >
+                  {isDeleting && (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Delete Category
+                </Button>
               )}
-              Delete Category
-            </Button>
+            </>
           ) : (
-            <Button
-              variant="info"
-              className="mt-3 mr-2"
-              onClick={onEnable}
-              disabled={isDeleting || isEnabling}
-            >
-              {isEnabling && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
+            <>
+              {auth && auth.user.role === "admin" && (
+                <Button
+                  variant="info"
+                  className="mt-3 mr-2"
+                  onClick={onEnable}
+                  disabled={isDeleting || isEnabling}
+                >
+                  {isEnabling && (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Enable Category
+                </Button>
               )}
-              Enable Category
-            </Button>
+            </>
           )}
           <Button
             variant="secondary"

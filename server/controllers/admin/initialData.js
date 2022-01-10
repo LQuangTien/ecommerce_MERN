@@ -38,6 +38,7 @@ exports.initialData = async (req, res) => {
         Category.find(),
         Product.find(),
         Order.find({})
+          .sort({ createdAt: -1 })
           .populate("items.productId", "name productPictures")
           .lean(),
         totalOrderPrice7DayLatest(),

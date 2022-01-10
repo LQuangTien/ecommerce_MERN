@@ -98,14 +98,16 @@ function AddCategory(props) {
                       })}
                       placeholder="Additional infomation for product"
                     />
-                    <Button
-                      variant="outline-danger"
-                      className="form__input--delete"
-                      type="button"
-                      onClick={() => normalRemove(index)}
-                    >
-                      X
-                    </Button>
+                    {normalField.length > 1 && (
+                      <Button
+                        variant="outline-danger"
+                        className="form__input--delete"
+                        type="button"
+                        onClick={() => normalRemove(index)}
+                      >
+                        X
+                      </Button>
+                    )}
                     <ErrorMessage
                       errors={errors}
                       name={`normalField.${index}.name`}
@@ -165,14 +167,16 @@ function AddCategory(props) {
                         )}
                       />
                     </div>
-                    <Button
-                      variant="outline-danger"
-                      className="form__input--delete"
-                      type="button"
-                      onClick={() => filterRemove(index)}
-                    >
-                      X
-                    </Button>
+                    {filterField.length > 1 && (
+                      <Button
+                        variant="outline-danger"
+                        className="form__input--delete"
+                        type="button"
+                        onClick={() => filterRemove(index)}
+                      >
+                        X
+                      </Button>
+                    )}
                   </li>
                 );
               })}

@@ -1,3 +1,4 @@
+import { getInitialData } from ".";
 import axios from "../helpers/axios";
 import { categoryConstants } from "./constants";
 export const getCategory = (id) => {
@@ -48,7 +49,7 @@ export const addCategory = (form) => {
         type: categoryConstants.ADD_CATEGORY_SUCCESS,
         payload: { category },
       });
-      dispatch(getAllCategory());
+      dispatch(getInitialData());
     } catch (error) {
       dispatch({
         type: categoryConstants.ADD_CATEGORY_FAILURE,
@@ -63,7 +64,7 @@ export const editCategory = (form) => {
     const res = await axios.put(`category/${form.id}`, form);
     if (res.status === 200) {
       dispatch({ type: categoryConstants.UPDATE_CATEGORY_SUCCESS });
-      dispatch(getAllCategory());
+      dispatch(getInitialData());
     } else {
       dispatch({
         type: categoryConstants.UPDATE_CATEGORY_FAILURE,
@@ -78,7 +79,7 @@ export const deleteCategory = (id) => {
     try {
       const res = await axios.delete(`category/${id}`);
       dispatch({ type: categoryConstants.DELETE_CATEGORY_SUCCESS });
-      dispatch(getAllCategory());
+      dispatch(getInitialData());
     } catch (error) {
       dispatch({
         type: categoryConstants.DELETE_CATEGORY_FAILURE,
@@ -96,6 +97,7 @@ export const enableCategory = (id) => {
         type: categoryConstants.ENABLE_CATEGORY_SUCCESS,
         payload: { id },
       });
+      dispatch(getInitialData());
     } catch (error) {
       dispatch({
         type: categoryConstants.ENABLE_CATEGORY_FAILURE,

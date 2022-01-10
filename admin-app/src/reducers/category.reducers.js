@@ -165,15 +165,6 @@ const categoryReducer = (state = initState, action) => {
           ...state.category,
           isAvailable: true,
         },
-        categories: (() => {
-          const index = state.categories.findIndex(
-            (product) => product._id.toString() === action.payload.id.toString()
-          );
-          console.log(index);
-          const categories = [...state.categories];
-          categories[index].isAvailable = true;
-          return [...categories];
-        })(),
         isEnabling: false,
       };
       break;
