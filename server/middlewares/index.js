@@ -29,7 +29,10 @@ exports.requireSignin = (req, res, next) => {
 };
 
 exports.readUserInfo = (req, res, next) => {
+  if (!req.headers.authorization) return next();
+
   const token = req.headers.authorization;
+
   const user = jwt.verify(token, process.env.JWT_SECRET);
 
   if (user.exp > Math.floor(Date.now())) req.user = user;
