@@ -7,7 +7,7 @@ import { generatePictureUrl } from "../../urlConfig";
 import formatThousand from "../../utils/formatThousand";
 import "./style.css";
 
-function OrderDetailPage(props) {
+function aPage(props) {
   const dispatch = useDispatch();
   const { order } = useSelector((state) => state.user);
   const { _id } = useParams();

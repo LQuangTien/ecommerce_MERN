@@ -301,6 +301,8 @@ const Header = (props) => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
             />
           </div>
           <div className="col sm-12 md-12 lg-12 mt-16 ">

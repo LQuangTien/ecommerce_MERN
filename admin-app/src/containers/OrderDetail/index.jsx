@@ -84,7 +84,13 @@ function OrderDetail(props) {
                   );
                 })}
                 <Button
-                  disabled={activeStep === 0 || activeStep + 1 === steps.length}
+                  disabled={
+                    activeStep === 0 ||
+                    activeStep + 1 === steps.length ||
+                    (activeStep === 1 &&
+                      order.paymentOption &&
+                      order.paymentOption.toLowerCase() === "zalo")
+                  }
                   onClick={handleBack}
                   className="process-back"
                 >
@@ -93,7 +99,7 @@ function OrderDetail(props) {
                 <Button
                   disabled={
                     activeStep + 1 === steps.length ||
-                    ((activeStep === 0 || activeStep === 1) &&
+                    (activeStep === 0 &&
                       order.paymentOption &&
                       order.paymentOption.toLowerCase() === "zalo")
                   }
