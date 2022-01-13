@@ -14,7 +14,7 @@ exports.update = async (req, res) => {
   ).populate("items.productId", "name productPictures");
 
   const orderWithAddress = await populateAddress([order]);
-  if (error) return res.status(400).json({ error });
+
   if (order) return res.status(201).json({ order: orderWithAddress });
 };
 

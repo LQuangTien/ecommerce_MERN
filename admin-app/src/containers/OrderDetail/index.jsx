@@ -46,18 +46,14 @@ function OrderDetail(props) {
     cloneSteps[activeStep + 1].isCompleted = true;
     cloneSteps[activeStep + 1].date = new Date().toISOString();
     setSteps([...cloneSteps]);
-    dispatch(updateOrder({ _id: id, process: cloneSteps })).then(() => {
-      dispatch(getInitialData());
-    });
+    dispatch(updateOrder({ _id: id, process: cloneSteps }));
   };
   const handleBack = () => {
     const cloneSteps = [...steps];
     cloneSteps[activeStep].isCompleted = false;
     delete cloneSteps[activeStep].date;
     setSteps([...cloneSteps]);
-    dispatch(updateOrder({ _id: id, process: cloneSteps })).then(() => {
-      dispatch(getInitialData());
-    });
+    dispatch(updateOrder({ _id: id, process: cloneSteps }));
   };
 
   return (

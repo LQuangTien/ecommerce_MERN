@@ -1,5 +1,6 @@
 import axios from "../helpers/axios";
 import { orderConstants } from "./constants";
+import { getInitialData } from ".";
 
 export const updateOrder = (updatedProcess) => {
   return async (dispatch) => {
@@ -10,6 +11,7 @@ export const updateOrder = (updatedProcess) => {
         type: orderConstants.UPDATE_ORDER_SUCCESS,
         payload: { order: res.data.order },
       });
+      dispatch(getInitialData());
     } else {
       dispatch({
         type: orderConstants.UPDATE_ORDER_FAILURE,
