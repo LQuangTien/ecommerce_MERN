@@ -31,7 +31,6 @@ function SearchPage(props) {
   const search = useLocation().search;
   const { q, page, orderBy } = queryString.parse(search);
   const { products, totalPage } = useSelector((state) => state.products);
-  console.log(orderBy);
   /** Use State */
   const [order, setOrder] = useState(orderBy || ORDER_OPTIONS[0].value);
 

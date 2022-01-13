@@ -84,12 +84,14 @@ const authReducer = (state = initState, action) => {
       state = {
         ...state,
         isForgotPassword: true,
+        forgotPasswordError: null,
       };
       break;
     case authConstants.FORGOT_PASSWORD_SUCCESS:
       state = {
         ...state,
         isForgotPassword: false,
+        forgotPasswordError: null,
       };
       break;
     case authConstants.FORGOT_PASSWORD_FAILURE:

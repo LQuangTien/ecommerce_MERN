@@ -35,7 +35,6 @@ function ProductPage(props) {
     queryString.parse(search);
   const categoryState = useSelector((state) => state.categories);
   const { products, totalPage } = useSelector((state) => state.products);
-
   /** Use State */
   const [query, setQuery] = useState(() => {
     const paramFromURL = { ...otherSearchParam };
@@ -66,6 +65,20 @@ function ProductPage(props) {
       updateQueryString(newQuery);
     },
   });
+  useEffect(() => {
+    if (categoryState && categoryState.categories.length === 0) {
+      return;
+    }
+    if (categoryState && categoryState.categories.length > 0) {
+      const index = categoryState.categories.findIndex(
+        (c) => c.name === category
+      );
+      if (index < 0) {
+        history.push("/");
+        return;
+      }
+    }
+  }, [category, categoryState, history]);
   /** End Use State */
   useEffect(() => {
     setPrices(INIT_PRICE_STATE);
@@ -75,7 +88,7 @@ function ProductPage(props) {
   }, [category, history]);
   useEffect(() => {
     dispatch(getByQuery({ ...searchParam, category }));
-  }, [dispatch, searchParam, category]);
+  }, [category, dispatch, searchParam]);
 
   /** Function */
   const handlePageClick = (activePage) => {
@@ -204,6 +217,7 @@ function ProductPage(props) {
       const currentCategoryFromURL = categoryState.categories.find(
         (cate) => cate.name === category
       );
+      if (!currentCategoryFromURL) return;
       return currentCategoryFromURL.filterField.map((field) => {
         const hasField = !!Object.keys(query).find((key) => key === field.name);
         return (

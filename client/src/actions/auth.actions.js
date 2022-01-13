@@ -58,8 +58,6 @@ export const signup = (data) => {
     try {
       dispatch({ type: authConstants.SIGNUP_REQUEST });
       const res = await axios.post("/signup", data);
-      console.log(res);
-
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -85,9 +83,10 @@ export const forgotPassword = (data) => {
         type: authConstants.FORGOT_PASSWORD_SUCCESS,
       });
     } catch (error) {
+      console.log(error.response.data.error.error);
       dispatch({
         type: authConstants.FORGOT_PASSWORD_FAILURE,
-        payload: { error: error.response.data.error },
+        payload: { error: error.response.data.error.error },
       });
     }
   };

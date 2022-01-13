@@ -10,6 +10,7 @@ const Input = (props, ...rest) => {
       onChange={props.onChange}
       placeholder={props.placeholder}
       onKeyDown={props.onKeyDown}
+      {...rest}
     />
   );
 };
