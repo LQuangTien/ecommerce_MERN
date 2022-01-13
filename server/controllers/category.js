@@ -210,7 +210,7 @@ const updateProductBaseOnCategoryUpdate = async (oldCategory, newCategory) => {
 
         prod.category = newCategory.name;
         // console.log("category",products[0].categoryInfo);
-        prod.save();//(err) => console.log("err",err)
+        prod.save(); //(err) => console.log("err",err)
       });
     });
   }

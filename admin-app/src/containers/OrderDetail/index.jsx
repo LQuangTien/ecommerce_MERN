@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getOrderDetail, updateOrder } from "../../actions";
+import { getOrderDetail, updateOrder, getInitialData } from "../../actions";
 import Card from "../../components/UI/Card";
 import { formatDate, formatThousand } from "../../helpers/util";
 import { generatePictureUrl } from "../../urlConfig";
@@ -46,14 +46,18 @@ function OrderDetail(props) {
     cloneSteps[activeStep + 1].isCompleted = true;
     cloneSteps[activeStep + 1].date = new Date().toISOString();
     setSteps([...cloneSteps]);
-    dispatch(updateOrder({ _id: id, process: cloneSteps }));
+    dispatch(updateOrder({ _id: id, process: cloneSteps })).then(() => {
+      dispatch(getInitialData());
+    });
   };
   const handleBack = () => {
     const cloneSteps = [...steps];
     cloneSteps[activeStep].isCompleted = false;
     delete cloneSteps[activeStep].date;
     setSteps([...cloneSteps]);
-    dispatch(updateOrder({ _id: id, process: cloneSteps }));
+    dispatch(updateOrder({ _id: id, process: cloneSteps })).then(() => {
+      dispatch(getInitialData());
+    });
   };
 
   return (
