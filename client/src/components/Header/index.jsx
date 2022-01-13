@@ -92,7 +92,6 @@ const Header = (props) => {
     }
   };
   const renderSigninModal = () => {
-    console.log(auth.authenticating);
     return (
       <Modal
         visible={signinModal}

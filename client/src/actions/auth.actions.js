@@ -58,8 +58,6 @@ export const signup = (data) => {
     try {
       dispatch({ type: authConstants.SIGNUP_REQUEST });
       const res = await axios.post("/signup", data);
-      console.log(res);
-
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));

@@ -30,7 +30,6 @@ function CartPage(props) {
   const handleRemoveItem = (productId) => {
     dispatch(removeCartItem(productId));
   };
-  console.log(cartItems);
   const renderCartItems = () => {
     return (
       <div className="cart__content">

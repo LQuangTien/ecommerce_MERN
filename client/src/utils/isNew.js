@@ -8,6 +8,5 @@ export const isNew = (date) => {
 
   // To calculate the no. of days between two dates
   const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-  console.log(Difference_In_Days);
   return Difference_In_Days < 7;
 };
